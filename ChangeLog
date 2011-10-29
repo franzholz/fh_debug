@@ -1,0 +1,46 @@
+2011-10-29  Franz Holzinger  <franz@ttproducts.de>
+
+	* bug fix: close the header tag
+	* new feature: use a CSS file instead of the included styles on each HTML tag
+
+2011-04-19  Franz Holzinger  <franz@ttproducts.de>
+
+	* bug fix: HTML output could not be activated
+	* new feature: generate FE output in the TYPO3 renderCharset.
+
+2011-03-24  Franz Holzinger  <franz@ttproducts.de>
+
+	* new feature: textual debug without HTML. A text editor is much faster than a webbrowser. The text file is much smaller than a HTML file.
+
+2011-03-23  Franz Holzinger  <franz@ttproducts.de>
+
+	* new feature: define the colors of the HTML data table or remove the color to save space
+
+2010-08-16  Franz Holzinger  <franz@ttproducts.de>
+
+	* show the starting date and time at the beginning of the debug file output
+	* make a syslog entry if the DEBUGFILE is not writable
+	* check for availability of the method debugStart and debugEnd because another debug extension could have been installed.
+	* new feature: debug file mode to allow to overwrite the debug file automatically
+
+2010-07-07  Franz Holzinger  <franz@ttproducts.de>
+
+	* new feature: put the debug output into the file of your choice. The debug file will not be overwritten, if it is not empty.
+
+2010-05-31  Franz Holzinger  <franz@ttproducts.de>
+
+	* fix bug: print debug infos even afer a call_user_func_array
+	* fix bug: show debug output even if a FE user has been logged in and FEUSERNAMES is empty or it contains the FE name
+
+2010-05-29  Franz Holzinger  <franz@ttproducts.de>
+
+	* new feature: debug each array element until to the depth set by the maximum recursion level LEVEL
+
+2010-05-22  Franz Holzinger  <franz@ttproducts.de>
+
+	* support for PHP versions < 5.2.5 to remove the debug_backtrace parameter
+	* output of variables in colors and tables
+
+2010-05-12  Franz Holzinger  <franz@ttproducts.de>
+
+	* first alpha version
