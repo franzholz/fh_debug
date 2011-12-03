@@ -28,28 +28,27 @@ if (
 ) {
 	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey];
 
-	$dbgMode = ($newExtConf['TYPO3_MODE'] ? strtoupper($newExtConf['TYPO3_MODE']) : 'OFF');
-	$ipAdress = t3lib_div::getIndpEnv('REMOTE_ADDR');
-
-	if (
-		t3lib_div::cmpIP(
-			$ipAdress,
-			$newExtConf['IPADDRESS']
-		) &&
-		(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL')
-	) {
+	if (!isset($GLOBALS['error']) || !is_object($GLOBALS['error']) || get_class($GLOBALS['error']) != 'tx_fhdebug') {
 		include_once (t3lib_extMgm::extPath(FH_DEBUG_EXTkey) . 'lib/class.tx_fhdebug.php');
+		$myDebugObject = new tx_fhdebug($newExtConf);
 
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] .= ',' . $ipAdress; // overwrite the devIPmask
+		$dbgMode = ($newExtConf['TYPO3_MODE'] ? strtoupper($newExtConf['TYPO3_MODE']) : 'OFF');
+		$ipAdress = t3lib_div::getIndpEnv('REMOTE_ADDR');
 
-		if (!isset($GLOBALS['error']) || !is_object($GLOBALS['error']) || get_class($GLOBALS['error']) != 'tx_fhdebug') {
-			$myDebugObject = new tx_fhdebug($newExtConf);
-
-			if (!$newExtConf['DEBUGBEGIN']) {
-				tx_fhdebug::init();
-			}
-			$GLOBALS['error'] = $myDebugObject;
+		if (
+			t3lib_div::cmpIP(
+				$ipAdress,
+				$newExtConf['IPADDRESS']
+			) &&
+			(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL')
+		) {
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] .= ',' . $ipAdress; // overwrite the devIPmask
 		}
+
+		if (!$newExtConf['DEBUGBEGIN']) {
+			tx_fhdebug::init();
+		}
+		$GLOBALS['error'] = $myDebugObject;
 	}
 }
 

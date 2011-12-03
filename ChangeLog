@@ -1,3 +1,8 @@
+2011-12-03  Franz Holzinger  <franz@ttproducts.de>
+
+	* bug fix: Use fh_debug also if the ip address does not match. No debug output shall be shown in the FE.
+	* Remove the color functions. The colors shall be set in the CSS file instead.
+
 2011-10-29  Franz Holzinger  <franz@ttproducts.de>
 
 	* bug fix: close the header tag

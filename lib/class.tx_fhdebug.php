@@ -38,7 +38,6 @@ class tx_fhdebug {
 			'line' => '#',
 			'function' => '->'
 		);
-	static public $tableBackColorArray = array();
 	static protected $bActive = FALSE;	// inactive without initialization
 	static protected $bErrorWritten = FALSE;
 	static private $phpVersionGt50205;
@@ -120,14 +119,14 @@ class tx_fhdebug {
 
 // error_log ('======================================== init $extConf: '.$debugOut);
 
-		if ($extConf['COLORS'] != '') {
-			self::$tableBackColorArray = t3lib_div::trimExplode(',', $extConf['COLORS']);
-			$count = count($extConf['COLORS']);
-			if ($count) {
-				self::$tableBackColorArray['end'] = self::$tableBackColorArray[$count - 1];
-				unset(self::$tableBackColorArray[$count - 1]);
-			}
-		}
+// 		if ($extConf['COLORS'] != '') {
+// 			self::$tableBackColorArray = t3lib_div::trimExplode(',', $extConf['COLORS']);
+// 			$count = count($extConf['COLORS']);
+// 			if ($count) {
+// 				self::$tableBackColorArray['end'] = self::$tableBackColorArray[$count - 1];
+// 				unset(self::$tableBackColorArray[$count - 1]);
+// 			}
+// 		}
 
 		if ($extConf['HTML'] == '1') {
 			self::$bHtml = 1;
@@ -336,7 +335,7 @@ class tx_fhdebug {
 		return $rc;
 	}
 
-
+/*
 	static public function getColor ($depth) {
 
 		$rc = '0';
@@ -350,7 +349,7 @@ class tx_fhdebug {
 			$rc = self::$tableBackColorArray[$depth];
 		}
 		return $rc;
-	}
+	}*/
 
 
 	static public function printArrayVariable ($variable, $depth) {
@@ -363,11 +362,12 @@ class tx_fhdebug {
 			if (self::$bHtml) {
 				foreach ($variable as $k => $v1) {
 					$debugArray[$k] .= '<tr>';
-					if ($extConf['COLORS'] != '') {
+/*					if ($extConf['COLORS'] != '') {
 						$td = '<td>'; //  bgcolor="#' . self::getColor($depth) . '">';
 					} else {
 						$td = '<td>';
-					}
+					}*/
+					$td = '<td>';
 					$debugArray[$k] .= $td;
 					$debugArray[$k] .=  nl2br(htmlspecialchars($k));
 					$debugArray[$k] .= '</td>';
