@@ -34,18 +34,20 @@ if (
 
 		$dbgMode = ($newExtConf['TYPO3_MODE'] ? strtoupper($newExtConf['TYPO3_MODE']) : 'OFF');
 		$ipAdress = t3lib_div::getIndpEnv('REMOTE_ADDR');
+		$bIpIsAllowed =
+			(
+				(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL') &&
+				t3lib_div::cmpIP(
+					$ipAdress,
+					$newExtConf['IPADDRESS']
+				)
+			);
 
-		if (
-			t3lib_div::cmpIP(
-				$ipAdress,
-				$newExtConf['IPADDRESS']
-			) &&
-			(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL')
-		) {
+		if ($bIpIsAllowed) {
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] .= ',' . $ipAdress; // overwrite the devIPmask
 		}
 
-		if (!$newExtConf['DEBUGBEGIN']) {
+		if ($bIpIsAllowed && !$newExtConf['DEBUGBEGIN']) {
 			tx_fhdebug::init();
 		}
 		$GLOBALS['error'] = $myDebugObject;

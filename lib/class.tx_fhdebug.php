@@ -438,7 +438,6 @@ class tx_fhdebug {
 		} else if (is_object($variable))	{
 			$rc = self::printObjectVariable($variable, 0);
 		} else {
-/*error_log*/ ('self::$bHtml = ' . self::$bHtml);
 			if (self::$bHtml) {
 				$rc = '<p>' . nl2br(htmlspecialchars($variable)) . '</p>';
 			} else {
@@ -501,7 +500,7 @@ class tx_fhdebug {
 	}
 
 
-	static public function debug ($variable='', $name='*variable*', $line='*line*', $file='*file*', $bTrace=1, $debugLevel=E_DEBUG) {
+	static public function debug ($variable = '', $name = '*variable*', $line = '*line*', $file = '*file*', $bTrace = 1, $debugLevel = E_DEBUG) {
 
 		$bControlMode = FALSE;
 /*
@@ -607,7 +606,7 @@ error_log('debug $name = ' . print_r($name, TRUE));*/
 /**
  * This function provides a shortcut so you don't have to use the class directly
  */
-function fhdebug ($variable='', $name='*variable*', $line='*line*', $file='*file*', $traceDepth=3, $debugLevel=E_DEBUG) {
+function fhdebug ($variable = '', $name = '*variable*', $line = '*line*', $file = '*file*', $traceDepth = 3, $debugLevel = E_DEBUG) {
 	global $TYPO3_CONF_VARS, $myDebugObject;
 
 	$myDebugObject->debug($variable, $name, $line, $file, $traceDepth, $debugLevel);
