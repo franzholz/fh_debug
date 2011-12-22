@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "fh_debug".
 #
-# Auto generated 03-12-2011 10:11
+# Auto generated 22-12-2011 17:16
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'PHP debugger',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '0.3.1',
+	'version' => '0.3.2',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -41,7 +41,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:7:{s:9:"ChangeLog";s:4:"6c57";s:21:"ext_conf_template.txt";s:4:"0f2a";s:12:"ext_icon.gif";s:4:"fd3c";s:17:"ext_localconf.php";s:4:"f999";s:14:"doc/manual.sxw";s:4:"4893";s:24:"lib/class.tx_fhdebug.php";s:4:"133c";s:15:"res/fhdebug.css";s:4:"1c94";}',
+	'_md5_values_when_last_written' => 'a:7:{s:9:"ChangeLog";s:4:"9060";s:21:"ext_conf_template.txt";s:4:"0f2a";s:12:"ext_icon.gif";s:4:"fd3c";s:17:"ext_localconf.php";s:4:"f72b";s:14:"doc/manual.sxw";s:4:"4893";s:24:"lib/class.tx_fhdebug.php";s:4:"d31b";s:15:"res/fhdebug.css";s:4:"1c94";}',
 	'suggests' => array(
 	),
 );
