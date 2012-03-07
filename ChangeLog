@@ -1,3 +1,7 @@
+2012-03-07  Franz Holzinger  <franz@ttproducts.de>
+
+	* bug fix: not fitting ip addresses shall not overwrite the debug file
+
 2011-12-22  Franz Holzinger  <franz@ttproducts.de>
 
 	* bug fix: No writing of the debug output if the IP address does not fit

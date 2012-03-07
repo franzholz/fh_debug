@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Franz Holzinger <franz@ttproducts.de>
+*  (c) 2012 Franz Holzinger <franz@ttproducts.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,7 +31,6 @@
  * $Id$
  */
 class tx_fhdebug {
-
 	static public $prefixFieldArray =
 		array(
 			'file' => '',
@@ -58,12 +57,17 @@ class tx_fhdebug {
 	}
 
 
-	function debugControl (array $parameters) {
+	public function debugControl (array $parameters) {
 	}
 
 
-	static public function write($out) {
+	public static function hasError () {
+		$result = (self::$bErrorWritten);
+		return $result;
+	}
 
+
+	static public function write ($out) {
 		if (self::$hndFile) {
 			fputs(self::$hndFile, $out);
 		} else if ($extConf['DEBUGFILE'] == '') {
@@ -95,7 +99,37 @@ class tx_fhdebug {
 	}
 
 
-	static public function init () {
+	static public function readIpAddress () {
+		$ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+
+		if (!$ipAddress) {
+			$ipAddress = t3lib_div::getIndpEnv('REMOTE_ADDR');
+		}
+		return $ipAddress;
+	}
+
+
+
+	static public function verifyIpAddress (
+		$ipAddress,
+		$extConf
+	) {
+		$dbgMode = ($extConf['TYPO3_MODE'] ? strtoupper($extConf['TYPO3_MODE']) : 'OFF');
+
+		$bIpIsAllowed =
+			(
+				(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL') &&
+				t3lib_div::cmpIP(
+					$ipAddress,
+					$extConf['IPADDRESS']
+				)
+			);
+
+		return $bIpIsAllowed;
+	}
+
+
+	static public function init ($ipAddress) {
 
 		if (self::$bHasBeenInitialized) {
 			return;
@@ -103,17 +137,20 @@ class tx_fhdebug {
 
 // error_log ('init NEU ====================================================================');
 // error_log ('vor setActive Pos 1 ');
-		self::setActive(TRUE);
 		$phpVersion = phpversion();
 		self::$phpVersionGt50205 = version_compare($phpVersion, '5.2.5', '>=');
 
-		if (TYPO3_MODE == 'FE')	{
+		if (TYPO3_MODE == 'FE') {
 			if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 				self::processUser();
 			}
 		}
 
 		$extConf = self::getExtConf();
+
+		if (!$extConf['DEBUGBEGIN']) {
+			self::setActive(TRUE);
+		}
 
 // error_log ('debug $extConf: ' . print_r($extConf, TRUE));
 
@@ -197,10 +234,26 @@ class tx_fhdebug {
 				self::setActive(FALSE); // no debug is necessary when the file cannot be written anyways
 			}
 
-			if (!self::$hndFile && !is_writable($filename))	{
-				t3lib_div::sysLog('DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"', FH_DEBUG_EXTkey, 3);
+			if (!self::$hndFile && !is_writable($filename)) {
+				t3lib_div::devLog('DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"', FH_DEBUG_EXTkey, 0);
+				t3lib_div::sysLog('DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"', FH_DEBUG_EXTkey, 0);
 			}
 		}
+
+		if (t3lib_div::cmpIP($ipAddress, '127.0.0.1')) {
+			if (
+				t3lib_div::cmpIP(
+					$ipAddress,
+					$extConf['IPADDRESS']
+				)
+			) {
+				// nothing
+			} else {
+				self::debug($ipAddress, 'Attention: The server variable REMOTE_ADDR is set to local.', '', '', FALSE);
+				self::setActive(FALSE);
+			}
+		}
+
 		self::$bHasBeenInitialized = TRUE;
 	}
 
@@ -233,21 +286,23 @@ class tx_fhdebug {
 
 	static public function debugBegin () {
 
-		$extConf = self::getExtConf();
-		if ($extConf['DEBUGBEGIN'])	{
-		 	self::init();
+		if (self::$bHasBeenInitialized && !self::hasError()) {
+			$extConf = self::getExtConf();
+			if ($extConf['DEBUGBEGIN']) {
+				self::setActive(TRUE);
+			}
 		}
-
-		self::setActive(TRUE);
 	}
 
 
 	static public function debugEnd () {
-		$extConf = self::getExtConf();
+		if (self::$bHasBeenInitialized ) {
+			$extConf = self::getExtConf();
 
-		if ($extConf['DEBUGBEGIN'])	{
+			if ($extConf['DEBUGBEGIN']) {
 
-			self::setActive(FALSE);
+				self::setActive(FALSE);
+			}
 		}
 	}
 
@@ -289,7 +344,12 @@ class tx_fhdebug {
 			}
 			$traceLineArray[$i] = array();
 			foreach ($traceFieldArray as $traceField) {
-				$v = ($traceField == 'file' && $theTrail['file'] != '' ? basename($theTrail[$traceField]) : $theTrail[$traceField]);
+				$v =
+					(
+						$traceField == 'file' && $theTrail['file'] != '' ?
+							basename($theTrail[$traceField]) :
+							$theTrail[$traceField]
+					);
 				$traceArray[$i][$traceField] = $v;
 			}
 			if ($theTrail['function'] == 'debug') {
@@ -335,22 +395,6 @@ class tx_fhdebug {
 		return $rc;
 	}
 
-/*
-	static public function getColor ($depth) {
-
-		$rc = '0';
-		$extConf = self::getExtConf();
-		if (
-			($depth == $extConf['LEVEL'] || !isset(self::$tableBackColorArray[$depth]))
-			&& isset(self::$tableBackColorArray['end'])
-		) {
-			$rc = self::$tableBackColorArray['end'];
-		} else {
-			$rc = self::$tableBackColorArray[$depth];
-		}
-		return $rc;
-	}*/
-
 
 	static public function printArrayVariable ($variable, $depth) {
 
@@ -362,30 +406,19 @@ class tx_fhdebug {
 			if (self::$bHtml) {
 				foreach ($variable as $k => $v1) {
 					$debugArray[$k] .= '<tr>';
-/*					if ($extConf['COLORS'] != '') {
-						$td = '<td>'; //  bgcolor="#' . self::getColor($depth) . '">';
-					} else {
-						$td = '<td>';
-					}*/
 					$td = '<td>';
 					$debugArray[$k] .= $td;
 					$debugArray[$k] .=  nl2br(htmlspecialchars($k));
 					$debugArray[$k] .= '</td>';
-					if (is_array($v1))	{
+					if (is_array($v1)) {
 						$debugArray[$k] .= '<td>';
 						$debugArray[$k] .= self::printArrayVariable($v1, $depth + 1);
 						$debugArray[$k] .= '</td>';
-					} else if (is_object($v1))	{
+					} else if (is_object($v1)) {
 						$debugArray[$k] .= '<td>';
 						$debugArray[$k] .= self::printObjectVariable($v1, $depth + 1);
 						$debugArray[$k] .= '</td>';
 					} else {
-// 						if ($extConf['COLORS'] != '') {
-// 							$td = '<td>'; // bgcolor="#' . self::getColor($depth + 1) . '">' ;
-// 						} else {
-// 							$td = '<td>';
-// 						}
-
 						$td = '<td>';
 						$debugArray[$k] .= $td . nl2br(htmlspecialchars($v1)) . '</td>';
 					}
@@ -395,9 +428,9 @@ class tx_fhdebug {
 				foreach ($variable as $k => $v1) {
 					$debugArray[$k] .=  $k;
 					$debugArray[$k] .= '|';
-					if (is_array($v1))	{
+					if (is_array($v1)) {
 						$debugArray[$k] .= self::printArrayVariable($v1, $depth + 1);
-					} else if (is_object($v1))	{
+					} else if (is_object($v1)) {
 						$debugArray[$k] .= self::printObjectVariable($v1, $depth + 1);
 					} else {
 						$debugArray[$k] .=  $v1;
@@ -433,7 +466,7 @@ class tx_fhdebug {
 		$debugArray = array();
 		$extConf = self::getExtConf();
 
-		if (is_array($variable))	{
+		if (is_array($variable)) {
 			$rc = self::printArrayVariable($variable, 0);
 		} else if (is_object($variable))	{
 			$rc = self::printObjectVariable($variable, 0);
@@ -449,7 +482,7 @@ class tx_fhdebug {
 
 
 	static public function processUser () {
-		if (TYPO3_MODE == 'FE')	{
+		if (TYPO3_MODE == 'FE') {
 			if (is_array($GLOBALS['TSFE']->fe_user->user)) {
 				$username = $GLOBALS['TSFE']->fe_user->user['username'];
 			}
@@ -463,7 +496,11 @@ class tx_fhdebug {
 					$tmpArray = t3lib_div::trimExplode(',', $extConf['FEUSERNAMES']);
 				}
 
-				if (isset($tmpArray) && is_array($tmpArray) && in_array($username, $tmpArray) === FALSE)	{
+				if (
+					isset($tmpArray) &&
+					is_array($tmpArray) &&
+					in_array($username, $tmpArray) === FALSE
+				) {
 					self::$bUserAllowed = FALSE;
 				}
 			}
@@ -500,12 +537,19 @@ class tx_fhdebug {
 	}
 
 
-	static public function debug ($variable = '', $name = '*variable*', $line = '*line*', $file = '*file*', $bTrace = 1, $debugLevel = E_DEBUG) {
-
+	static public function debug (
+		$variable = '',
+		$name = '*variable*',
+		$line = '*line*',
+		$file = '*file*',
+		$bTrace = 1,
+		$debugLevel = E_DEBUG
+	) {
 		$bControlMode = FALSE;
-/*
-error_log('debug $variable = ' . print_r($variable, TRUE));
-error_log('debug $name = ' . print_r($name, TRUE));*/
+
+// error_log('debug $variable = ' . print_r($variable, TRUE));
+// error_log('debug $name = ' . print_r($name, TRUE));
+// error_log('backtrace: ' . print_r(self::getTraceArray(), TRUE));
 
 		if ($name == 'control:resetTemporaryFile')	{
 			self::writeTemporaryFile(0);
@@ -518,8 +562,12 @@ error_log('debug $name = ' . print_r($name, TRUE));*/
 			if (TYPO3_MODE == 'FE') { // hooks for FE extensions
 
 				$csConvObj = &$GLOBALS['TSFE']->csConvObj;
-				if (is_object($csConvObj)) {
-	 				$name = $csConvObj->conv($name, 'utf-8', $GLOBALS['TSFE']->renderCharset);
+				if (is_object($csConvObj) && $GLOBALS['TSFE']->renderCharset != '') {
+	 				$name = $csConvObj->conv(
+						$name,
+						'utf-8',
+						$GLOBALS['TSFE']->renderCharset
+					);
 				}
 			}
 
@@ -597,7 +645,14 @@ error_log('debug $name = ' . print_r($name, TRUE));*/
 	public function __destruct () {
 
 		if (self::$hndFile) {
+			$extConf = self::getExtConf();
+			if ($extConf['APPENDDEPTH'] == '0') {
+				self::writeBodyEnd();
+			}
+
 			fclose(self::$hndFile);
+			self::$bHasBeenInitialized = FALSE;
+			self::$hndFile = NULL; // this is a static class which remains even after the closing of the object
 		}
 	}
 }
@@ -606,10 +661,24 @@ error_log('debug $name = ' . print_r($name, TRUE));*/
 /**
  * This function provides a shortcut so you don't have to use the class directly
  */
-function fhdebug ($variable = '', $name = '*variable*', $line = '*line*', $file = '*file*', $traceDepth = 3, $debugLevel = E_DEBUG) {
+function fhdebug (
+	$variable = '',
+	$name = '*variable*',
+	$line = '*line*',
+	$file = '*file*',
+	$traceDepth = 3,
+	$debugLevel = E_DEBUG
+) {
 	global $TYPO3_CONF_VARS, $myDebugObject;
 
-	$myDebugObject->debug($variable, $name, $line, $file, $traceDepth, $debugLevel);
+	$myDebugObject->debug(
+		$variable,
+		$name,
+		$line,
+		$file,
+		$traceDepth,
+		$debugLevel
+	);
 }
 
 

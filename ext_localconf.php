@@ -1,12 +1,13 @@
 <?php
-if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
+if (!defined ("TYPO3_MODE")) {
+	die ("Access denied.");
+}
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
 if (!defined ('FH_DEBUG_EXTkey')) {
 	define('FH_DEBUG_EXTkey', $_EXTKEY);
 }
-
 
 if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey]) && is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey])) {
 	$tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey];
@@ -29,27 +30,25 @@ if (
 	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey];
 
 	if (!isset($GLOBALS['error']) || !is_object($GLOBALS['error']) || get_class($GLOBALS['error']) != 'tx_fhdebug') {
-		include_once (t3lib_extMgm::extPath(FH_DEBUG_EXTkey) . 'lib/class.tx_fhdebug.php');
-		$myDebugObject = new tx_fhdebug($newExtConf);
+		include_once(t3lib_extMgm::extPath(FH_DEBUG_EXTkey) . 'lib/class.tx_fhdebug.php');
 
-		$dbgMode = ($newExtConf['TYPO3_MODE'] ? strtoupper($newExtConf['TYPO3_MODE']) : 'OFF');
-		$ipAdress = t3lib_div::getIndpEnv('REMOTE_ADDR');
-		$bIpIsAllowed =
-			(
-				(TYPO3_MODE == $dbgMode || $dbgMode == 'ALL') &&
-				t3lib_div::cmpIP(
-					$ipAdress,
-					$newExtConf['IPADDRESS']
-				)
-			);
+		$ipAdress = tx_fhdebug::readIpAddress();
+		$bIpIsAllowed = tx_fhdebug::verifyIpAddress($ipAdress, $newExtConf);
 
 		if ($bIpIsAllowed) {
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] .= ',' . $ipAdress; // overwrite the devIPmask
 		}
 
-		if ($bIpIsAllowed && !$newExtConf['DEBUGBEGIN']) {
-			tx_fhdebug::init();
+		$myDebugObject = new tx_fhdebug($newExtConf);
+
+		if (
+			$bIpIsAllowed ||
+			t3lib_div::cmpIP($ipAdress, '127.0.0.1')
+		) {
+			tx_fhdebug::init($ipAdress);
 		}
+
+		// the error object must always be set in order to show the debug output or to disable it
 		$GLOBALS['error'] = $myDebugObject;
 	}
 }
