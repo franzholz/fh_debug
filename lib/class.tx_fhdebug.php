@@ -23,7 +23,6 @@
 ***************************************************************/
 
 
-
 /**
  * Debug extension.
  *
@@ -37,8 +36,12 @@ class tx_fhdebug {
 			'line' => '#',
 			'function' => '->'
 		);
+	static public $csConvObj;
+
 	static protected $bActive = FALSE;	// inactive without initialization
+	static protected $bInitialization = FALSE;
 	static protected $bErrorWritten = FALSE;
+
 	static private $phpVersionGt50205;
 	static private $username;
 	static private $bUserAllowed = TRUE;
@@ -50,22 +53,22 @@ class tx_fhdebug {
 	static private $processCount = 0;
 	static private $bHtml = FALSE;
 	static private $bWriteHeader = FALSE;
+	static private $instanceCount = 0;
 
 
 	public function __construct ($newExtConf) {
 		self::$extConf = $newExtConf;
+		self::$instanceCount++;
+		self::$csConvObj = t3lib_div::makeInstance('t3lib_cs');
 	}
-
 
 	public function debugControl (array $parameters) {
 	}
 
-
-	public static function hasError () {
+	static public function hasError () {
 		$result = (self::$bErrorWritten);
 		return $result;
 	}
-
 
 	static public function write ($out) {
 		if (self::$hndFile) {
@@ -74,7 +77,6 @@ class tx_fhdebug {
 			echo $out;
 		}
 	}
-
 
 	static public function writeHeader ($cssFilename) {
 		$out = '
@@ -90,14 +92,12 @@ class tx_fhdebug {
 		self::write($out);
 	}
 
-
 	static public function writeBodyEnd () {
 		$out =
 '</body>';
 
 		self::write($out);
 	}
-
 
 	static public function readIpAddress () {
 		$ipAddress = $_SERVER['HTTP_CLIENT_IP'];
@@ -107,8 +107,6 @@ class tx_fhdebug {
 		}
 		return $ipAddress;
 	}
-
-
 
 	static public function verifyIpAddress (
 		$ipAddress,
@@ -128,17 +126,44 @@ class tx_fhdebug {
 		return $bIpIsAllowed;
 	}
 
-
 	static public function init ($ipAddress) {
+// error_log ('init START ========================================== ');
 
-		if (self::$bHasBeenInitialized) {
+		if (self::hasBeenInitialized()) {
+// error_log ('init $bHasBeenInitialized');
 			return;
 		}
 
-// error_log ('init NEU ====================================================================');
-// error_log ('vor setActive Pos 1 ');
 		$phpVersion = phpversion();
 		self::$phpVersionGt50205 = version_compare($phpVersion, '5.2.5', '>=');
+
+		$extConf = self::getExtConf();
+		$backtrace = self::getTraceArray();
+//  error_log('init backtrace: ' . print_r($backtrace, TRUE));
+//  error_log('init $extConf: ' . print_r($extConf, TRUE));
+
+		if ($extConf['STARTFILES'] != '') {
+//  error_log('init $extConf[\'STARTFILES\']: ' . $extConf['STARTFILES']);
+			$startFileArray = t3lib_div::trimExplode(',', $extConf['STARTFILES']);
+			$bStartFileFound = FALSE;
+			if (is_array($startFileArray)) {
+				foreach ($startFileArray as $startFile) {
+					if ($backtrace['0']['file'] == $startFile) {
+//  error_log('init $startFile found: ' . $startFile);
+						$bStartFileFound = TRUE;
+						break;
+					}
+				}
+			}
+
+//  error_log('init $bStartFileFound: ' . $bStartFileFound);
+			if (!$bStartFileFound) {
+// error_log ('init kein STARTFILES');
+				return;
+			}
+		}
+
+		self::setIsInitialization(TRUE);
 
 		if (TYPO3_MODE == 'FE') {
 			if (is_array($GLOBALS['TSFE']->fe_user->user)) {
@@ -146,25 +171,12 @@ class tx_fhdebug {
 			}
 		}
 
-		$extConf = self::getExtConf();
-
 		if (!$extConf['DEBUGBEGIN']) {
+// error_log ('init setActive TRUE');
 			self::setActive(TRUE);
 		}
 
-// error_log ('debug $extConf: ' . print_r($extConf, TRUE));
-
-// error_log ('======================================== init $extConf: '.$debugOut);
-
-// 		if ($extConf['COLORS'] != '') {
-// 			self::$tableBackColorArray = t3lib_div::trimExplode(',', $extConf['COLORS']);
-// 			$count = count($extConf['COLORS']);
-// 			if ($count) {
-// 				self::$tableBackColorArray['end'] = self::$tableBackColorArray[$count - 1];
-// 				unset(self::$tableBackColorArray[$count - 1]);
-// 			}
-// 		}
-
+// error_log ('======================================== init $extConf: '.print_r($extConf, TRUE));
 		if ($extConf['HTML'] == '1') {
 			self::$bHtml = 1;
 		}
@@ -226,17 +238,34 @@ class tx_fhdebug {
 					if (self::$bWriteHeader) {
 						self::writeHeader($extConf['CSSFILE']);
 					}
-					self::debug(date('d.m.Y H:i:s'), 'start date and time of debug session (mode "' . $openMode . '")', '', '', FALSE);
+					self::debug(
+						date('H:i:s  d.m.Y') . '  (' . $ipAddress . ')', 'start date, time and IP of debug session (mode "' . $openMode . '")',
+						'',
+						'',
+						FALSE
+					);
+// error_log ('nach debug start date and time ');
 				}
 			} else {
 // error_log ('vor setActive Pos 2 ');
+
+
+// error_log ('init setActive FALSE');
 
 				self::setActive(FALSE); // no debug is necessary when the file cannot be written anyways
 			}
 
 			if (!self::$hndFile && !is_writable($filename)) {
-				t3lib_div::devLog('DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"', FH_DEBUG_EXTkey, 0);
-				t3lib_div::sysLog('DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"', FH_DEBUG_EXTkey, 0);
+				t3lib_div::devLog(
+					'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
+					FH_DEBUG_EXTkey,
+					0
+				);
+				t3lib_div::sysLog(
+					'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
+					FH_DEBUG_EXTkey,
+					0
+				);
 			}
 		}
 
@@ -249,21 +278,28 @@ class tx_fhdebug {
 			) {
 				// nothing
 			} else {
-				self::debug($ipAddress, 'Attention: The server variable REMOTE_ADDR is set to local.', '', '', FALSE);
+				self::debug(
+					$ipAddress,
+					'Attention: The server variable REMOTE_ADDR is set to local.',
+					'',
+					'',
+					FALSE
+				);
+// error_log ('vor setActive Pos 3 ');
+// error_log ('init setActive FALSE');
 				self::setActive(FALSE);
 			}
 		}
 
-		self::$bHasBeenInitialized = TRUE;
+		self::setHasBeenInitialized(TRUE);
+		self::setIsInitialization(FALSE);
+// error_log ('init ENDE ========================================== ');
 	}
 
-
 	static public function getProcessFilename () {
-
 		$result = PATH_site . 'typo3temp/fh_debug.txt';
 		return $result;
 	}
-
 
 	static public function bIsActive () {
 
@@ -271,48 +307,88 @@ class tx_fhdebug {
 		return self::$bActive;
 	}
 
+	static public function setActive ($v) {
+// if ($v) {
+// error_log ('function setActive = ' . $v);
+//
+// $backtrace = self::getTraceArray();
+// error_log('setActive backtrace: ' . print_r($backtrace, TRUE));
+// }
+		self::$bActive = $v;
+	}
+
+	static public function setIsInitialization ($bInitialization) {
+// error_log ('function setIsInitialization = ' . $bInitialization);
+		self::$bInitialization = $bInitialization;
+	}
+
+	static public function bIsInitialization () {
+// error_log ('bIsInitialization self::$bInitialization = ' .  self::$bInitialization);
+		return self::$bInitialization;
+	}
+
+	static public function setHasBeenInitialized ($bHasBeenInitialized) {
+// error_log ('function setHasBeenInitialized = ' . $bHasBeenInitialized);
+		self::$bHasBeenInitialized = $bHasBeenInitialized;
+	}
+
+	static public function hasBeenInitialized () {
+// error_log ('hasBeenInitialized self::$bHasBeenInitialized = ' .  self::$bHasBeenInitialized);
+		return self::$bHasBeenInitialized;
+	}
 
 	/* determines if the PHP function debug_backtrace() may be called with the parameter to not populate the object index */
 	static public function hasBacktraceParam () {
 		return self::$phpVersionGt50205;
 	}
 
-
-	static public function setActive ($v) {
-// error_log ('setActive = ' . $v);
-		self::$bActive = $v;
-	}
-
-
 	static public function debugBegin () {
 
-		if (self::$bHasBeenInitialized && !self::hasError()) {
+		if (self::hasBeenInitialized() && !self::hasError()) {
 			$extConf = self::getExtConf();
+
 			if ($extConf['DEBUGBEGIN']) {
 				self::setActive(TRUE);
+
+				$ipAdress = self::readIpAddress();
+				self::debug(
+					'debugBegin (' . $ipAddress . ') BEGIN >----- ----- ----->', 'debugBegin',
+					'',
+					'',
+					TRUE
+				);
+
+/*$backtrace = self::getTraceArray();
+error_log('debugBegin backtrace: ' . print_r($backtrace, TRUE));*/
 			}
 		}
 	}
 
-
 	static public function debugEnd () {
-		if (self::$bHasBeenInitialized ) {
+		if (self::hasBeenInitialized() ) {
 			$extConf = self::getExtConf();
 
 			if ($extConf['DEBUGBEGIN']) {
-
+				$ipAdress = self::readIpAddress();
+				self::debug(
+					'debugEnd (' . $ipAddress . ') END <----- ----- -----<', 'debugEnd',
+					'',
+					'',
+					TRUE
+				);
 				self::setActive(FALSE);
+
+/*$backtrace = self::getTraceArray();
+error_log('debugEnd backtrace: ' . print_r($backtrace, TRUE));*/
 			}
 		}
 	}
-
 
 	static public function getExtConf () {
 		$rc = self::$extConf;
 
 		return $rc;
 	}
-
 
 	static public function getTraceFieldArray () {
 		$extConf = self::getExtConf();
@@ -321,8 +397,7 @@ class tx_fhdebug {
 		return $rc;
 	}
 
-
-	static public function getTraceArray () {
+	static public function getTraceArray ($depth = 0, $offset = 2) {
 
 		if (self::hasBacktraceParam()) {
 			$trail = debug_backtrace(FALSE);
@@ -330,11 +405,18 @@ class tx_fhdebug {
 			$trail = debug_backtrace();
 		}
 
-		$extConf = self::getExtConf();
+		$last = count($trail) - 1;
+
+		if (!$depth) {
+			$depth = $last + 1;
+			$offset = 0;
+		}
+
 		$traceFieldArray = self::getTraceFieldArray();
 		$traceArray = array();
+		$j = $depth - 1;
 
-		for ($i = $extConf['TRACEDEPTH'] + 2; $i >= 0 ; $i--) {
+		for ($i = $offset; $i <= $last ; ++$i) {
 			if (!isset($trail[$i])) {
 				continue;
 			}
@@ -342,7 +424,7 @@ class tx_fhdebug {
 			if (!is_array($theTrail)) {
 				continue;
 			}
-			$traceLineArray[$i] = array();
+
 			foreach ($traceFieldArray as $traceField) {
 				$v =
 					(
@@ -350,16 +432,18 @@ class tx_fhdebug {
 							basename($theTrail[$traceField]) :
 							$theTrail[$traceField]
 					);
-				$traceArray[$i][$traceField] = $v;
+				$traceArray[$j][$traceField] = $v;
 			}
-			if ($theTrail['function'] == 'debug') {
+			$j--;
+
+			if ($j < 0) {
 				break;
 			}
 		}
+		ksort($traceArray);
 
 		return $traceArray;
 	}
-
 
 	static public function printTraceLine ($traceArray) {
 		$rc = '';
@@ -394,7 +478,6 @@ class tx_fhdebug {
 		}
 		return $rc;
 	}
-
 
 	static public function printArrayVariable ($variable, $depth) {
 
@@ -451,15 +534,12 @@ class tx_fhdebug {
 		return $rc;
 	}
 
-
 	static public function printObjectVariable ($variable, $depth) {
-
 		$vars = (array) @get_object_vars($variable);
 		$rc = self::printArrayVariable($vars, $depth);
 
 		return $rc;
 	}
-
 
 	static public function printVariable ($variable) {
 		$rc = '';
@@ -479,7 +559,6 @@ class tx_fhdebug {
 		}
 		return $rc;
 	}
-
 
 	static public function processUser () {
 		if (TYPO3_MODE == 'FE') {
@@ -507,9 +586,7 @@ class tx_fhdebug {
 		}
 	}
 
-
 	static public function getTypeView ($variable) {
-
 		$rc = '';
 		$type = gettype($variable);
 		switch ($type) {
@@ -525,7 +602,6 @@ class tx_fhdebug {
 		return $rc;
 	}
 
-
 	static public function writeTemporaryFile ($processCount) {
 		$processFilename = self::getProcessFilename();
 		$hndProcessfile = fopen($processFilename, 'r+');
@@ -535,7 +611,6 @@ class tx_fhdebug {
 		self::$processCount = $processCount;
 		fclose($hndProcessfile);
 	}
-
 
 	static public function debug (
 		$variable = '',
@@ -547,18 +622,19 @@ class tx_fhdebug {
 	) {
 		$bControlMode = FALSE;
 
-// error_log('debug $variable = ' . print_r($variable, TRUE));
-// error_log('debug $name = ' . print_r($name, TRUE));
-// error_log('backtrace: ' . print_r(self::getTraceArray(), TRUE));
-
-		if ($name == 'control:resetTemporaryFile')	{
+/*error_log('debug $variable = ' . print_r($variable, TRUE));
+error_log('debug $name = ' . print_r($name, TRUE));
+*/
+		if ($name == 'control:resetTemporaryFile') {
 			self::writeTemporaryFile(0);
 			self::$bCreateFile = TRUE;
 			$bControlMode = TRUE;
 		}
 
-		if (!$bControlMode && self::bIsActive()) {
-
+		if (
+			!$bControlMode &&
+			(self::bIsActive() || self::bIsInitialization())
+		) {
 			if (TYPO3_MODE == 'FE') { // hooks for FE extensions
 
 				$csConvObj = &$GLOBALS['TSFE']->csConvObj;
@@ -570,7 +646,7 @@ class tx_fhdebug {
 					);
 				}
 			}
-
+			$storeIsActive = self::bIsActive();
 			self::setActive(FALSE);
 			self::processUser();
 
@@ -601,9 +677,11 @@ class tx_fhdebug {
 					$head = '';
 				}
 
-				if (self::$hndFile || $extConf['DEBUGFILE'] == '') {
-
-					$traceArray = ($bTrace ? self::getTraceArray($traceDepth) : array());
+				if (
+					self::$hndFile ||
+					$extConf['DEBUGFILE'] == ''
+				) {
+					$traceArray = ($bTrace ? self::getTraceArray($extConf['TRACEDEPTH']) : array());
 					$content = self::printTraceLine($traceArray);
 
 					if (self::$bHtml) {
@@ -619,16 +697,23 @@ class tx_fhdebug {
 					}
 				}
 
+				$charset = mb_detect_encoding($out, 'utf-8, iso-8859-1');
+				fputs(self::$hndFile, 'charset = ' . $charset);
+
+				if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['t3lib_cs_convMethod'] != '') {
+					$out = self::$csConvObj->conv($out, $charset, 'utf-8');
+				}
+
 				if (self::$hndFile) {
-/*					if (self::$bHtml) {
-						$out = '<html><head><title>debug output</title></head><body>' . $out . '</body></html>';
-					}*/
 					fputs(self::$hndFile, $out);
 				} else if ($extConf['DEBUGFILE'] == '') {
 					echo $out;
 				} else if (!self::$bErrorWritten) {
 					$overwriteModeArray = array('x', 'x+', 'xb', 'x+b');
-					if (file_exists($extConf['DEBUGFILE']) && in_array($extConf['DEBUGFILEMODE'], $overwriteModeArray))	{
+					if (
+						file_exists($extConf['DEBUGFILE']) &&
+						in_array($extConf['DEBUGFILEMODE'], $overwriteModeArray)
+					) {
 						echo '<b>DEBUGFILE: "' . $extConf['DEBUGFILE'] . '" is not empty.</b>';
 					} else {
 						echo '<b>DEBUGFILE: "' . $extConf['DEBUGFILE'] . '" is not writable.</b>';
@@ -637,23 +722,31 @@ class tx_fhdebug {
 				}
 			}
 
-			self::setActive(TRUE);
+			self::setActive($storeIsActive);
 		}
 	}
 
-
 	public function __destruct () {
-
+// error_log ('__destruct');
 		if (self::$hndFile) {
+			self::$instanceCount--;
+
+// error_log ('__destruct self::$instanceCount ' . self::$instanceCount);
 			$extConf = self::getExtConf();
-			if ($extConf['APPENDDEPTH'] == '0') {
+			if (!self::$instanceCount && $extConf['APPENDDEPTH'] == '0') {
 				self::writeBodyEnd();
 			}
 
-			fclose(self::$hndFile);
-			self::$bHasBeenInitialized = FALSE;
-			self::$hndFile = NULL; // this is a static class which remains even after the closing of the object
+			if (!self::$instanceCount) {
+				fclose(self::$hndFile);
+				self::setHasBeenInitialized(FALSE);
+				self::$hndFile = NULL; // this is a static class which remains even after the closing of the object
+// error_log ('__destruct delete $hndFile');
+			} else {
+				fflush(self::$hndFile);
+			}
 		}
+// error_log ('__destruct close');
 	}
 }
 
