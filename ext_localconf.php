@@ -29,8 +29,13 @@ if (
 ) {
 	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXTkey];
 
-	if (!isset($GLOBALS['error']) || !is_object($GLOBALS['error']) || get_class($GLOBALS['error']) != 'tx_fhdebug') {
+	if (
+		!isset($GLOBALS['error']) ||
+		!is_object($GLOBALS['error']) ||
+		get_class($GLOBALS['error']) != 'tx_fhdebug'
+	) {
 		include_once(t3lib_extMgm::extPath(FH_DEBUG_EXTkey) . 'lib/class.tx_fhdebug.php');
+		$myDebugObject = new tx_fhdebug($newExtConf);
 
 		$ipAdress = tx_fhdebug::readIpAddress();
 		$bIpIsAllowed = tx_fhdebug::verifyIpAddress($ipAdress, $newExtConf);
@@ -38,8 +43,6 @@ if (
 		if ($bIpIsAllowed) {
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] .= ',' . $ipAdress; // overwrite the devIPmask
 		}
-
-		$myDebugObject = new tx_fhdebug($newExtConf);
 
 		if (
 			$bIpIsAllowed ||
@@ -52,6 +55,5 @@ if (
 		$GLOBALS['error'] = $myDebugObject;
 	}
 }
-
 
 ?>

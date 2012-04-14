@@ -1,3 +1,6 @@
+2012-04-14  Franz Holzinger  <franz@ttproducts.de>
+	* set the HTML Doctype to XHTML 1.0 and the meta charset to utf-8
+
 2012-03-28  Franz Holzinger  <franz@ttproducts.de>
 	* new feature: parameter STARTFILE to limit the debug output generation to index.php or ajax.php
 	* convert the output into UTF-8

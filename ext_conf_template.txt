@@ -1,6 +1,6 @@
   # cat=basic/enable; type=string; label=IP address of the client browser
 IPADDRESS = 127.0.0.1
-  # cat=basic/enable; type=string; label=debugBegin required: Set this if you only want to have a debug output between the debugBegin and debugEnd. The first debugBegin will initialize the debug.
+  # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debugBegin and debugEnd. The first debugBegin will initialize the debug.
 DEBUGBEGIN = 0
   # cat=basic/enable; type=string; label= Typo3 Mode: FE, BE, ALL or OFF. Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging only enabled in this Mode. Use BE only with caution.
 TYPO3_MODE = FE
@@ -8,16 +8,14 @@ TYPO3_MODE = FE
 FEUSERNAMES =
   # cat=basic/enable; type=string; label= debug file: relative path of the debug file. Direct output if no debug file is given. Attention: The file will not be overwritten, if it is not empty.
 DEBUGFILE = fileadmin/debug.html
+  # cat=basic/enable; type=string; label= start files: names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
+STARTFILES = index.php,mod.php,tce_db.php,ajax.php
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
 DEBUGFILEMODE = wb
   # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible fiel names: file, line, function, class, object, type, args
 TRACEFIELDS = file, line, function
   # cat=basic/conf; type=int; label= Depth of the trace: number of the functions to be included in the backtrace.
 TRACEDEPTH = 5
-  # cat=basic/conf; type=int; label= Font size: Set the size of the font for the debug output
-FONTSIZE = 12
-  # cat=basic/conf; type=string; label= Colors: Comma separated list of color hex codes to use for the tables.
-COLORS = f85858,6f72f4,dc6464,8e64dc,f38484,b291ef,fbadad,c2b0e3,61ed88
   # cat=basic/conf; type=boolean; label= HTML: generate a HTML output file.
 HTML = 1
   # cat=basic/conf; type=int; label=Level: maximum recursion level for debugging into arrays and objects
