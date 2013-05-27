@@ -6,10 +6,12 @@ DEBUGBEGIN = 0
 TYPO3_MODE = FE
   # cat=basic/enable; type=string; label= Comma-sep. list of FE user names: empty for all fe_users (even without login). Else list FE user names where debug-output has to be generated.
 FEUSERNAMES =
-  # cat=basic/enable; type=string; label= debug file: relative path of the debug file. Direct output if no debug file is given. Attention: The file will not be overwritten, if it is not empty.
+  # cat=basic/enable; type=string; label= debug file: relative path of the debug file. Direct output if no debug file is given. Attention: The file will not be overwritten, if it is not empty. ERROR_LOG must be empty!
 DEBUGFILE = fileadmin/debug.html
+  # cat=basic/enable; type=string; label= error_log file: relative path of the error_log file. If set, then DEBUGFILE is disabled.
+ERROR_LOG =
   # cat=basic/enable; type=string; label= start files: names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
-STARTFILES = index.php,mod.php,tce_db.php,ajax.php
+STARTFILES = index.php,mod.php,tce_db.php,alt_doc.php,db_layout.php,ajax.php,cli_dispatch.phpsh
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
 DEBUGFILEMODE = wb
   # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible fiel names: file, line, function, class, object, type, args
@@ -24,4 +26,6 @@ LEVEL = 3
 APPENDDEPTH = 3
   # cat=basic/conf; type=file[css]; label= CSS file: This CSS file will be included by the HTML debug output file.
 CSSFILE = fhdebug.css
+  # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems to the Developer Logfile.
+DEVLOG = 0
 

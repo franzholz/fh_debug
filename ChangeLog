@@ -1,3 +1,7 @@
+2013-05-27  Franz Holzinger  <franz@ttproducts.de>
+	* new feature: an error_log file can be used instead of the debug output file
+	* bug fix: the ip address mask * must allow all ip addresses even the empty one
+
 2012-04-14  Franz Holzinger  <franz@ttproducts.de>
 	* set the HTML Doctype to XHTML 1.0 and the meta charset to utf-8
 
