@@ -6,6 +6,10 @@ h3 {
 	font-size:12;
 }
 
+th {
+	background-color:#F9C1EB;
+}
+
 table {
 	width:558;
 	border:1;
