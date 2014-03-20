@@ -1,21 +1,15 @@
 <?php
 
-########################################################################
-# Extension Manager/Repository config file for ext "fh_debug".
-#
-# Auto generated 19-10-2012 17:52
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
-########################################################################
+/***************************************************************
+ * Extension Manager/Repository config file for ext "fh_debug".
+ ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Debugger',
 	'description' => 'PHP debugger',
-	'category' => 'fe',
+	'category' => 'misc',
 	'shy' => 0,
-	'version' => '0.4.0',
+	'version' => '0.5.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',

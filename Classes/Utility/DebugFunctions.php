@@ -2,11 +2,13 @@
 
 namespace JambageCom\FhDebug\Utility;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2013 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2014 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -40,13 +42,13 @@ class DebugFunctions {
 			'function' => '->'
 		);
 	static public $csConvObj;
-	static public $errorLogFile = 'phpDebugErrorLog.txt';
+	static public $errorLogFile = 'fileadmin/phpDebugErrorLog.txt';
 	static public $debugFile = '';
 
-	static protected $bActive = FALSE;	// inactive without initialization
+	static protected $active = FALSE;	// inactive without initialization
 	static protected $bInitialization = FALSE;
 	static protected $bErrorWritten = FALSE;
-	static protected $bUseErrorLog = FALSE;
+	static protected $useErrorLog = FALSE;
 
 	static private $username;
 	static private $bUserAllowed = TRUE;
@@ -61,7 +63,7 @@ class DebugFunctions {
 	static private $recursiveDepth = 3;
 	static private $traceDepth = 5;
 	static private $appendDepth = 3;
-	static private $bHtml = TRUE;
+	static private $html = TRUE;
 	static private $bWriteHeader = FALSE;
 	static private $instanceCount = 0;
 	static private $errorLogFilename = '';
@@ -69,7 +71,7 @@ class DebugFunctions {
 	static private $typo3Mode = 'ALL';
 	static private $startFiles = '';
 	static private $ipAddress = '127.0.0.1';
-	static private $bDebugBegin = FALSE;
+	static private $debugBegin = FALSE;
 	static private $traceFields = 'file,line,function';
 	static private $feUserNames = '';
 	static private $debugFileMode = 'wb';
@@ -82,12 +84,16 @@ class DebugFunctions {
 		$debugFile = self::getDebugFile();
 
 		self::$instanceCount++;
-		self::$csConvObj =  \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+		self::$csConvObj =  GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		if ($extConf['ERROR_LOG'] != '') {
 			$errorLogFile = $extConf['ERROR_LOG'];
-			self::$bUseErrorLog = TRUE;
-			self::setHtml(FALSE);
-		} else if ($extConf['DEBUGFILE'] != '') {
+		}
+
+		if ($extConf['USE_ERROR_LOG'] != '') {
+			self::setUseErrorLog(TRUE);
+		}
+
+		if ($extConf['DEBUGFILE'] != '') {
 			$debugFile = $extConf['DEBUGFILE'];
 		}
 
@@ -95,7 +101,7 @@ class DebugFunctions {
 		self::setDebugFile($debugFile);
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  self::$debugFilename . chr(13), 3, self::getErrorLogFilename());
-//  error_log('$extConf = '. print_r($extConf, TRUE) . chr(13),  3, self::getErrorLogFilename());
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, TRUE) . chr(13),  3, self::getErrorLogFilename());
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), TRUE) . chr(13), 3, self::getErrorLogFilename());
 
 		self::setRecursiveDepth($extConf['LEVEL']);
@@ -109,13 +115,15 @@ class DebugFunctions {
 		self::setDebugFileMode($extConf['DEBUGFILEMODE']);
 		self::setDevLog($extConf['DEVLOG']);
 
-		if (!self::$bUseErrorLog) {
+		if (!self::$useErrorLog) {
 
 			self::setHtml($extConf['HTML']);
 		}
 
 		$typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
 		self::setTypo3Mode($typo3Mode);
+
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ENDE ' . chr(13), 3, self::getErrorLogFilename());
 	}
 
 	static public function setTypo3Mode ($value) {
@@ -173,13 +181,13 @@ class DebugFunctions {
 	static public function setDebugBegin ($value) {
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::setDebugBegin : ' .  $value . chr(13), 3, self::getErrorLogFilename());
 
-		self::$bDebugBegin = (boolean) ($value);
+		self::$debugBegin = (boolean) ($value);
 	}
 
 	static public function getDebugBegin () {
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getDebugBegin : ' .  self::$bDebugBegin . chr(13), 3, self::getErrorLogFilename());
+// error_log('JambageCom\FhDebug\Utility\DebugFunctions::getDebugBegin : ' .  self::$debugBegin . chr(13), 3, self::getErrorLogFilename());
 
-		return self::$bDebugBegin;
+		return self::$debugBegin;
 	}
 
 	static public function setTraceFields ($value) {
@@ -217,11 +225,11 @@ class DebugFunctions {
 	}
 
 	static public function setHtml ($value) {
-		self::$bHtml = (boolean) $value;
+		self::$html = (boolean) $value;
 	}
 
 	static public function getHtml () {
-		return self::$bHtml;
+		return self::$html;
 	}
 
 	static public function getErrorLogFile () {
@@ -235,15 +243,19 @@ class DebugFunctions {
 		} else {
 			self::$errorLogFile = $errorLogFile;
 		}
-		self::$errorLogFilename = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $errorLogFile);
+		self::$errorLogFilename = GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $errorLogFile);
 	}
 
 	static public function getErrorLogFilename () {
 		return self::$errorLogFilename;
 	}
 
-	static public function getDebugFile () {
-		return self::$debugFile;
+	static public function setUseErrorLog ($useErrorLog = TRUE) {
+		self::$useErrorLog = $useErrorLog;
+	}
+
+	static public function getUseErrorLog () {
+		return self::$useErrorLog;
 	}
 
 	static public function setDebugFile ($debugFile = '') {
@@ -253,7 +265,11 @@ class DebugFunctions {
 		} else {
 			self::$debugFile = $debugFile;
 		}
-		self::$debugFilename = \TYPO3\CMS\Core\Utility\GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $debugFile);
+		self::$debugFilename = GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $debugFile);
+	}
+
+	static public function getDebugFile () {
+		return self::$debugFile;
 	}
 
 	static public function getDebugFilename () {
@@ -265,7 +281,7 @@ class DebugFunctions {
 
 	static public function hasError () {
 		$result = (self::$bErrorWritten);
-// error_log('hasError $result: ' . $result . chr(13), 3, self::getErrorLogFilename());
+//  error_log('hasError $result: ' . $result . chr(13), 3, self::getErrorLogFilename());
 
 		return $result;
 	}
@@ -286,7 +302,7 @@ class DebugFunctions {
 
 // error_log('writeHeader $cssFilename: ' . $cssFilename . chr(13), 3, self::getErrorLogFilename());
 
-		self::write($out, (self::getDebugFile() == ''));
+		self::write($out, '=>', (self::getDebugFile() == ''));
 	}
 
 	static public function writeBodyEnd () {
@@ -294,7 +310,7 @@ class DebugFunctions {
 '</body>';
 
 // error_log('writeBodyEnd ' . chr(13), 3, self::getErrorLogFilename());
-		self::write($out, (self::getDebugFile() == ''));
+		self::write($out, '<=', (self::getDebugFile() == ''));
 	}
 
 	static public function readIpAddress () {
@@ -308,7 +324,7 @@ class DebugFunctions {
 			$ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 			$ipAddress = trim($ips[count($ips) - 1]);
 		} else {
-			$ipAddress = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR');
+			$ipAddress = GeneralUtility::getIndpEnv('REMOTE_ADDR');
 		}
 
 // error_log ('readIpAddress ENDE $ipAddress ' . $ipAddress . chr(13), 3, self::getErrorLogFilename());
@@ -323,7 +339,7 @@ class DebugFunctions {
 		$debugIpAddress = self::getIpAddress();
 		$result =
 			(
-				\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP(
+				GeneralUtility::cmpIP(
 					$ipAddress,
 					$debugIpAddress
 				)
@@ -345,7 +361,7 @@ class DebugFunctions {
 			TYPO3_MODE == 'FE' &&
 			$feUserNames != ''
 		) {
-			$tmpArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $feUserNames);
+			$tmpArray = GeneralUtility::trimExplode(',', $feUserNames);
 // error_log ('verifyFeusername $tmpArray ' . print_r($tmpArray, TRUE) . chr(13), 3, self::getErrorLogFilename());
 
 			if (
@@ -376,16 +392,18 @@ class DebugFunctions {
 		return $bIsAllowed;
 	}
 
-	static public function initIpAddress (&$bIpIsAllowed) {
+	static public function initIpAddress (&$ipIsAllowed) {
 		$ipAdress = self::readIpAddress();
-// error_log ('ext_localconf $ipAdress = ' . $ipAdress . chr(13), 3, \JambageCom\FhDebug\Utility\DebugFunctions::getErrorLogFilename());
+// error_log ('initIpAddress $ipAdress ' . $ipAdress . chr(13), 3, self::getErrorLogFilename());
 
-		if (!$bIpIsAllowed) {
-			$bIpIsAllowed = self::verifyIpAddress($ipAdress);
+		if (!$ipIsAllowed) {
+			$ipIsAllowed = self::verifyIpAddress($ipAdress);
 		}
+//error_log ('initIpAddress $ipIsAllowed ' . $ipIsAllowed . chr(13), 3, self::getErrorLogFilename());
 
-		if ($bIpIsAllowed) {
+		if ($ipIsAllowed) {
 			$devIPmask = $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'];
+// error_log ('initIpAddress $devIPmask ' . $devIPmask . chr(13), 3, self::getErrorLogFilename());
 
 			if ($ipAdress == '*') {
 				$devIPmask = '*';
@@ -396,6 +414,8 @@ class DebugFunctions {
 					$devIPmask = $ipAdress;
 				}
 			}
+// error_log ('initIpAddress NEU $devIPmask ' . $devIPmask . chr(13), 3, self::getErrorLogFilename());
+
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = $devIPmask;
 		}
 
@@ -417,7 +437,7 @@ class DebugFunctions {
 		$startFiles = self::getStartFiles();
 
 		if ($startFiles != '') {
-			$startFileArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $startFiles);
+			$startFileArray = GeneralUtility::trimExplode(',', $startFiles);
 			$bStartFileFound = FALSE;
 			if (is_array($startFileArray)) {
 				foreach ($startFileArray as $startFile) {
@@ -430,7 +450,7 @@ class DebugFunctions {
 
 			if (!$bStartFileFound) {
 //  error_log('init backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
-//  error_log('init cancelled because no STARTFILES for "' . $backtrace['0']['file'] . '"' . chr(13), 3, self::getErrorLogFilename());
+//   error_log('init cancelled because no STARTFILES for "' . $backtrace['0']['file'] . '"' . chr(13), 3, self::getErrorLogFilename());
 				return FALSE;
 			}
 		}
@@ -444,21 +464,20 @@ class DebugFunctions {
 		self::setIsInitialization(TRUE);
 
 		if (!self::getDebugBegin()) {
+//  error_log ('Pos 1 vor setActive TRUE ' . chr(13), 3, self::getErrorLogFilename() );			
 			self::setActive(TRUE);
 		}
 
-		if (\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP($ipAddress, '127.0.0.1')) {
+		if (GeneralUtility::cmpIP($ipAddress, '127.0.0.1')) {
 			if (
-				\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP(
+				!GeneralUtility::cmpIP(
 					$ipAddress,
 					self::getIpAddress()
 				)
 			) {
-//  error_log('init IP matches' . self::$bHtml . chr(13), 3, self::getErrorLogFilename());
-				// nothing
-			} else {
-//  error_log('init IP does not match' . self::$bHtml . chr(13), 3, self::getErrorLogFilename());
 				self::$starttimeArray = array('no debugging possible', 'Attention: The server variable REMOTE_ADDR is set to local.');
+
+//  error_log ('Pos 2 vor setActive FALSE ' . chr(13), 3, self::getErrorLogFilename() );
 				self::setActive(FALSE);
 			}
 		}
@@ -521,7 +540,7 @@ class DebugFunctions {
 				$filename != '' &&
 				is_writable($path_parts['dirname'])
 			) {
-				self::$bWriteHeader = self::$bHtml;
+				self::$bWriteHeader = self::getHtml();
 //  	error_log ('initFile write self::$bWriteHeader = ' . self::$bWriteHeader . chr(13), 3, self::getErrorLogFilename());
 
 				if (self::getAppendDepth() > 1) {
@@ -552,13 +571,13 @@ class DebugFunctions {
 					self::getDevLog() &&
 					!is_writable($filename)
 				) {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					GeneralUtility::devLog(
 						'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
 						'fh_debug',
 						0
 					);
 
-					\TYPO3\CMS\Core\Utility\GeneralUtility::sysLog(
+					GeneralUtility::sysLog(
 						'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
 						'fh_debug',
 						0
@@ -569,13 +588,14 @@ class DebugFunctions {
 				if (self::getDevLog()) {
 // error_log('devLog initFile not writable directory "' . $path_parts['dirname'] . '"' . chr(13), 3, self::getErrorLogFilename());
 
-					\TYPO3\CMS\Core\Utility\GeneralUtility::devLog(
+					GeneralUtility::devLog(
 						'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "',
 						'fh_debug',
 						0
 					);
 				}
 // error_log('initFile not writable directory "' . $path_parts['dirname'] . '"' . chr(13), 3, self::getErrorLogFilename());
+// error_log ('Pos 3 vor setActive FALSE ' . chr(13), 3, self::getErrorLogFilename() );
 				self::setActive(FALSE); // no debug is necessary when the file cannot be written anyways
 			}
 		}
@@ -586,21 +606,20 @@ class DebugFunctions {
 		return $result;
 	}
 
-	static public function bIsActive () {
+	static public function getActive () {
 
-// error_log ('bIsActive self::$bActive = ' .  self::$bActive . chr(13), 3, self::getErrorLogFilename());
-		return self::$bActive;
+// error_log ('bIsActive self::$active = ' .  self::$active . chr(13), 3, self::getErrorLogFilename());
+		return self::$active;
 	}
 
 	static public function setActive ($v) {
-// if ($v) {
-// error_log ('function setActive = ' . $v  . chr(13), 3, self::getErrorLogFilename() );
-//
-// $backtrace = self::getTraceArray();
-// error_log('setActive backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
-// }
 
-		self::$bActive = $v;
+//  error_log ('function setActive = ' . $v  . chr(13), 3, self::getErrorLogFilename() );
+
+//  $backtrace = self::getTraceArray();
+//  error_log('setActive backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
+
+		self::$active = $v;
 	}
 
 	static public function setIsInitialization ($bInitialization) {
@@ -637,16 +656,18 @@ class DebugFunctions {
  	}
 
 	static public function debugBegin () {
-// error_log('debugBegin'. chr(13), 3, self::getErrorLogFilename());
+//  error_log('debugBegin ANFANG'. chr(13), 3, self::getErrorLogFilename());
 
 		if (self::hasBeenInitialized() && !self::hasError()) {
 
 			if (self::getDebugBegin()) {
+// error_log ('Pos 5 vor setActive TRUE ' . chr(13), 3, self::getErrorLogFilename() );
 				self::setActive(TRUE);
 
 				$ipAddress = self::readIpAddress();
 				self::debug(
-					'debugBegin (' . $ipAddress . ') BEGIN >----- ----- ----->', 'debugBegin',
+					'debugBegin (' . $ipAddress . ') BEGIN [--->', 
+					'debugBegin',
 					'',
 					'',
 					TRUE
@@ -660,20 +681,22 @@ class DebugFunctions {
 	}
 
 	static public function debugEnd () {
-// error_log('debugEnd' . chr(13), 3, self::getErrorLogFilename());
+//  error_log('debugEnd ANFANG' . chr(13), 3, self::getErrorLogFilename());
+
 		if (self::hasBeenInitialized() && !self::hasError()) {
 
 			if (self::getDebugBegin()) {
 				$ipAddress = self::readIpAddress();
 				self::debug(
-					'debugEnd (' . $ipAddress . ') END <----- ----- -----<', 'debugEnd',
+					'debugEnd (' . $ipAddress . ') END <---]',
+					'debugEnd',
 					'',
 					'',
 					TRUE
 				);
+//  error_log ('Pos 6 vor setActive FALSE ' . chr(13), 3, self::getErrorLogFilename() );
 				self::setActive(FALSE);
 
-// $backtrace = self::getTraceArray();
 // error_log('debugEnd backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
 			}
 		}
@@ -686,17 +709,19 @@ class DebugFunctions {
 	}
 
 	static public function getTraceFieldArray () {
-		$result = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',',  self::getTraceFields());
+		$result = GeneralUtility::trimExplode(',',  self::getTraceFields());
 
 		return $result;
 	}
 
-	static public function getTraceArray ($depth = 0, $offset = 0) {
+	static public function getTraceArray (
+		$depth = 0,
+		$offset = 0
+	) {
+// error_log('my debug getTraceArray Pos 1: $offset = ' . $offset . chr(13), 3, self::getErrorLogFilename());
 
 		$trail = debug_backtrace(FALSE);
 		$last = count($trail) - 1;
-
-// error_log('my debug getTraceArray Pos 1: $last = ' . $last . chr(13), 3, self::getErrorLogFilename());
 
 		if (!$depth) {
 			$depth = $last + 1;
@@ -721,7 +746,6 @@ class DebugFunctions {
 				continue;
 			}
 
-			$matchesThisFile = FALSE;
 			foreach ($traceFieldArray as $traceField) {
 				$value = $theTrail[$traceField];
 				if (
@@ -729,15 +753,17 @@ class DebugFunctions {
 					$theTrail['file'] != ''
 				) {
 					$value = basename($value);
-// error_log ('FILE $value = "' . $value . '"'. chr(13), 3, self::getErrorLogFilename());
+ // error_log ('FILE $value = "' . $value . '"'. chr(13), 3, self::getErrorLogFilename());
 					if (
-						$offset != 0 &&
-						$value == $theFilename
+						!$offset &&
+						(
+							$value == $theFilename ||
+							$value == 'GlobalDebugFunctions.php'
+						)
 					) {
 						if (isset($traceArray[$j])) {
 							unset($traceArray[$j]);
 						}
-						$matchesThisFile = TRUE;
 						break;
 					}
 				}
@@ -753,18 +779,18 @@ class DebugFunctions {
 		}
 		ksort($traceArray);
 
-// error_log('my debug getTraceArray Pos 1: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
+ // error_log('my debug getTraceArray ENDE: ' . print_r($traceArray, TRUE) . chr(13), 3, self::getErrorLogFilename());
 
 		return $traceArray;
 	}
 
-	static public function printTraceLine ($traceArray) {
-		$rc = '';
+	static public function printTraceLine ($traceArray, $html) {
+		$result = '';
 		$debugTrail = array();
 
 		if (is_array($traceArray) && count($traceArray)) {
 			foreach ($traceArray as $i => $trace) {
-				if (self::$bHtml) {
+				if ($html) {
 					$debugTrail[$i] .= '<tr>';
 					foreach ($trace as $field => $v) {
 						$debugTrail[$i] .= '<td>'; //  bgcolor="#E79F9F"
@@ -781,22 +807,29 @@ class DebugFunctions {
 					$debugTrail[$i] .= chr(13);
 				}
 			}
-			$rc = implode('', $debugTrail);
-			if (self::$bHtml) {
-				$rc = '<table>' . $rc . '</table>';
+			$result = implode('', $debugTrail);
+			if ($html) {
+				$result = '<table>' . $result . '</table>';
 			} else {
-				$rc = chr(13) . '==============================' . chr(13) . $rc . chr(13);
+				$result = chr(13) . '==============================' . chr(13) . $result . chr(13);
 			}
 		}
-		return $rc;
+		return $result;
 	}
 
-	static public function printArrayVariable ($header, $variable, $depth, $recursiveDepth) {
+	static public function printArrayVariable (
+		$header,
+		$variable,
+		$depth,
+		$recursiveDepth,
+		$html
+	) {
+		$result = '';
 
 		if ($depth < $recursiveDepth) {
 
 			$debugArray = array();
-			if (self::$bHtml) {
+			if ($html) {
 				if ($header != '') {
 					$debugArray[] = '<tr><th>' . $header . '</th></tr>';
 				}
@@ -810,11 +843,11 @@ class DebugFunctions {
 					$value .= '</td>';
 					if (is_array($v1)) {
 						$value .= '<td>';
-						$value .= self::printArrayVariable('', $v1, $depth + 1, $recursiveDepth);
+						$value .= self::printArrayVariable('', $v1, $depth + 1, $recursiveDepth, $html);
 						$value .= '</td>';
 					} else if (is_object($v1)) {
 						$value .= '<td>';
-						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth);
+						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, $html);
 						$value .= '</td>';
 					} else {
 						$td = '<td>';
@@ -833,9 +866,9 @@ class DebugFunctions {
 					$value .=  $k;
 					$value .= '|';
 					if (is_array($v1)) {
-						$value .= self::printArrayVariable('', $v1, $depth + 1, $recursiveDepth);
+						$value .= self::printArrayVariable('', $v1, $depth + 1, $recursiveDepth, $html);
 					} else if (is_object($v1)) {
-						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth);
+						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, $html);
 					} else {
 						$value .=  $v1;
 					}
@@ -844,20 +877,25 @@ class DebugFunctions {
 				}
 			}
 
-			$rc = implode('', $debugArray);
+			$result = implode('', $debugArray);
 
-			if (self::$bHtml) {
-				$rc = '<table>' . $rc . '</table>';
+			if ($html) {
+				$result = '<table>' . $result . '</table>';
 			}
 		} else {
-			$rc = '->...';
+			$result = '->...';
 		}
-// error_log ('printArrayVariable $rc = ' . $rc);
-		return $rc;
+// error_log ('printArrayVariable $result = ' . $result);
+		return $result;
 	}
 
-	static public function printObjectVariable ($header, $variable, $depth, $recursiveDepth) { // TODO: show private member variables
-
+	static public function printObjectVariable (
+		$header,
+		$variable,
+		$depth,
+		$recursiveDepth,
+		$html
+	) { // TODO: show private member variables
 		$vars = array();
 		$cObjArray = new \ArrayObject($variable);
 		$vars = (array) @get_object_vars($cObjArray);
@@ -866,27 +904,32 @@ class DebugFunctions {
 		$classname = @get_class($variable);
 
 		$header .= $classname;
-		$result = self::printArrayVariable($header, $vars, $depth, $recursiveDepth);
+		$result = self::printArrayVariable($header, $vars, $depth, $recursiveDepth, $html);
 
 		return $result;
 	}
 
-	static public function printVariable ($header, $variable, $recursiveDepth) {
-		$rc = '';
+	static public function printVariable (
+		$header,
+		$variable,
+		$recursiveDepth,
+		$html
+	) {
+		$result = '';
 		$debugArray = array();
 
 		if (is_array($variable)) {
-			$rc = self::printArrayVariable($header, $variable, 0, $recursiveDepth);
+			$result = self::printArrayVariable($header, $variable, 0, $recursiveDepth, $html);
 		} else if (is_object($variable))	{
-			$rc = self::printObjectVariable($header, $variable, 0, $recursiveDepth);
+			$result = self::printObjectVariable($header, $variable, 0, $recursiveDepth, $html);
 		} else {
-			if (self::$bHtml) {
-				$rc = '<p>' . nl2br(htmlspecialchars($variable)) . '</p>';
+			if ($html) {
+				$result = '<p>' . nl2br(htmlspecialchars($variable)) . '</p>';
 			} else {
-				$rc = $variable;
+				$result = $variable;
 			}
 		}
-		return $rc;
+		return $result;
 	}
 
 	static public function processUser () {
@@ -945,72 +988,107 @@ class DebugFunctions {
 		fclose(self::$hndProcessfile);
 	}
 
-	static public function write ($out, $bPrintOnScreen) {
-// error_log('write START ' . chr(13), 3, self::getErrorLogFilename());
-		$result = FALSE;
+	static public function write (
+		$out,
+		$errorOut,
+		$bPrintOnScreen
+	) {
+//  error_log('write START ' . chr(13), 3, self::getErrorLogFilename());
+		$result = TRUE;
 
-		if (self::$bUseErrorLog) {
-// error_log('write self::$bUseErrorLog = TRUE ' . chr(13), 3, self::getErrorLogFilename());
-			$result = TRUE;
+		if ($errorOut != '') {
+// error_log('write self::$useErrorLog = TRUE ' . chr(13), 3, self::getErrorLogFilename());
 			 // keep the following line
-			error_log($out . chr(13), 3, self::getErrorLogFilename());
-		} else {
-			if (self::$hndFile) {
-// error_log('write vor fputs ' . chr(13), 3, self::getErrorLogFilename());
-				fputs(self::$hndFile, $out);
-				$result = TRUE;
-// error_log('write nach fputs $out = ' . $out . chr(13), 3, self::getErrorLogFilename());
-			} else if ($bPrintOnScreen) {
-// error_log('write kein DEBUGFILE ' . chr(13), 3, self::getErrorLogFilename());
-				echo $out;
-				$result = TRUE;
-			} else {
-// error_log('write no file handle ERROR = ' . $out . chr(13), 3, self::getErrorLogFilename());
-			}
+			$result = error_log($errorOut . chr(13), 3, self::getErrorLogFilename()); // keep this
 		}
+
+		if (self::$hndFile) {
+// error_log('write vor fputs ' . chr(13), 3, self::getErrorLogFilename());
+			fputs(self::$hndFile, $out);
+// error_log('write nach fputs $out = ' . $out . chr(13), 3, self::getErrorLogFilename());
+		} else if ($bPrintOnScreen) {
+// error_log('write kein DEBUGFILE ' . chr(13), 3, self::getErrorLogFilename());
+			echo $out;
+		} else {
+// error_log('write no file handle ERROR = ' . $out . chr(13), 3, self::getErrorLogFilename());
+			$result = FALSE;
+		}
+
 // error_log('write ENDE $result = ' . $result . chr(13), 3, self::getErrorLogFilename());
 
 		return $result;
 	}
 
-	static public function writeOut ($variable, $name, $recursiveDepth, $bTrace = TRUE, $bHeader = FALSE) {
+	static public function writeOut (
+		$variable,
+		$name,
+		$recursiveDepth,
+		$html,
+		$bTrace = TRUE,
+		$bHeader = FALSE
+	) {
 		$type = '';
 		$out = '';
+		$errorOut = '';
 
 		if ($bHeader) {
 			$type = self::getTypeView($variable);
 		}
 
 // error_log('writeOut $variable ' . print_r($variable, TRUE) . chr(13), 3, self::getErrorLogFilename());
-// error_log('writeOut $name ' . $name . chr(13), 3, self::getErrorLogFilename());
+//  error_log('writeOut $name ' . $name . chr(13), 3, self::getErrorLogFilename());
 
 		$debugFile = self::getDebugFile();
-// error_log('writeOut $debugFile ' . $debugFile . chr(13), 3, self::getErrorLogFilename());
+//  error_log('writeOut $debugFile ' . $debugFile . chr(13), 3, self::getErrorLogFilename());
 
 		if (
 			self::$hndFile ||
-			self::$bUseErrorLog ||
+			self::$useErrorLog ||
 			$debugFile == ''
 		) {
 			$traceArray = ($bTrace ? self::getTraceArray(self::getTraceDepth()) : array());
+
+
 // error_log('writeOut $traceArray ' . print_r($traceArray, TRUE) . chr(13), 3, self::getErrorLogFilename());
-			$content = self::printTraceLine($traceArray);
+			$content = self::printTraceLine($traceArray, $html);
 
 // error_log('writeOut $content ' . $content . chr(13), 3, self::getErrorLogFilename());
 
-			if (self::$bHtml) {
-				$out = $content . '<br/>' .
-					self::printVariable('', $variable, $recursiveDepth) . chr(13) .
-					'<h3>' . $name . $type . '</h3>' .
-					'<hr/>' . chr(13);
-			} else {
+
+			if (
+				!$html ||
+				self::$useErrorLog
+			) {
 				$out = $content . '|' .
-					self::printVariable('', $variable, $recursiveDepth) . chr(13) .
+					self::printVariable(
+						'',
+						$variable,
+						$recursiveDepth,
+						FALSE
+					) . chr(13) .
 					'###' . $name . $type . '###' . chr(13) .
 					'--------------------------------------------' . chr(13);
+
+				if (self::$useErrorLog) {
+					$errorOut = $out;
+				}
 			}
 // error_log('writeOut $out ' . $out . chr(13), 3, self::getErrorLogFilename());
+
+			if ($html) {
+				$out = $content . '<br/>' .
+					self::printVariable(
+						'',
+						$variable,
+						$recursiveDepth,
+						TRUE
+					) . chr(13) .
+					'<h3>' . $name . $type . '</h3>' .
+					'<hr/>' . chr(13);
+			}
+
 		}
+
 
 		if (
 			function_exists('mb_check_encoding') &&
@@ -1024,11 +1102,22 @@ class DebugFunctions {
 			$charset != 'UTF-8' &&
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['t3lib_cs_convMethod'] != ''
 		) {
-			$out = self::$csConvObj->conv($out, $charset, 'UTF-8');
+			$out =
+				self::$csConvObj->conv(
+					$out,
+					$charset,
+					'UTF-8'
+				);
+			$errorOut =
+				self::$csConvObj->conv(
+					$errorOut,
+					$charset,
+					'UTF-8'
+				);
 		}
 
-		$bWritten = self::write($out, ($debugFile == ''));
-//  error_log('debug nach write $bWritten = ' . $bWritten . chr(13), 3, self::getErrorLogFilename());
+		$bWritten = self::write($out, $errorOut, ($debugFile == ''));
+//   error_log('debug nach write $bWritten = ' . $bWritten . chr(13), 3, self::getErrorLogFilename());
 
 		if (
 			!$bWritten &&
@@ -1045,7 +1134,7 @@ class DebugFunctions {
 				echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
 			}
 			self::$bErrorWritten = TRUE;
-//  error_log('debug self::$bErrorWritten = ' . self::$bErrorWritten . chr(13), 3, self::getErrorLogFilename());
+// error_log('debug self::$bErrorWritten = ' . self::$bErrorWritten . chr(13), 3, self::getErrorLogFilename());
 		}
 
 		return $bWritten;
@@ -1059,8 +1148,7 @@ class DebugFunctions {
 		$recursiveDepth = 3,
 		$debugLevel = E_DEBUG
 	) {
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug ================ ANFANG ' . chr(13), 3, self::getErrorLogFilename());
-
+//	error_log('### debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
 		$extConf = self::getExtConf();
 
 		if ($recursiveDepth == 3) {
@@ -1074,15 +1162,30 @@ class DebugFunctions {
 			self::truncateFile();
 			$bControlMode = TRUE;
 		}
-		$storeIsActive = self::bIsActive();
+		$storeIsActive = self::getActive();
 
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $storeIsActive: ' . $storeIsActive.  chr(13), 3, self::getErrorLogFilename());
+
+// comment these lines out
+// $searchPHPFile = 'class.tx_ttproducts_eid.php'; // 'class.tx_transactorpaymill_request.php';
+// $searchFileFound = FALSE;
 // $backtrace = self::getTraceArray();
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $variable = ' . print_r($variable, TRUE) . chr(13), 3, self::getErrorLogFilename());
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug self::$bUseErrorLog = ' . self::$bUseErrorLog . chr(13), 3, self::getErrorLogFilename());
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $storeIsActive = ' . $storeIsActive . chr(13), 3, self::getErrorLogFilename());
+// foreach ($backtrace as $traceArray) {
+// 	if ($traceArray['file'] == $searchPHPFile) {
+// 		$searchFileFound = TRUE;
+// 		break;
+// 	}
+// }
+
+
+//$searchFileFound = TRUE;
+// if ($searchFileFound) {
+//	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug ================ ANFANG ' . chr(13), 3, self::getErrorLogFilename());
+// 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug backtrace: ' . print_r($backtrace, TRUE) . chr(13), 3, self::getErrorLogFilename());
+//	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
+//	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $variable = ' . print_r($variable, TRUE) . chr(13), 3, self::getErrorLogFilename());
+//	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug self::$useErrorLog = ' . self::$useErrorLog . chr(13), 3, self::getErrorLogFilename());
+// 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $storeIsActive = ' . $storeIsActive . chr(13), 3, self::getErrorLogFilename());
+//}
 
 		self::processUser();
 
@@ -1090,8 +1193,8 @@ class DebugFunctions {
 			!$bControlMode &&
 			($storeIsActive || self::bIsInitialization())
 		) {
+// error_log ('debug Bearbeitung: Pos 7 vor setActive FALSE ' . chr(13), 3, self::getErrorLogFilename() );
 			self::setActive(FALSE);
-//  error_log('debug self::$bUserAllowed: ' . self::$bUserAllowed . chr(13), 3, self::getErrorLogFilename());
 
 			if (self::$bUserAllowed) {
 
@@ -1123,14 +1226,14 @@ class DebugFunctions {
 					$appendText = ' - counter: ' . self::$processCount . ' ' . $headerPostFix;
 					switch (TYPO3_MODE) {
 						case 'FE':
-							if (self::$bHtml) {
+							if (self::getHtml()) {
 								$head = '<h3>Front End Debugging<br />' . $appendText . '</h3>';
 							} else {
 								$head = '#Front End Debugging' . $appendText . '#';
 							}
 							break;
 						case 'BE':
-							if (self::$bHtml) {
+							if (self::getHtml()) {
 								$head = '<h3>Back End Debugging<br />' . $appendText . '</h3>';
 							} else {
 								$head = '#Back End Debugging' . $appendText . '#';
@@ -1139,14 +1242,33 @@ class DebugFunctions {
 					}
 //  error_log('debug $headerValue = ' . print_r($headerValue, TRUE) . chr(13), 3, self::getErrorLogFilename());
 //  error_log('debug $head = ' . $head . chr(13), 3, self::getErrorLogFilename());
-					self::writeOut($headerValue, $head, $recursiveDepth, FALSE, TRUE);
+					self::writeOut(
+						$headerValue,
+						$head,
+						$recursiveDepth,
+						self::getHtml(),
+						FALSE,
+						TRUE
+					);
 				}
-				self::writeOut($variable, $name, $recursiveDepth, TRUE, FALSE);
+
+				self::writeOut(
+					$variable,
+					$name,
+					$recursiveDepth,
+					self::getHtml(),
+					TRUE,
+					FALSE
+				);
 			}
+// error_log ('debug Bearbeitung: Pos 8 vor setActive ' . $storeIsActive . chr(13), 3, self::getErrorLogFilename() );	
 			self::setActive($storeIsActive);
 		}
 
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug ================ ENDE ' . chr(13), 3, self::getErrorLogFilename());
+// if ($searchFileFound) {
+// 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug ================ ENDE ' . chr(13), 3, self::getErrorLogFilename());
+// }
+
 	}
 
 	/**
@@ -1157,15 +1279,16 @@ class DebugFunctions {
 	static public function toString () {
 
 		$filename = '';
+		$errorLogFilename = '';
 
-		if (self::$bUseErrorLog) {
-			$filename = self::getErrorLogFilename();
-		}
-		if ($filename == '') {
-			$filename = self::getDebugFilename();
-		}
+		$debugFilename = self::getDebugFilename();
 
-		$result = 'The debug messages have been written to the file "' . $filename . '"';
+		if (self::$useErrorLog) {
+			$errorLogFilename = self::getErrorLogFilename();
+			$result = 'The debug messages have been written to the files "' . $debugFilename . '" and "' . $errorLogFilename . '"';
+		} else {
+			$result = 'The debug messages have been written to the file "' . $filename . '"';
+		}
 
 		return $result;
 	}

@@ -6,7 +6,7 @@ namespace JambageCom\FhDebug\Hooks;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2013 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2014 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@ namespace JambageCom\FhDebug\Hooks;
 ***************************************************************/
 
 /**
- * Debug extension.
+ * Core hooks used by the debug extension.
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * $Id$
@@ -49,6 +49,41 @@ class CoreHooks {
 			\JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL');
 			\JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE);
 			\JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
+		}
+	}
+
+
+	/**
+	 * Development log.
+	 * If you want to implement the devLog in your applications, simply add lines like:
+	 * if (TYPO3_DLOG)	\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[write message in english here]', 'extension key');
+	 *
+	 * @param string $msg Message (in english).
+	 * @param string $extKey Extension key (from which extension you are calling the log)
+	 * @param integer $severity Severity: 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+	 * @param mixed $dataVar Additional data you want to pass to the logger.
+	 * @return void
+	 */
+
+	/**
+	 * Developer log
+	 *
+	 * $devLogArray = array('msg'=>$msg, 'extKey'=>$extKey, 'severity'=>$severity, 'dataVar'=>$dataVar);
+	 * msg		string		Message (in English).
+	 * extKey	string		Extension key (from which extension the devLog function has been executed)
+	 * severity	integer		Severity: 0 ... info
+	 *                                1 ... notice
+	 *                                2 ... warning,
+	 *                                3 ... fatal error,
+	 *                               -1 ... "OK" message
+	 * dataVar	array		Additional data you want to pass to the logger.
+	 *
+	 * @param	array		$devLogArray: log data array
+	 * @return	void
+	 */
+	static public function devLog($devLogArray) {
+		if (get_class($GLOBALS['error']) == '\JambageCom\\FhDebug\\Utility\\DebugFunctions') {
+			debug($devLogArray, '$devLogArray');
 		}
 	}
 }

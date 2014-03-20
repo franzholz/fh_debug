@@ -51,9 +51,9 @@ if (
 	if (
 		!isset($GLOBALS['error']) ||
 		!is_object($GLOBALS['error']) ||
-		get_class($GLOBALS['error']) != '\JambageCom\\FhDebug\\Utility\\DebugFunctions'
+		get_class($GLOBALS['error']) != 'JambageCom\\FhDebug\\Utility\\DebugFunctions'
 	) {
-		t3lib_div::requireOnce(t3lib_extMgm::extPath(FH_DEBUG_EXT) . 'Classes/Utility/DebugFunctions.php');
+// 		t3lib_div::requireOnce(t3lib_extMgm::extPath(FH_DEBUG_EXT) . 'Classes/Utility/DebugFunctions.php');
 		$myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
 		$bIpIsAllowed = FALSE;
 		$ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($bIpIsAllowed);
@@ -72,9 +72,15 @@ if (
 
 		// the error object must always be set in order to show the debug output or to disable it
 		$GLOBALS['error'] = $myDebugObject;
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/mod/tools/em/index.php']['checkDBupdates'][] = 'tx_fhdebug_hooks_em';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/mod/tools/em/index.php']['checkDBupdates'][$_EXTKEY] = 'tx_fhdebug_hooks_em';
+
+
+		if ($newExtConf['DEVLOG']) {
+			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
+		}
 	}
 }
+
 
 unset($typoVersion);
 

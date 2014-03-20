@@ -1,3 +1,8 @@
+2014-03-19  Franz Holzinger  <franz@ttproducts.de>
+	* do not show the files GlobalDebugFunctions.php and DebugFunctions in the trace
+	* new feature: debug the devLog
+	* new feature: allow debug output into the debug file and into the error_log file simultaneously.
+
 2013-11-21  Franz Holzinger  <franz@ttproducts.de>
 	* restructuring of the code for TYPO3 6.2
 
