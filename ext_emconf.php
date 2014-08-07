@@ -5,11 +5,11 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Debugger',
-	'description' => 'PHP debugger',
+	'title' => 'Debug and Devlog',
+	'description' => 'PHP debugger and devLog Logger',
 	'category' => 'misc',
 	'shy' => 0,
-	'version' => '0.5.0',
+	'version' => '0.5.1',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',

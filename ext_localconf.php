@@ -53,7 +53,6 @@ if (
 		!is_object($GLOBALS['error']) ||
 		get_class($GLOBALS['error']) != 'JambageCom\\FhDebug\\Utility\\DebugFunctions'
 	) {
-// 		t3lib_div::requireOnce(t3lib_extMgm::extPath(FH_DEBUG_EXT) . 'Classes/Utility/DebugFunctions.php');
 		$myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
 		$bIpIsAllowed = FALSE;
 		$ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($bIpIsAllowed);

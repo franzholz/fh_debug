@@ -18,8 +18,13 @@ table {
 	font-size:12;
 }
 
+.el {
+	background-color:#EDFCE3;
+	font-size: 12;
+}
+
 p {
-	background-color:#9697de;
+	background-color:#A6F1FF;
 	font-size: 12;
 }
 

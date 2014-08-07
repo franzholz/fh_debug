@@ -1,3 +1,7 @@
+2014-08-07  Franz Holzinger  <franz@ttproducts.de>
+	* fix bug with TRACEDEPTH
+	* use a class el for the value output inside of a table
+
 2014-03-19  Franz Holzinger  <franz@ttproducts.de>
 	* do not show the files GlobalDebugFunctions.php and DebugFunctions in the trace
 	* new feature: debug the devLog
