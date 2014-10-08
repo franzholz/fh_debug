@@ -71,6 +71,7 @@ class DebugFunctions {
 	static private $debugFilename = '';
 	static private $typo3Mode = 'ALL';
 	static private $startFiles = '';
+	static private $ignore = '';
 	static private $ipAddress = '127.0.0.1';
 	static private $debugBegin = FALSE;
 	static private $traceFields = 'file,line,function';
@@ -109,6 +110,9 @@ class DebugFunctions {
 		self::setTraceDepth($extConf['TRACEDEPTH']);
 		self::setAppendDepth($extConf['APPENDDEPTH']);
 		self::setStartFiles($extConf['STARTFILES']);
+
+		self::setIgnore($extConf['IGNORE']);
+
 		self::setIpAddress($extConf['IPADDRESS']);
 		self::setDebugBegin($extConf['DEBUGBEGIN']);
 		self::setTraceFields($extConf['TRACEFIELDS']);
@@ -165,6 +169,14 @@ class DebugFunctions {
 
 	static public function getStartFiles () {
 		return self::$startFiles;
+	}
+
+	static public function setIgnore ($value) {
+		self::$ignore = trim($value);
+	}
+
+	static public function getIgnore () {
+		return self::$ignore;
 	}
 
 	static public function setIpAddress ($value) {
@@ -861,6 +873,12 @@ class DebugFunctions {
 				}
 
 				foreach ($variable as $k => $v1) {
+					if (
+						GeneralUtility::inList(self::getIgnore(), $k)
+					) {
+						continue;
+					}
+
 					$value = '';
 					$value .= '<tr>';
 					$td = '<td>';
@@ -888,6 +906,12 @@ class DebugFunctions {
 					$debugArray[] = '"' . $header . '"';
 				}
 				foreach ($variable as $k => $v1) {
+					if (
+						GeneralUtility::inList(self::getIgnore(), $k)
+					) {
+						continue;
+					}
+
 					$value = '';
 					$value .=  $k;
 					$value .= '|';
@@ -922,17 +946,34 @@ class DebugFunctions {
 		$recursiveDepth,
 		$html
 	) { // TODO: show private member variables
+
+// error_log ('printObjectVariable ' . chr(13), 3, self::getErrorLogFilename());
 // error_log ('printObjectVariable $header = ' . $header . chr(13), 3, self::getErrorLogFilename());
 
-		$vars = array();
-		$cObjArray = new \ArrayObject($variable);
-		$vars = (array) @get_object_vars($cObjArray);
+		//Instantiate the reflection object
+		$reflector = new \ReflectionClass($variable);
+		$properties = $reflector->getProperties();
+// error_log ('printObjectVariable $properties = ' . print_r($properties, TRUE) . chr(13), 3, self::getErrorLogFilename());
+
+		$variableArray = array();
+		foreach($properties as $property) {
+// error_log ('LOOP ' . chr(13), 3, self::getErrorLogFilename());
+
+			//Populating properties
+// error_log ('$property->getDeclaringClass()->getName() = ' . $property->getDeclaringClass()->getName() . chr(13), 3, self::getErrorLogFilename());
+// error_log ('property->getName() = ' . $property->getName() . chr(13), 3, self::getErrorLogFilename());
+
+			$theProperty = $reflector->getProperty($property->getName());
+			$theProperty->setAccessible(TRUE);
+// error_log ('printObjectVariable $theProperty = ' . print_r($theProperty, TRUE) . chr(13), 3, self::getErrorLogFilename());
+
+// error_log ('$theProperty->getValue($variable) = ' . print_r($theProperty->getValue($variable), TRUE) . chr(13), 3, self::getErrorLogFilename());
+			$variableArray[$property->getName()] = $theProperty->getValue($variable);
+		}
 
 		$classname = @get_class($variable);
-// error_log ('$classname = ' . $classname . chr(13), 3, self::getErrorLogFilename());
-
 		$header .= $classname;
-		$result = self::printArrayVariable($header, $vars, $depth, $recursiveDepth, $html);
+		$result = self::printArrayVariable($header, $variableArray, $depth, $recursiveDepth, $html);
 
 		return $result;
 	}
@@ -945,6 +986,7 @@ class DebugFunctions {
 	) {
 		$result = '';
 		$debugArray = array();
+// error_log ('printVariable $variable = ' . print_r($variable, TRUE) . chr(13), 3, self::getErrorLogFilename());
 
 		if (is_array($variable)) {
 			$result =
@@ -1132,8 +1174,8 @@ class DebugFunctions {
 		}
 
 		if (
-			function_exists('mb_check_encoding') &&
-			is_callable('mb_check_encoding')
+			function_exists('mb_detect_encoding') &&
+			is_callable('mb_detect_encoding')
 		) {
 			$charset = mb_detect_encoding($out, 'UTF-8,ASCII,ISO-8859-1,ISO-8859-15', TRUE);
 		}
@@ -1191,6 +1233,12 @@ class DebugFunctions {
 		$recursiveDepth = 3,
 		$debugLevel = E_DEBUG
 	) {
+		if (
+			GeneralUtility::inList(self::getIgnore(), $name)
+		) {
+			return;
+		}
+
 // error_log('debug: $debugLevel = ' . $debugLevel . chr(13), 3, self::getErrorLogFilename());
 // 	error_log('### debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
 		$extConf = self::getExtConf();

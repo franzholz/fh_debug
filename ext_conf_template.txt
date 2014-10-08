@@ -12,6 +12,8 @@ DEBUGFILE = fileadmin/debug.html
 ERROR_LOG =
   # cat=basic/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
 USE_ERROR_LOG = 0
+  # cat=basic/enable; type=string; label= disable variable: This comma separated list of strings will be ignored as variables, as keys in arrays and as member variables of objects
+IGNORE =
   # cat=basic/enable; type=string; label= start files: names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
 STARTFILES =
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
