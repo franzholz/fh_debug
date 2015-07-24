@@ -1,3 +1,6 @@
+2015-07-24  Franz Holzinger  <franz@ttproducts.de>
+	* tested under TYPO3 7.4.0
+
 2014-10-08  Franz Holzinger  <franz@ttproducts.de>
 	* new feature: show private and protected object properties using the Reflection Classes
 	* new feature: ignore some variable names, array keys and object member variable names

@@ -6,47 +6,30 @@ if (!defined ('TYPO3_MODE')) {
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
-if (!defined ('FH_DEBUG_EXT')) {
-	define('FH_DEBUG_EXT', $_EXTKEY);
-}
-
 if (
-	isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
-	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
+	isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]) &&
+	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
 ) {
-	$tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
+	$tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
 } else {
 	unset($tmpArray);
 }
 
 if (isset($_EXTCONF) && is_array($_EXTCONF)) {
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = $_EXTCONF;
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY] = $_EXTCONF;
 	if (isset($tmpArray) && is_array($tmpArray)) {
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT], $tmpArray);
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY], $tmpArray);
 	}
 }
 
-$typoVersion = 0;
-
-$callingClassName = '\\TYPO3\\CMS\\Core\\Utility\\VersionNumberUtility';
-if (
-	class_exists($callingClassName) &&
-	method_exists($callingClassName, 'convertVersionNumberToInteger')
-) {
-	$typoVersion = call_user_func($callingClassName . '::convertVersionNumberToInteger', TYPO3_version);
-} else if (
-	class_exists('t3lib_utility_VersionNumber') &&
-	method_exists('t3lib_utility_VersionNumber', 'convertVersionNumberToInteger')
-) {
-	$typoVersion = t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version);
-}
 
 if (
-	$typoVersion >= 6000000 &&
-	isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
-	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
+	defined('TYPO3_version') &&
+	version_compare(TYPO3_version, '6.0.0', '>=') &&
+	isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]) &&
+	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
 ) {
-	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
+	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
 
 	if (
 		!isset($GLOBALS['error']) ||
@@ -80,7 +63,3 @@ if (
 	}
 }
 
-
-unset($typoVersion);
-
-?>

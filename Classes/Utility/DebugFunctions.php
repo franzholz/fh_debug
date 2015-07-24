@@ -1240,7 +1240,9 @@ class DebugFunctions {
 		}
 
 // error_log('debug: $debugLevel = ' . $debugLevel . chr(13), 3, self::getErrorLogFilename());
-// 	error_log('### debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
+// error_log('### debug $name = ' . print_r($name, TRUE) . chr(13), 3, self::getErrorLogFilename());
+// error_log('### debug $variable = ' . print_r($variable, TRUE) . chr(13), 3, self::getErrorLogFilename());
+
 		$extConf = self::getExtConf();
 
 		if ($recursiveDepth == 3) {
@@ -1425,4 +1427,3 @@ if ($searchFileFound) {
 	}
 }
 
-?>
