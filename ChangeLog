@@ -1,3 +1,10 @@
+2016-06-02  Franz Holzinger  <franz@ttproducts.de>
+	* bug fix: debug array with empty keys
+	* new feature: add a header called Array to arrays
+	* new feature: declare boolean, integer and float
+	* support PHP 7.x and all TYPO3 7.x
+	* add README.txt
+
 2015-07-24  Franz Holzinger  <franz@ttproducts.de>
 	* tested under TYPO3 7.4.0
 
