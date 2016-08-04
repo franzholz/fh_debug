@@ -19,7 +19,9 @@ No debug output will be shown on the screen. Otherwise you must deactivate the d
 The Extension Manager configuration of fh_debug will be added to the IP address of the Install Tool.
 IPADDRESS = 34.22.11.12
 
-
+You can show more debug info and a backtrace with the TYPO3 error message "Oops, an error occurred!". This is activated by default:
+OOPS_AN_ERROR_OCCURRED = 1
+This will also add a detailed debug output to the debug file.
 
 This extension has been written by Franz Holzinger.
 
