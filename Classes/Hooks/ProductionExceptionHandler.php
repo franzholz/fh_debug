@@ -25,6 +25,8 @@ use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
  */
 class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Exception\ProductionExceptionHandler
 {
+	const TYPO3_DIR			= 'typo3';
+
     /**
      * Handles exceptions thrown during rendering of content objects
      * The handler can decide whether to re-throw the exception or
@@ -44,20 +46,20 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
                 throw $exception;
             }
         }
-		$typo3String = 'typo3';
         $errorMessage = isset($this->configuration['errorMessage']) ? $this->configuration['errorMessage'] : 'Oops, an error occurred! Code: %s';
         $code = date('YmdHis', $_SERVER['REQUEST_TIME']) . GeneralUtility::getRandomHexString(8);
         $result = sprintf($errorMessage, $code);
 
-		$typo3Position = strrpos($exception->getFile(), 'typo3');
-		$result .= '<br/><b>' . $exception->getMessage() . '</b> exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine();
+        $typo3String = DIRECTORY_SEPARATOR . self::TYPO3_DIR;
+		$typo3Position = strrpos($exception->getFile(), $typo3String);
+		$result .= '<br/><b>' . $exception->getMessage() . '</b><br/> exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine();
         $traceArray = $exception->getTrace();
         debug ($traceArray, 'fh_debug  handle $traceArray'); // keep this
         $result .= '<br/><br/>trace:<br/>';
         $maxCount = 7;
 
         foreach ($traceArray as $trace) {
-			$typo3Position = strrpos($trace['file'], 'typo3');
+			$typo3Position = strrpos($trace['file'], $typo3String);
 			$result .= 'file: ' . substr($trace['file'], $typo3Position) . '" line:' .
 				$trace['line'] . ' function:' . $trace['function'];
 			$result .= '<br/>';
