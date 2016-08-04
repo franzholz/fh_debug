@@ -22,6 +22,10 @@ if (isset($_EXTCONF) && is_array($_EXTCONF)) {
 	}
 }
 
+// $errorFilename = '/kunden/homepages/37/d520150212/htdocs/weekview_test/typo3/fileadmin/phpDebugErrorLog2.txt';
+//
+// error_log('fh_debug localconf.php +++ $GLOBALS[\'error\'] : ' . print_r($GLOBALS['error'], TRUE) . chr(13), 3, $errorFilename);
+//
 
 if (
 	defined('TYPO3_version') &&
@@ -30,11 +34,11 @@ if (
 	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
 ) {
 	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
-
+	$class = '\JambageCom\FhDebug\Utility\DebugFunctions';
 	if (
 		!isset($GLOBALS['error']) ||
 		!is_object($GLOBALS['error']) ||
-		get_class($GLOBALS['error']) != 'JambageCom\\FhDebug\\Utility\\DebugFunctions'
+		!($GLOBALS['error'] instanceof $class)
 	) {
 		$myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
 		$bIpIsAllowed = FALSE;
@@ -54,12 +58,27 @@ if (
 
 		// the error object must always be set in order to show the debug output or to disable it
 		$GLOBALS['error'] = $myDebugObject;
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/mod/tools/em/index.php']['checkDBupdates'][$_EXTKEY] = 'tx_fhdebug_hooks_em';
 
+// 		if (TYPO3_MODE === 'BE') {
+// 			$signalSlotDispatcher =
+// 				\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+// 			$signalSlotDispatcher->connect(
+// 				'TYPO3\\CMS\\Extensionmanager\\Service\\ExtensionManagementService',
+// 				'hasInstalledExtensions',
+// 				'JambageCom\\FhDebug\\Hooks\\EmListener',
+// 				'executeOnSignal'
+// 			);
+// 		}
 
 		if ($newExtConf['DEVLOG']) {
-			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
+			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\FhDebug\Hooks\CoreHooks->devLog';
 		}
+	}
+
+	if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = array(
+			'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
+		);
 	}
 }
 

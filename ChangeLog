@@ -1,3 +1,7 @@
+2016-08-04  Franz Holzinger  <franz@ttproducts.de>
+	* new feature: #77277 Give detailed debug info and more frontend output with "Oops, an error occurred!"
+	* bug fix: devLog did not work
+
 2016-06-02  Franz Holzinger  <franz@ttproducts.de>
 	* bug fix: debug array with empty keys
 	* new feature: add a header called Array to arrays

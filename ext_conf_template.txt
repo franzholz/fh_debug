@@ -32,3 +32,5 @@ APPENDDEPTH = 3
 CSSFILE = fhdebug.css
   # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems to the Developer Logfile.
 DEVLOG = 0
+  # cat=basic/conf; type=boolean; label= Oops an error occured: Debug the exception message of a TYPO3 error "Oops, an error occurred! Code:"
+OOPS_AN_ERROR_OCCURRED = 1
