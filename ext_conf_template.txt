@@ -32,5 +32,12 @@ APPENDDEPTH = 3
 CSSFILE = fhdebug.css
   # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems to the Developer Logfile.
 DEVLOG = 0
+  # cat=basic/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debugBegin has not been set.
+SYSLOG = 0
   # cat=basic/conf; type=boolean; label= Oops an error occured: Debug the exception message of a TYPO3 error "Oops, an error occurred! Code:"
 OOPS_AN_ERROR_OCCURRED = 1
+  # cat=basic/conf; type=boolean; label= proxy: Determine the clients ip by the HTTP_X_FORWARDED_FOR server variable which is set if a proxy forwarded the ip address.
+PROXY = 0
+  # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel
+TITLE = Debug for my website
+

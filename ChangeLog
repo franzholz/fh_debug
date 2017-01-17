@@ -1,3 +1,9 @@
+2017-01-17  Franz Holzinger  <franz@ttproducts.de>
+	* new feature: sys_log shall be debuggable even if no debugBegin has been executed before
+	* new feature: PROXY = 1 if the HTTP_X_FORWARDED_FOR variable shall determine the client ip address. This must be 0 in the Deutsche Bahn ICE.
+	* new feature: make the title html tag configurable in order to name the debug files
+	* bug fix: the output of an exception must not be in HTML format
+
 2016-08-04  Franz Holzinger  <franz@ttproducts.de>
 	* new feature: #77277 Give detailed debug info and more frontend output with "Oops, an error occurred!"
 	* bug fix: devLog did not work

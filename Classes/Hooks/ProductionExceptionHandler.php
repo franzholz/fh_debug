@@ -42,7 +42,16 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
     {
 		debug ($exception, 'fh_debug handle $exception'); // keep this
         if (!empty($this->configuration['ignoreCodes.'])) {
-            if (in_array($exception->getCode(), array_map('intval', $this->configuration['ignoreCodes.']), true)) {
+            if (
+				in_array(
+					$exception->getCode(),
+					array_map(
+						'intval',
+						$this->configuration['ignoreCodes.']
+					),
+					TRUE
+				)
+			) {
                 throw $exception;
             }
         }
@@ -52,17 +61,17 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
 
         $typo3String = DIRECTORY_SEPARATOR . self::TYPO3_DIR;
 		$typo3Position = strrpos($exception->getFile(), $typo3String);
-		$result .= '<br/><b>' . $exception->getMessage() . '</b><br/> exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine();
+		$result .= CRLF . $exception->getMessage() . CRLF . ' exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine() . CRLF;
         $traceArray = $exception->getTrace();
         debug ($traceArray, 'fh_debug  handle $traceArray'); // keep this
-        $result .= '<br/><br/>trace:<br/>';
+        $result .= 'fh_debug trace:' . CRLF;
         $maxCount = 7;
 
         foreach ($traceArray as $trace) {
 			$typo3Position = strrpos($trace['file'], $typo3String);
 			$result .= 'file: ' . substr($trace['file'], $typo3Position) . '" line:' .
 				$trace['line'] . ' function:' . $trace['function'];
-			$result .= '<br/>';
+			$result .= CRLF;
 			$count++;
 			if ($count > $maxCount) {
 				break;
@@ -70,6 +79,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
         }
 
         $this->logException($exception, $errorMessage, $code);
+        debug ($result, 'fh_debug exception handler'); // keep this
         return $result;
     }
 
@@ -80,8 +90,6 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
      */
     protected function logException(\Exception $exception, $errorMessage, $code)
     {
-		debug ($errorMessage, 'fh_debug logException $errorMessage');
-		debug ($this->getLogger(), '$this->getLogger()');
         $this->getLogger()->alert(sprintf($errorMessage, $code), array('exception' => $exception));
     }
 }
