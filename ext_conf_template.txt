@@ -1,4 +1,4 @@
-  # cat=basic/enable; type=string; label=IP address of the client browser
+  # cat=basic/enable; type=string; label=IP address of the client browser: Enter your current IP address ###IP###, if you want to debug this client's actions. (You see here only a marker if patchem is not installed.)
 IPADDRESS = 127.0.0.1
   # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debugBegin and debugEnd. The first debugBegin will initialize the debug.
 DEBUGBEGIN = 0

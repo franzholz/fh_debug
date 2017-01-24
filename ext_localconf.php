@@ -80,5 +80,7 @@ if (
 			'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
 		);
 	}
+
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
 }
 

@@ -1,3 +1,6 @@
+2017-01-23  Franz Holzinger  <franz@ttproducts.de>
+	* new feature:  Add dynamic information to the text label shown in the Extension Manager. The client's current IP address is shown there and can be copy-pasted into the form entry field.
+
 2017-01-17  Franz Holzinger  <franz@ttproducts.de>
 	* new feature: sys_log shall be debuggable even if no debugBegin has been executed before
 	* new feature: PROXY = 1 if the HTTP_X_FORWARDED_FOR variable shall determine the client ip address. This must be 0 in the Deutsche Bahn ICE.
