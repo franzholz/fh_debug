@@ -1,30 +1,29 @@
 
-<!-- $Id$ -->
-
 h3 {
-	background-color:#E6EF5A;
-	font-size:12;
+    background-color:#E6EF5A;
+    font-size:12;
 }
 
 th {
-	background-color:#F9C1EB;
+    background-color:#F9C1EB;
 }
 
 table {
-	width:558;
-	border:1;
-	cellpadding:0;
-	cellspacing:0;
-	font-size:12;
+    width:558;
+    border:1;
+    cellpadding:0;
+    cellspacing:0;
+    font-size:12;
 }
 
 .el {
-	background-color:#EDFCE3;
-	font-size: 12;
+    background-color:#EDFCE3;
+    font-size: 12;
 }
 
+
 p {
-	background-color:#A6F1FF;
-	font-size: 12;
+    background-color:#A6F1FF;
+    font-size: 12;
 }
 

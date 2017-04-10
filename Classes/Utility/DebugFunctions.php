@@ -1028,6 +1028,10 @@ class DebugFunctions {
 							TRUE
 						);
 						$value .= '</td>';
+					} else if (is_resource($v1)) {
+                        $value .= '<td class="el">';
+                        $value .= 'Resource of type ' . get_resource_type($v1) . ':' . $v1;
+                        $value .= '</td>';
 					} else {
 						$value .= '<td class="el">';
 						$value .= nl2br(htmlspecialchars($v1));
@@ -1405,7 +1409,7 @@ class DebugFunctions {
 		}
 
 // error_log('### debug $name = ' . print_r($name, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
-
+//
 // error_log('### debug $variable = ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		$extConf = self::getExtConf();

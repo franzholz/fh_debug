@@ -1,3 +1,7 @@
+2017-04-10  Franz Holzinger  <franz@ttproducts.de>
+    * works with TYPO3 8.x
+    * add a composer.json file
+
 2017-01-23  Franz Holzinger  <franz@ttproducts.de>
 	* new feature:  Add dynamic information to the text label shown in the Extension Manager. The client's current IP address is shown there and can be copy-pasted into the form entry field.
 
