@@ -33,13 +33,13 @@ if (
 	isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]) &&
 	is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
 ) {
-	$newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
 	$class = '\JambageCom\FhDebug\Utility\DebugFunctions';
 	if (
 		!isset($GLOBALS['error']) ||
 		!is_object($GLOBALS['error']) ||
 		!($GLOBALS['error'] instanceof $class)
 	) {
+        $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
 		$myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
 		$bIpIsAllowed = FALSE;
 		$ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($bIpIsAllowed);
@@ -82,5 +82,14 @@ if (
 	}
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
+   'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
+);
+
 }
+
+
+
+
 
