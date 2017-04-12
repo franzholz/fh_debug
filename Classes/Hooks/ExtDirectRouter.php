@@ -14,8 +14,6 @@ namespace JambageCom\FhDebug\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 
-
-
 /**
  * Ext Direct Router
  */
@@ -28,7 +26,7 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
      * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function routeAction(ServerRequestInterface $request, ResponseInterface $response)
+    public function routeAction(\Psr\Http\Message\ServerRequestInterface $request, \Psr\Http\Message\ResponseInterface $response)
     {
         $class = '\JambageCom\FhDebug\Utility\DebugFunctions';
         if (
