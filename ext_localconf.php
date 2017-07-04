@@ -22,11 +22,6 @@ if (isset($_EXTCONF) && is_array($_EXTCONF)) {
 	}
 }
 
-// $errorFilename = '/kunden/homepages/37/d520150212/htdocs/weekview_test/typo3/fileadmin/phpDebugErrorLog2.txt';
-//
-// error_log('fh_debug localconf.php +++ $GLOBALS[\'error\'] : ' . print_r($GLOBALS['error'], TRUE) . chr(13), 3, $errorFilename);
-//
-
 if (
 	defined('TYPO3_version') &&
 	version_compare(TYPO3_version, '6.0.0', '>=') &&
@@ -79,17 +74,15 @@ if (
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = array(
 			'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
 		);
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Error\\ProductionExceptionHandler'] = array(
+            'className' => 'JambageCom\\FhDebug\\Hooks\\CoreProductionExceptionHandler',
+        );
 	}
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
-   'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
-);
-
+        'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
+    );
 }
-
-
-
-
 

@@ -9,7 +9,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'PHP debugger, sys_log and devLog Logger',
 	'category' => 'misc',
 	'shy' => 0,
-	'version' => '0.5.8',
+	'version' => '0.6.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -28,8 +28,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'php' => '5.3.3-7.99.99',
-			'typo3' => '6.0.0-8.99.99',
+			'php' => '5.5.0-7.99.99',
+			'typo3' => '7.6.18-8.99.99',
 		),
 		'conflicts' => array(
 		),

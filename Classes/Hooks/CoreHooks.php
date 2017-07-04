@@ -6,7 +6,7 @@ namespace JambageCom\FhDebug\Hooks;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2016 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2017 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -85,7 +85,7 @@ class CoreHooks {
 		$class = '\JambageCom\FhDebug\Utility\DebugFunctions';
 
 		if ($GLOBALS['error'] instanceof $class) {
-			debug($devLogArray, '$devLogArray');
+			debug($devLogArray, 'devLog from fh_debug: $devLogArray');
 		}
 	}
 }
