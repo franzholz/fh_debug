@@ -48,7 +48,6 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
             $GLOBALS['error'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\ExtDirect\ExtDirectDebug::class);
         }
     // FHO end
-
         $isForm = false;
         $isUpload = false;
         $rawPostData = file_get_contents('php://input');
@@ -97,7 +96,7 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
                 }
                 try {
                     if (!$validToken) {
-                        throw new \TYPO3\CMS\Core\FormProtection\Exception('ExtDirect: Invalid Security Token!');
+                        throw new \TYPO3\CMS\Core\FormProtection\Exception('ExtDirect: Invalid Security Token!', 1476046324);
                     }
                     $extResponse[$index]['type'] = 'rpc';
                     $extResponse[$index]['result'] = $this->processRpc($singleRequest, $namespace);
