@@ -33,60 +33,60 @@ namespace JambageCom\FhDebug\Hooks;
  *
  */
 class CoreHooks {
-	public function preprocessRequest () {
+    public function preprocessRequest () {
 
-		if (!class_exists('\\JambageCom\\FhDebug\\Utility\\DebugFunctions')) {
+        if (!class_exists('\\JambageCom\\FhDebug\\Utility\\DebugFunctions')) {
 
-			require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
-			// some configuration:
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
-			// if you use the debug HTML file:
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('15');
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12');
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('10');
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL');
-			\JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE);
-			\JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
-		}
-	}
+            require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
+            // some configuration:
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
+            // if you use the debug HTML file:
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('15');
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12');
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('10');
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL');
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE);
+            \JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
+        }
+    }
 
 
-	/**
-	 * Development log.
-	 * If you want to implement the devLog in your applications, simply add lines like:
-	 * if (TYPO3_DLOG)	\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[write message in english here]', 'extension key');
-	 *
-	 * @param string $msg Message (in english).
-	 * @param string $extKey Extension key (from which extension you are calling the log)
-	 * @param integer $severity Severity: 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
-	 * @param mixed $dataVar Additional data you want to pass to the logger.
-	 * @return void
-	 */
+    /**
+    * Development log.
+    * If you want to implement the devLog in your applications, simply add lines like:
+    * if (TYPO3_DLOG)	\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[write message in english here]', 'extension key');
+    *
+    * @param string $msg Message (in english).
+    * @param string $extKey Extension key (from which extension you are calling the log)
+    * @param integer $severity Severity: 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
+    * @param mixed $dataVar Additional data you want to pass to the logger.
+    * @return void
+    */
 
-	/**
-	 * Developer log
-	 *
-	 * $devLogArray = array('msg'=>$msg, 'extKey'=>$extKey, 'severity'=>$severity, 'dataVar'=>$dataVar);
-	 * msg		string		Message (in English).
-	 * extKey	string		Extension key (from which extension the devLog function has been executed)
-	 * severity	integer		Severity: 0 ... info
-	 *                                1 ... notice
-	 *                                2 ... warning,
-	 *                                3 ... fatal error,
-	 *                               -1 ... "OK" message
-	 * dataVar	array		Additional data you want to pass to the logger.
-	 *
-	 * @param	array		$devLogArray: log data array
-	 * @return	void
-	 */
-	static public function devLog($devLogArray) {
-		$class = '\JambageCom\FhDebug\Utility\DebugFunctions';
+    /**
+    * Developer log
+    *
+    * $devLogArray = array('msg'=>$msg, 'extKey'=>$extKey, 'severity'=>$severity, 'dataVar'=>$dataVar);
+    * msg		string		Message (in English).
+    * extKey	string		Extension key (from which extension the devLog function has been executed)
+    * severity	integer		Severity: 0 ... info
+    *                                1 ... notice
+    *                                2 ... warning,
+    *                                3 ... fatal error,
+    *                               -1 ... "OK" message
+    * dataVar	array		Additional data you want to pass to the logger.
+    *
+    * @param	array		$devLogArray: log data array
+    * @return	void
+    */
+    static public function devLog($devLogArray) {
+        $class = '\JambageCom\FhDebug\Utility\DebugFunctions';
 
-		if ($GLOBALS['error'] instanceof $class) {
-			debug($devLogArray, 'devLog from fh_debug: $devLogArray');
-		}
-	}
+        if ($GLOBALS['error'] instanceof $class) {
+            debug($devLogArray, 'devLog from fh_debug: $devLogArray');
+        }
+    }
 }
 

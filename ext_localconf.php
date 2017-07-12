@@ -36,7 +36,7 @@ if (
 	) {
         $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
 		$myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
-		$bIpIsAllowed = FALSE;
+		$bIpIsAllowed = false;
 		$ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($bIpIsAllowed);
 		$bModeIsAllowed = \JambageCom\FhDebug\Utility\DebugFunctions::verifyTypo3Mode(TYPO3_MODE);
 

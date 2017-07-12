@@ -35,26 +35,26 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  *
  */
 class PatchemHooks {
-	public function buildConfigurationArray(&$params, $pObj) {
+    public function buildConfigurationArray(&$params, $pObj) {
 
-		if (
-			isset($params) &&
-			is_array($params) &&
-			isset($params['extensionKey']) &&
-			$params['extensionKey'] == 'fh_debug' &&
-			isset($params['configurationOption']) &&
-			is_array($params['configurationOption'])
-		) {
-			$configurationOption = &$params['configurationOption'];
+        if (
+            isset($params) &&
+            is_array($params) &&
+            isset($params['extensionKey']) &&
+            $params['extensionKey'] == 'fh_debug' &&
+            isset($params['configurationOption']) &&
+            is_array($params['configurationOption'])
+        ) {
+            $configurationOption = &$params['configurationOption'];
 
-			if (
-				isset($configurationOption['label']) &&
-				strpos($configurationOption['label'], '###') !== FALSE
-			) {
-				$configurationOption['label'] = str_replace('###IP###', DebugFunctions::readIpAddress(), $configurationOption['label']);
-			}
-		}
-	}
+            if (
+                isset($configurationOption['label']) &&
+                strpos($configurationOption['label'], '###') !== false
+            ) {
+                $configurationOption['label'] = str_replace('###IP###', DebugFunctions::readIpAddress(), $configurationOption['label']);
+            }
+        }
+    }
 }
 
 

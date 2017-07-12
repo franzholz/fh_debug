@@ -44,28 +44,28 @@ class DebugFunctions {
 	static public $csConvObj;
 	static public $errorLogFile = 'fileadmin/phpDebugErrorLog.txt';
 	static public $debugFile = '';
-	static public $internalErrorLog = FALSE;
+	static public $internalErrorLog = false;
 
-	static protected $active = FALSE;	// inactive without initialization
-	static protected $bInitialization = FALSE;
-	static protected $bErrorWritten = FALSE;
-	static protected $useErrorLog = FALSE;
+	static protected $active = false;	// inactive without initialization
+	static protected $bInitialization = false;
+	static protected $bErrorWritten = false;
+	static protected $useErrorLog = false;
 
 	static private $username;
-	static private $bUserAllowed = TRUE;
+	static private $bUserAllowed = true;
 	static private $extConf = array();
 	static private $hndFile = 0;
-	static private $bHasBeenInitialized = FALSE;
-	static private $bNeedsFileInit = TRUE;
+	static private $bHasBeenInitialized = false;
+	static private $bNeedsFileInit = true;
 	static private $starttimeArray = array();
-	static private $bCreateFile = FALSE;
-	static private $hndProcessfile = FALSE;
+	static private $bCreateFile = false;
+	static private $hndProcessfile = false;
 	static private $processCount = 0;
 	static private $recursiveDepth = 3;
 	static private $traceDepth = 5;
 	static private $appendDepth = 3;
-	static private $html = TRUE;
-	static private $bWriteHeader = FALSE;
+	static private $html = true;
+	static private $bWriteHeader = false;
 	static private $instanceCount = 0;
 	static private $errorLogFilename = '';
 	static private $debugFilename = '';
@@ -73,13 +73,13 @@ class DebugFunctions {
 	static private $startFiles = '';
 	static private $ignore = '';
 	static private $ipAddress = '127.0.0.1';
-	static private $debugBegin = FALSE;
+	static private $debugBegin = false;
 	static private $traceFields = 'file,line,function';
 	static private $feUserNames = '';
 	static private $debugFileMode = 'wb';
-	static private $bDevLog = FALSE;
-	static private $bSysLog = FALSE;
-	static private $proxyForward = FALSE;
+	static private $bDevLog = false;
+	static private $bSysLog = false;
+	static private $proxyForward = false;
 	static private $title = 'debug file';
 
 	public function __construct (
@@ -97,7 +97,7 @@ class DebugFunctions {
 		}
 
 		if ($extConf['USE_ERROR_LOG'] == '1') {
-			self::setUseErrorLog(TRUE);
+			self::setUseErrorLog(true);
 		}
 
 		if ($extConf['DEBUGFILE'] != '') {
@@ -109,9 +109,9 @@ class DebugFunctions {
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  self::$debugFilename . PHP_EOL, 3, self::getErrorLogFilename());
 
-//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, TRUE) . PHP_EOL,  3, self::getErrorLogFilename());
+//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, self::getErrorLogFilename());
 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		self::setRecursiveDepth($extConf['LEVEL']);
 		self::setTraceDepth($extConf['TRACEDEPTH']);
@@ -327,7 +327,7 @@ class DebugFunctions {
 	}
 
 	static public function setUseErrorLog (
-		$useErrorLog = TRUE
+		$useErrorLog = true
 	) {
 		self::$useErrorLog = $useErrorLog;
 	}
@@ -412,7 +412,7 @@ class DebugFunctions {
 
 	static public function readIpAddress () {
 		$ipAddress = '';
-// error_log ('readIpAddress $_SERVER ' . print_r($_SERVER, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('readIpAddress $_SERVER ' . print_r($_SERVER, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 	// Nothing to do without any reliable information
 		if (!isset ($_SERVER['REMOTE_ADDR'])) {
@@ -460,7 +460,7 @@ class DebugFunctions {
 		$username
 	) {
 // error_log ('verifyFeusername $username ' . $username . PHP_EOL, 3, self::getErrorLogFilename());
-		$result = TRUE;
+		$result = true;
 		$feUserNames = self::getFeUserNames();
 // error_log ('verifyFeusername $feUserNames ' . $feUserNames . PHP_EOL, 3, self::getErrorLogFilename());
 
@@ -469,14 +469,14 @@ class DebugFunctions {
 			$feUserNames != ''
 		) {
 			$tmpArray = GeneralUtility::trimExplode(',', $feUserNames);
-// error_log ('verifyFeusername $tmpArray ' . print_r($tmpArray, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('verifyFeusername $tmpArray ' . print_r($tmpArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 			if (
 				isset($tmpArray) &&
 				is_array($tmpArray) &&
-				in_array($username, $tmpArray) === FALSE
+				in_array($username, $tmpArray) === false
 			) {
-				$result = FALSE;
+				$result = false;
 // error_log ('verifyFeusername $username not found. ' . PHP_EOL, 3, self::getErrorLogFilename());
 			}
 		}
@@ -541,7 +541,7 @@ class DebugFunctions {
 
 		if (self::hasBeenInitialized()) {
 // error_log ('init Abbruch $bHasBeenInitialized' . PHP_EOL, 3, self::getErrorLogFilename());
-			return FALSE;
+			return false;
 		}
 
 //  error_log('init $ipAddress: ' . $ipAddress . PHP_EOL, 3, self::getErrorLogFilename());
@@ -552,34 +552,34 @@ class DebugFunctions {
 
 		if ($startFiles != '') {
 			$startFileArray = GeneralUtility::trimExplode(',', $startFiles);
-			$bStartFileFound = FALSE;
+			$bStartFileFound = false;
 			if (is_array($startFileArray)) {
 				foreach ($startFileArray as $startFile) {
 					if ($backtrace['0']['file'] == $startFile) {
-						$bStartFileFound = TRUE;
+						$bStartFileFound = true;
 						break;
 					}
 				}
 			}
 
 			if (!$bStartFileFound) {
-//  error_log('init backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('init backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
 //   error_log('init cancelled because no STARTFILES for "' . $backtrace['0']['file'] . '"' . PHP_EOL, 3, self::getErrorLogFilename());
-				return FALSE;
+				return false;
 			}
 		}
 
-		$bResetFileFound = FALSE;
+		$bResetFileFound = false;
 		if ($backtrace['0']['file'] == 'mod.php') {
-			$bResetFileFound = TRUE;
+			$bResetFileFound = true;
 		}
 //  error_log('init $bResetFileFound: ' . $bResetFileFound . PHP_EOL, 3, self::getErrorLogFilename());
 
-		self::setIsInitialization(TRUE);
+		self::setIsInitialization(true);
 
 		if (!self::getDebugBegin()) {
-//   error_log ('Pos 1 vor setActive TRUE ' . PHP_EOL, 3, self::getErrorLogFilename() );
-			self::setActive(TRUE);
+//   error_log ('Pos 1 vor setActive true ' . PHP_EOL, 3, self::getErrorLogFilename() );
+			self::setActive(true);
 		}
 
 		if (GeneralUtility::cmpIP($ipAddress, '127.0.0.1')) {
@@ -591,15 +591,15 @@ class DebugFunctions {
 			) {
 				self::$starttimeArray = array('no debugging possible', 'Attention: The server variable REMOTE_ADDR is set to local.');
 
-//   error_log ('Pos 2 vor setActive FALSE ' . PHP_EOL, 3, self::getErrorLogFilename() );
-				self::setActive(FALSE);
+//   error_log ('Pos 2 vor setActive false ' . PHP_EOL, 3, self::getErrorLogFilename() );
+				self::setActive(false);
 			}
 		}
 
-		self::setHasBeenInitialized(TRUE);
-		self::setIsInitialization(FALSE);
+		self::setHasBeenInitialized(true);
+		self::setIsInitialization(false);
 //  error_log ('init ENDE ========================================== '. PHP_EOL, 3, self::getErrorLogFilename());
-		return TRUE;
+		return true;
 	}
 
 	static public function initFile () {
@@ -673,7 +673,7 @@ class DebugFunctions {
 
 				self::$hndFile = fopen($filename, $openMode);
 
-				if (self::$hndFile !== FALSE) {
+				if (self::$hndFile !== false) {
 
 					$ipAddress = self::readIpAddress();
 					self::$starttimeArray =
@@ -709,8 +709,8 @@ class DebugFunctions {
 					);
 				}
 // error_log('initFile not writable directory "' . $path_parts['dirname'] . '"' . PHP_EOL, 3, self::getErrorLogFilename());
-// error_log ('Pos 3 vor setActive FALSE ' . PHP_EOL, 3, self::getErrorLogFilename() );
-				self::setActive(FALSE); // no debug is necessary when the file cannot be written anyways
+// error_log ('Pos 3 vor setActive false ' . PHP_EOL, 3, self::getErrorLogFilename() );
+				self::setActive(false); // no debug is necessary when the file cannot be written anyways
 			}
 		}
 	}
@@ -731,7 +731,7 @@ class DebugFunctions {
 //   error_log ('function setActive = ' . $v  . PHP_EOL, 3, self::getErrorLogFilename() );
 
 //  $backtrace = self::getTraceArray();
-//  error_log('setActive backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('setActive backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		self::$active = $v;
 	}
@@ -764,24 +764,24 @@ class DebugFunctions {
 // 		if (self::$hndFile) {
 // 			self::$hndFile = ftruncate(self::$hndFile, 0);
 // 			self::writeTemporaryFile(0);
-// 			self::setHasBeenInitialized(FALSE);
+// 			self::setHasBeenInitialized(false);
 // 		}
 	}
 
 	static public function setCreateFile () {
 
-		self::$bCreateFile = TRUE;
+		self::$bCreateFile = true;
  	}
 
 	static public function debugBegin () {
 //  error_log('debugBegin ANFANG'. PHP_EOL, 3, self::getErrorLogFilename());
-		self::$internalErrorLog = TRUE;
+		self::$internalErrorLog = true;
 
 		if (self::hasBeenInitialized() && !self::hasError()) {
 
 			if (self::getDebugBegin()) {
-// error_log ('Pos 5 vor setActive TRUE ' . PHP_EOL, 3, self::getErrorLogFilename() );
-				self::setActive(TRUE);
+// error_log ('Pos 5 vor setActive true ' . PHP_EOL, 3, self::getErrorLogFilename() );
+				self::setActive(true);
 
 				$ipAddress = self::readIpAddress();
 				self::debug(
@@ -789,15 +789,15 @@ class DebugFunctions {
 					'debugBegin',
 					'',
 					'',
-					TRUE
+					true
 				);
 
 // $backtrace = self::getTraceArray();
-// error_log('debugBegin backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('debugBegin backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
 			}
 		}
 
-		self::$internalErrorLog = FALSE;
+		self::$internalErrorLog = false;
 	}
 
 	static public function debugEnd () {
@@ -812,13 +812,13 @@ class DebugFunctions {
 					'debugEnd',
 					'',
 					'',
-					TRUE
+					true
 				);
-//  error_log ('Pos 6 vor setActive FALSE ' . PHP_EOL, 3, self::getErrorLogFilename() );
-				self::setActive(FALSE);
+//  error_log ('Pos 6 vor setActive false ' . PHP_EOL, 3, self::getErrorLogFilename() );
+				self::setActive(false);
 
 // $backtrace = self::getTraceArray();
-// error_log('debugEnd backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('debugEnd backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
 			}
 		}
 	}
@@ -843,7 +843,7 @@ class DebugFunctions {
 // if (self::$internalErrorLog) error_log('my debug getTraceArray: $depth = ' . $depth . PHP_EOL, 3, self::getErrorLogFilename());
 // error_log('my debug getTraceArray Pos 1: $offset = ' . $offset . PHP_EOL, 3, self::getErrorLogFilename());
 
-		$trail = debug_backtrace(FALSE);
+		$trail = debug_backtrace(false);
 		$last = count($trail) - 1;
 
 		if (!$depth) {
@@ -862,7 +862,7 @@ class DebugFunctions {
 
 		for ($i = $offset; $i <= $last ; ++$i) {
 			unset($trail[$i]['args']);
-// if (self::$internalErrorLog) error_log ('$trail['.$i.'] = "' . print_r($trail[$i], TRUE) . '"'. PHP_EOL, 3, self::getErrorLogFilename());
+// if (self::$internalErrorLog) error_log ('$trail['.$i.'] = "' . print_r($trail[$i], true) . '"'. PHP_EOL, 3, self::getErrorLogFilename());
 			if (!isset($trail[$i])) {
 				continue;
 			}
@@ -871,7 +871,7 @@ class DebugFunctions {
 				!is_array($theTrail) ||
 				$theTrail['file'] == '' ||
 				$theTrail['line'] == '' ||
-				strpos($theTrail['class'], '\\FhDebug\\') !== FALSE
+				strpos($theTrail['class'], '\\FhDebug\\') !== false
 			) {
 				continue;
 			}
@@ -887,7 +887,7 @@ class DebugFunctions {
 					if (
 						(
 							!$offset &&
-							stripos($value, 'debug') !== FALSE
+							stripos($value, 'debug') !== false
 						)
 					) {
 						if (isset($traceArray[$j])) {
@@ -910,7 +910,7 @@ class DebugFunctions {
 		}
 		ksort($traceArray);
 
-// if (self::$internalErrorLog) error_log('my debug getTraceArray ENDE: ' . print_r($traceArray, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// if (self::$internalErrorLog) error_log('my debug getTraceArray ENDE: ' . print_r($traceArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		return $traceArray;
 	}
@@ -941,7 +941,7 @@ class DebugFunctions {
 					$debugTrail[$i] .= chr(13);
 				}
 			}
-//  error_log('printTraceLine $debugTrail: ' . print_r($debugTrail, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('printTraceLine $debugTrail: ' . print_r($debugTrail, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 			$result = implode('', $debugTrail);
 			if ($html) {
@@ -978,7 +978,7 @@ class DebugFunctions {
 		$result = '';
 
 // error_log ('printArrayVariable $header = ' . $header . PHP_EOL, 3, self::getErrorLogFilename());
-// error_log ('$variable = ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('$variable = ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 // error_log ('$depth = ' . $depth . PHP_EOL, 3, self::getErrorLogFilename());
 
 		if ($depth < $recursiveDepth) {
@@ -1005,18 +1005,18 @@ class DebugFunctions {
 					$value .= '</td>';
 					if (is_array($v1)) {
 						$value .= '<td class="ela"">';
-						$value .= self::printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, TRUE);
+						$value .= self::printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, true);
 						$value .= '</td>';
 					} else if (is_object($v1)) {
 						$value .= '<td class="elo">';
-						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, TRUE);
+						$value .= self::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, true);
 						$value .= '</td>';
 					} else if (is_bool($v1)) {
 						$value .= '<td class="el">';
 						$value .= self::printTypeVariable(
 							'Boolean',
-							($v1 ? 'TRUE' : 'FALSE') ,
-							TRUE
+							($v1 ? 'true' : 'false') ,
+							true
 						);
 						$value .= '</td>';
 					} else if (is_long($v1) || is_double($v1)) {
@@ -1025,7 +1025,7 @@ class DebugFunctions {
 // 							($header == '' ? ucfirst(gettype($v1)) : ''),
  							ucfirst(gettype($v1)),
 							$v1,
-							TRUE
+							true
 						);
 						$value .= '</td>';
 					} else if (is_resource($v1)) {
@@ -1093,7 +1093,7 @@ class DebugFunctions {
 		//Instantiate the reflection object
 		$reflector = new \ReflectionClass($variable);
 		$properties = $reflector->getProperties();
-// error_log ('printObjectVariable $properties = ' . print_r($properties, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('printObjectVariable $properties = ' . print_r($properties, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		$variableArray = array();
 		foreach($properties as $property) {
@@ -1104,10 +1104,10 @@ class DebugFunctions {
 // error_log ('property->getName() = ' . $property->getName() . PHP_EOL, 3, self::getErrorLogFilename());
 
 			$theProperty = $reflector->getProperty($property->getName());
-			$theProperty->setAccessible(TRUE);
-// error_log ('printObjectVariable $theProperty = ' . print_r($theProperty, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+			$theProperty->setAccessible(true);
+// error_log ('printObjectVariable $theProperty = ' . print_r($theProperty, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
-// error_log ('$theProperty->getValue($variable) = ' . print_r($theProperty->getValue($variable), TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('$theProperty->getValue($variable) = ' . print_r($theProperty->getValue($variable), true) . PHP_EOL, 3, self::getErrorLogFilename());
 			$variableArray[$property->getName()] = $theProperty->getValue($variable);
 		}
 
@@ -1126,8 +1126,8 @@ class DebugFunctions {
 	) {
 		$result = '';
 		$debugArray = array();
-// error_log ('printVariable $header = ' . print_r($header, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
-// error_log ('printVariable $variable = ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('printVariable $header = ' . print_r($header, true) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log ('printVariable $variable = ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		if (is_array($variable)) {
 			if (!$header) {
@@ -1159,8 +1159,8 @@ class DebugFunctions {
 					$result = '<td class="el">';
 					$result .= self::printTypeVariable(
 						'Boolean',
-						($variable ? 'TRUE' : 'FALSE') ,
-						TRUE
+						($variable ? 'true' : 'false') ,
+						true
 					);
 					$result .= '</td>';
 // 	error_log ('printVariable Pos 3 $result = ' . $result . PHP_EOL, 3, self::getErrorLogFilename());
@@ -1169,11 +1169,11 @@ class DebugFunctions {
 					$result .= self::printTypeVariable(
 						($header == '' ? ucfirst(gettype($variable)) : ''),
 						$variable,
-						TRUE
+						true
 					);
 					$result .= '</td>';
 // 	error_log ('printVariable Pos 4 $result = ' . $result . PHP_EOL, 3, self::getErrorLogFilename());
-				} else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === FALSE
+				} else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
 					$result = '<p>unloaded object of class "' . get_class($variable) . '"</p>';
 				} else {
 					$result = '<p>' . nl2br(htmlspecialchars($variable)) . '</p>';
@@ -1249,7 +1249,7 @@ class DebugFunctions {
 		$bPrintOnScreen
 	) {
 //   error_log('write START ' . PHP_EOL, 3, self::getErrorLogFilename());
-		$result = TRUE;
+		$result = true;
 
 		if ($errorOut != '') {
 //  error_log('write $errorOut =  ' . $errorOut . PHP_EOL, 3, self::getErrorLogFilename());
@@ -1266,7 +1266,7 @@ class DebugFunctions {
 			echo $out;
 		} else {
 //  error_log('write no file handle ERROR = ' . $out . PHP_EOL, 3, self::getErrorLogFilename());
-			$result = FALSE;
+			$result = false;
 		}
 
 //  error_log('write ENDE $result = ' . $result . PHP_EOL, 3, self::getErrorLogFilename());
@@ -1278,8 +1278,8 @@ class DebugFunctions {
 		$name,
 		$recursiveDepth,
 		$html,
-		$bTrace = TRUE,
-		$bHeader = FALSE,
+		$bTrace = true,
+		$bHeader = false,
 		$debugLevel = E_DEBUG
 	) {
 		$type = '';
@@ -1290,7 +1290,7 @@ class DebugFunctions {
 			$type = self::getTypeView($variable);
 		}
 
-// error_log('writeOut $variable ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 //   error_log('writeOut $name ' . $name . PHP_EOL, 3, self::getErrorLogFilename());
 //   error_log('writeOut $recursiveDepth ' . $recursiveDepth . PHP_EOL, 3, self::getErrorLogFilename());
 
@@ -1304,7 +1304,7 @@ class DebugFunctions {
 		) {
 			$traceArray = ($bTrace ? self::getTraceArray(self::getTraceDepth(), 0, $debugLevel) : array());
 
-// error_log('writeOut $traceArray ' . print_r($traceArray, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('writeOut $traceArray ' . print_r($traceArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
 			$content = self::printTraceLine($traceArray, $html);
 
 // error_log('writeOut $content ' . $content . PHP_EOL, 3, self::getErrorLogFilename());
@@ -1318,7 +1318,7 @@ class DebugFunctions {
 						'',
 						$variable,
 						$recursiveDepth,
-						FALSE
+						false
 					) . PHP_EOL .
 					'###' . $name . $type . '###' . PHP_EOL .
 					'--------------------------------------------' . PHP_EOL;
@@ -1335,7 +1335,7 @@ class DebugFunctions {
 						'',
 						$variable,
 						$recursiveDepth,
-						TRUE
+						true
 					) . chr(13) .
 					'<h3>' . $name . $type . '</h3>' .
 					'<hr/>' . chr(13);
@@ -1346,7 +1346,7 @@ class DebugFunctions {
 			function_exists('mb_detect_encoding') &&
 			is_callable('mb_detect_encoding')
 		) {
-			$charset = mb_detect_encoding($out, 'UTF-8,ASCII,ISO-8859-1,ISO-8859-15', TRUE);
+			$charset = mb_detect_encoding($out, 'UTF-8,ASCII,ISO-8859-1,ISO-8859-15', true);
 		}
 
 		if (
@@ -1387,7 +1387,7 @@ class DebugFunctions {
 			} else {
 				echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
 			}
-			self::$bErrorWritten = TRUE;
+			self::$bErrorWritten = true;
 //  error_log('debug self::$bErrorWritten = ' . self::$bErrorWritten . PHP_EOL, 3, self::getErrorLogFilename());
 		}
 
@@ -1408,9 +1408,9 @@ class DebugFunctions {
 			return;
 		}
 
-// error_log('### debug $name = ' . print_r($name, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, self::getErrorLogFilename());
 //
-// error_log('### debug $variable = ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
 		$extConf = self::getExtConf();
 
@@ -1418,51 +1418,51 @@ class DebugFunctions {
 			$recursiveDepth = self::getRecursiveDepth();
 		}
 
-		$bControlMode = FALSE;
+		$bControlMode = false;
 		$charset = '';
 
 		if ($name == 'control:resetTemporaryFile') {
 			self::truncateFile();
-			$bControlMode = TRUE;
-// error_log('### debug $bControlMode = ' . print_r($bControlMode, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+			$bControlMode = true;
+// error_log('### debug $bControlMode = ' . print_r($bControlMode, true) . PHP_EOL, 3, self::getErrorLogFilename());
 		}
 		$storeIsActive = self::getActive();
 
 
 // comment these lines out
 // $searchPHPFile = 'class.tx_ttproducts_eid.php'; // 'class.tx_transactorpaymill_request.php';
-// $searchFileFound = FALSE;
+// $searchFileFound = false;
 // $backtrace = self::getTraceArray();
 // foreach ($backtrace as $traceArray) {
 // 	if ($traceArray['file'] == $searchPHPFile) {
-// 		$searchFileFound = TRUE;
+// 		$searchFileFound = true;
 // 		break;
 // 	}
 // }
 
 /*
-$searchFileFound = TRUE;
+$searchFileFound = true;
 if ($searchFileFound) {
 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug ================ ANFANG ' . PHP_EOL, 3, self::getErrorLogFilename());
-	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
-	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $name = ' . print_r($name, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
-	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $variable = ' . print_r($variable, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
+	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $name = ' . print_r($name, true) . PHP_EOL, 3, self::getErrorLogFilename());
+	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug self::$useErrorLog = ' . self::$useErrorLog . PHP_EOL, 3, self::getErrorLogFilename());
 	error_log('JambageCom\FhDebug\Utility\DebugFunctions::debug $storeIsActive = ' . $storeIsActive . PHP_EOL, 3, self::getErrorLogFilename());
 }*/
 
 		self::processUser();
-		$bDebugSysLog = FALSE;
+		$bDebugSysLog = false;
 
 		if (
 			self::getSysLog() &&
 			isset($variable) &&
 			is_array($variable) &&
 			isset($variable['SQL query']) &&
-			strpos($variable['SQL query'], ' sys_log ') !== FALSE
+			strpos($variable['SQL query'], ' sys_log ') !== false
 		) {
-			$bDebugSysLog = TRUE;
-// error_log('### debug $bDebugSysLog = ' . print_r($bDebugSysLog, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+			$bDebugSysLog = true;
+// error_log('### debug $bDebugSysLog = ' . print_r($bDebugSysLog, true) . PHP_EOL, 3, self::getErrorLogFilename());
 		}
 
 		if (
@@ -1473,15 +1473,15 @@ if ($searchFileFound) {
 				$bDebugSysLog
 			)
 		) {
-// error_log ('debug Bearbeitung: Pos 7 vor setActive FALSE ' . PHP_EOL, 3, self::getErrorLogFilename() );
+// error_log ('debug Bearbeitung: Pos 7 vor setActive false ' . PHP_EOL, 3, self::getErrorLogFilename() );
 
-			self::setActive(FALSE);
+			self::setActive(false);
 
 			if (self::$bUserAllowed) {
 
 				if (self::$bNeedsFileInit) {
 					self::initFile();
-					self::$bNeedsFileInit = FALSE;
+					self::$bNeedsFileInit = false;
 				}
 
 // error_log('debug self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
@@ -1494,10 +1494,10 @@ if ($searchFileFound) {
 //  error_log('debug self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
 
 					self::writeHeader($extConf['CSSFILE']);
-					self::$bWriteHeader = FALSE;
+					self::$bWriteHeader = false;
 //  error_log('nach writeHeader self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
 
-// error_log('self::$starttimeArray: ' . print_r(self::$starttimeArray, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('self::$starttimeArray: ' . print_r(self::$starttimeArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
 					if (count(self::$starttimeArray)) {
 						$headerPostFix = self::$starttimeArray['1'];
 						$headerValue = self::$starttimeArray['0'];
@@ -1521,15 +1521,15 @@ if ($searchFileFound) {
 							}
 							break;
 					}
-//  error_log('debug $headerValue = ' . print_r($headerValue, TRUE) . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('debug $headerValue = ' . print_r($headerValue, true) . PHP_EOL, 3, self::getErrorLogFilename());
 //  error_log('debug $head = ' . $head . PHP_EOL, 3, self::getErrorLogFilename());
 					self::writeOut(
 						$headerValue,
 						$head,
 						$recursiveDepth,
 						self::getHtml(),
-						FALSE,
-						TRUE,
+						false,
+						true,
 						$debugLevel
 					);
 				}
@@ -1539,8 +1539,8 @@ if ($searchFileFound) {
 					$name,
 					$recursiveDepth,
 					self::getHtml(),
-					TRUE,
-					FALSE,
+					true,
+					false,
 					$debugLevel
 				);
 			}
@@ -1585,8 +1585,8 @@ if ($searchFileFound) {
 				$head,
 				self::getRecursiveDepth(),
 				self::getHtml(),
-				FALSE,
-				TRUE,
+				false,
+				true,
 				0
 			);
 
@@ -1598,7 +1598,7 @@ if ($searchFileFound) {
 
 			if (!self::$instanceCount) {
 				fclose(self::$hndFile);
-				self::setHasBeenInitialized(FALSE);
+				self::setHasBeenInitialized(false);
 				self::$hndFile = NULL; // this is a static class which remains even after the closing of the object
 			} else {
 				fflush(self::$hndFile);

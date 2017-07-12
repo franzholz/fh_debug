@@ -31,7 +31,9 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
      */
     public function echoExceptionWeb($exception)
     {
-error_log('ProductionExceptionHandler::echoExceptionWeb' . PHP_EOL, 3, \JambageCom\Fhdebug\Utility\DebugFunctions::getErrorLogFilename());
+        debugBegin();
+        debug('CoreProductionExceptionHandler::echoExceptionWeb', $exception);
+        debugEnd();
 
         $this->sendStatusHeaders($exception);
         $this->writeLogEntries($exception, self::CONTEXT_WEB);
@@ -55,8 +57,9 @@ error_log('ProductionExceptionHandler::echoExceptionWeb' . PHP_EOL, 3, \JambageC
         if ($this->discloseExceptionInformation($exception) && method_exists($exception, 'getTitle') && $exception->getTitle() !== '') {
             return htmlspecialchars($exception->getTitle());
         } else {
-        $backtrace = \JambageCom\Fhdebug\Utility\DebugFunctions::getTraceArray();
-error_log('ProductionExceptionHandler::getTitle - backtrace: ' . print_r($backtrace, TRUE) . PHP_EOL, 3, \JambageCom\Fhdebug\Utility\DebugFunctions::getErrorLogFilename());
+            debugBegin();
+            debug('CoreProductionExceptionHandler::getTitle', $exception);
+            debugEnd();
 
             return $this->defaultTitle;
         }
