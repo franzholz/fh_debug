@@ -367,12 +367,12 @@ class DebugFunctions {
     }
 
     static public function writeHeader (
-        $cssFilename
+        $cssFilename // filename with path
     ) {
         $title = self::getTitle();
 
         if (TYPO3_MODE == 'FE') {
-            $title .= ' on page id=' . $GLOBALS['TSFE']->id;
+            $title .= ' id=' . $GLOBALS['TSFE']->id;
         }
 
         $out = '
@@ -382,7 +382,7 @@ class DebugFunctions {
 <head>
 <title>' . $title . '</title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<link rel="stylesheet" href="../' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('fh_debug') . 'res/' . $cssFilename . '" />
+<link rel="stylesheet" href="' . $cssFilename . '" />
 </head>
 
 <body>
@@ -1493,9 +1493,15 @@ if ($searchFileFound) {
 
 //  error_log('debug self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
 
-                    self::writeHeader($extConf['CSSFILE']);
+                    $cssPath = '';
+                    if ($extConf['CSSPATH'] == 'EXT:fh_debug') {
+                        $cssPath = '../' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('fh_debug') . 'Resources/Public/Css/';
+                    } else {
+                        $cssPath = $extConf['CSSPATH'];
+                    }
+                    self::writeHeader($cssPath . $extConf['CSSFILE']);
                     self::$bWriteHeader = false;
-//  error_log('nach writeHeader self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
+//  error_log('nach  self::$bWriteHeader = ' . self::$bWriteHeader . PHP_EOL, 3, self::getErrorLogFilename());
 
 // error_log('self::$starttimeArray: ' . print_r(self::$starttimeArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
                     if (count(self::$starttimeArray)) {

@@ -1,3 +1,6 @@
+2017-08-08  Franz Holzinger  <franz@ttproducts.de>
+    * Make the path to the CSS file configurable. EXT:fh_debug means that the path to the CSS folder of this extension is used.
+
 2017-07-12  Franz Holzinger  <franz@ttproducts.de>
     * adaptions to Coding Guidelines
 

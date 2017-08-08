@@ -28,6 +28,8 @@ HTML = 1
 LEVEL = 3
   # cat=basic/conf; type=int; label=Append: number of times that debug output will be appended before its gets cleared. Increase this number when you do not get any debug entries in the file.
 APPENDDEPTH = 3
+  # cat=basic/conf; type=string; label= CSS path: This is the path to the CSS file. If set to EXT:fh_debug, then the path to the extension CSS folder is used.
+CSSPATH = EXT:fh_debug
   # cat=basic/conf; type=file[css]; label= CSS file: This CSS file will be included by the HTML debug output file.
 CSSFILE = fhdebug.css
   # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems to the Developer Logfile.
