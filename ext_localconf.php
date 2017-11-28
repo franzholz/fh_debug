@@ -66,8 +66,12 @@ if (
 // 		}
 
 		if ($newExtConf['DEVLOG']) {
-			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\FhDebug\Hooks\CoreHooks->devLog';
+			$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
 		}
+
+        if ($newExtConf['SYSLOG']) {
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
+        }
 	}
 
 	if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
@@ -85,4 +89,5 @@ if (
         'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
     );
 }
+
 

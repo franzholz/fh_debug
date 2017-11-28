@@ -77,8 +77,8 @@ class DebugFunctions {
     static private $traceFields = 'file,line,function';
     static private $feUserNames = '';
     static private $debugFileMode = 'wb';
-    static private $bDevLog = false;
-    static private $bSysLog = false;
+    static private $devLog = false;
+    static private $sysLog = false;
     static private $proxyForward = false;
     static private $title = 'debug file';
 
@@ -258,23 +258,23 @@ class DebugFunctions {
     static public function setDevLog (
         $value
     ) {
-        self::$bDevLog = (boolean) $value;
+        self::$devLog = (boolean) $value;
     }
 
     static public function getDevLog () {
-// error_log('getDevLog self::$bDevLog = ' . self::$bDevLog . PHP_EOL, 3, self::getErrorLogFilename());
+// error_log('getDevLog self::$devLog = ' . self::$devLog . PHP_EOL, 3, self::getErrorLogFilename());
 
-        return self::$bDevLog;
+        return self::$devLog;
     }
 
     static public function setSysLog (
         $value
     ) {
-        self::$bDevLog = (boolean) $value;
+        self::$sysLog = (boolean) $value;
     }
 
     static public function getSysLog () {
-        return self::$bSysLog;
+        return self::$sysLog;
     }
 
     static public function setHtml (
@@ -1022,7 +1022,6 @@ class DebugFunctions {
                     } else if (is_long($v1) || is_double($v1)) {
                         $value .= '<td class="el">';
                         $value .= self::printTypeVariable(
-// 							($header == '' ? ucfirst(gettype($v1)) : ''),
                             ucfirst(gettype($v1)),
                             $v1,
                             true
@@ -1409,7 +1408,7 @@ class DebugFunctions {
         }
 
 // error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, self::getErrorLogFilename());
-//
+
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
         $extConf = self::getExtConf();
@@ -1456,13 +1455,10 @@ if ($searchFileFound) {
 
         if (
             self::getSysLog() &&
-            isset($variable) &&
-            is_array($variable) &&
-            isset($variable['SQL query']) &&
-            strpos($variable['SQL query'], ' sys_log ') !== false
+            isset($name) &&
+            strpos($name, 'sysLog from fh_debug') !== false
         ) {
             $bDebugSysLog = true;
-// error_log('### debug $bDebugSysLog = ' . print_r($bDebugSysLog, true) . PHP_EOL, 3, self::getErrorLogFilename());
         }
 
         if (

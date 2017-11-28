@@ -1,3 +1,6 @@
+2017-11-28  Franz Holzinger  <franz@ttproducts.de>
+    * bug fix: The debug of the systemLog must be based on a core hook. It shall not rely on another extension which writes the sys_log file.
+
 2017-08-08  Franz Holzinger  <franz@ttproducts.de>
     * Make the path to the CSS file configurable. EXT:fh_debug means that the path to the CSS folder of this extension is used.
 

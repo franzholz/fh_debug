@@ -82,10 +82,37 @@ class CoreHooks {
     * @return	void
     */
     static public function devLog($devLogArray) {
-        $class = '\JambageCom\FhDebug\Utility\DebugFunctions';
+        $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
 
         if ($GLOBALS['error'] instanceof $class) {
             debug($devLogArray, 'devLog from fh_debug: $devLogArray');
+        }
+    }
+
+    /**
+    * System log
+    *
+    * $params = array('msg' => $msg, 'extKey' => $extKey, 'backTrace' => debug_backtrace(), 'severity' => $severity);
+    * msg       string      Message (in English).
+    * extKey    string      Extension key (from which extension the devLog function has been executed)
+    * backTrace  array      index 0 ... file, line, function, class, type, args
+    *                       The rest of the backtrace is removed in order to
+    *                       keep the amount of data low.
+    * severity  integer     Severity: 0 ... info
+    *                                1 ... notice
+    *                                2 ... warning,
+    *                                3 ... fatal error,
+    *                               -1 ... "OK" message
+    *
+    * @param    array       $params: log data array
+    * @return   void
+    */
+    static public function sysLog($params) {
+        $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
+
+        if ($GLOBALS['error'] instanceof $class) {
+            $params['backTrace'] = $params['backTrace']['0'];
+            debug($params, 'sysLog from fh_debug: $params');
         }
     }
 }
