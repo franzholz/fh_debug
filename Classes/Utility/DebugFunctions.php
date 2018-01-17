@@ -8,7 +8,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2017 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2018 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -721,18 +721,10 @@ class DebugFunctions {
     }
 
     static public function getActive () {
-
-//  error_log ('bIsActive self::$active = ' .  self::$active . PHP_EOL, 3, self::getErrorLogFilename());
         return self::$active;
     }
 
     static public function setActive ($v) {
-
-//   error_log ('function setActive = ' . $v  . PHP_EOL, 3, self::getErrorLogFilename() );
-
-//  $backtrace = self::getTraceArray();
-//  error_log('setActive backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, self::getErrorLogFilename());
-
         self::$active = $v;
     }
 
@@ -848,7 +840,6 @@ class DebugFunctions {
 
         if (!$depth) {
             $depth = $last + 1;
-// error_log('my debug getTraceArray Pos 2: $depth = ' . $depth . PHP_EOL, 3, self::getErrorLogFilename());
             $offset = 0;
         }
 
@@ -1085,28 +1076,17 @@ class DebugFunctions {
         $recursiveDepth,
         $html
     ) { // TODO: show private member variables
-
-// error_log ('printObjectVariable ' . PHP_EOL, 3, self::getErrorLogFilename());
-// error_log ('printObjectVariable $header = ' . $header . PHP_EOL, 3, self::getErrorLogFilename());
-
         //Instantiate the reflection object
         $reflector = new \ReflectionClass($variable);
         $properties = $reflector->getProperties();
-// error_log ('printObjectVariable $properties = ' . print_r($properties, true) . PHP_EOL, 3, self::getErrorLogFilename());
 
         $variableArray = array();
         foreach($properties as $property) {
-// error_log ('LOOP ' . PHP_EOL, 3, self::getErrorLogFilename());
 
             //Populating properties
-// error_log ('$property->getDeclaringClass()->getName() = ' . $property->getDeclaringClass()->getName() . PHP_EOL, 3, self::getErrorLogFilename());
-// error_log ('property->getName() = ' . $property->getName() . PHP_EOL, 3, self::getErrorLogFilename());
 
             $theProperty = $reflector->getProperty($property->getName());
             $theProperty->setAccessible(true);
-// error_log ('printObjectVariable $theProperty = ' . print_r($theProperty, true) . PHP_EOL, 3, self::getErrorLogFilename());
-
-// error_log ('$theProperty->getValue($variable) = ' . print_r($theProperty->getValue($variable), true) . PHP_EOL, 3, self::getErrorLogFilename());
             $variableArray[$property->getName()] = $theProperty->getValue($variable);
         }
 
@@ -1174,10 +1154,11 @@ class DebugFunctions {
 // 	error_log ('printVariable Pos 4 $result = ' . $result . PHP_EOL, 3, self::getErrorLogFilename());
                 } else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
                     $result = '<p>unloaded object of class "' . get_class($variable) . '"</p>';
+                } else if (is_resource($variable)) {
+                    $result = '<p>*RESOURCE*</p>';
                 } else {
-                    $result = '<p>' . nl2br(htmlspecialchars($variable)) . '</p>';
+                    $result = '<p>' . nl2br(htmlspecialchars((string) $variable)) . '</p>';
 // 	error_log ('printVariable Pos 5 $result = ' . $result . PHP_EOL, 3, self::getErrorLogFilename());
-
                 }
             } else {
                 $result = $variable;
@@ -1251,7 +1232,6 @@ class DebugFunctions {
         $result = true;
 
         if ($errorOut != '') {
-//  error_log('write $errorOut =  ' . $errorOut . PHP_EOL, 3, self::getErrorLogFilename());
             // keep the following line
             $result = error_log($errorOut . PHP_EOL, 3, self::getErrorLogFilename()); // keep this
         }
@@ -1302,24 +1282,23 @@ class DebugFunctions {
             $debugFile == ''
         ) {
             $traceArray = ($bTrace ? self::getTraceArray(self::getTraceDepth(), 0, $debugLevel) : array());
-
-// error_log('writeOut $traceArray ' . print_r($traceArray, true) . PHP_EOL, 3, self::getErrorLogFilename());
-            $content = self::printTraceLine($traceArray, $html);
-
-// error_log('writeOut $content ' . $content . PHP_EOL, 3, self::getErrorLogFilename());
+            $traceArray = array_reverse($traceArray);
+            $backTrace = self::printTraceLine($traceArray, $html);
+// error_log('writeOut $backTrace ' . $backTrace . PHP_EOL, 3, self::getErrorLogFilename());
 
             if (
                 !$html ||
                 self::getUseErrorLog()
             ) {
-                $out = $content . '|' .
+                $out =
                     self::printVariable(
                         '',
                         $variable,
                         $recursiveDepth,
                         false
                     ) . PHP_EOL .
-                    '###' . $name . $type . '###' . PHP_EOL .
+                    '###' . $name . $type . '###' . PHP_EOL;
+                $out .= '|' . $backTrace . PHP_EOL .
                     '--------------------------------------------' . PHP_EOL;
 
                 if (self::getUseErrorLog()) {
@@ -1329,14 +1308,15 @@ class DebugFunctions {
 // error_log('writeOut $out ' . $out . PHP_EOL, 3, self::getErrorLogFilename());
 
             if ($html) {
-                $out = $content . '<br/>' .
+                $out =
                     self::printVariable(
                         '',
                         $variable,
                         $recursiveDepth,
                         true
                     ) . chr(13) .
-                    '<h3>' . $name . $type . '</h3>' .
+                    '<h3>' . $name . $type . '</h3>';
+                $out .= '<br/>' . $backTrace . chr(13) .
                     '<hr/>' . chr(13);
             }
         }

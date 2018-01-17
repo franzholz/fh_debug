@@ -1,3 +1,6 @@
+2018-01-17  Franz Holzinger  <franz@ttproducts.de>
+    * changed display: Move the variable name into the middle and the backtrace in reverse order to the bottom of the debug line.
+
 2017-11-28  Franz Holzinger  <franz@ttproducts.de>
     * bug fix: The debug of the systemLog must be based on a core hook. It shall not rely on another extension which writes the sys_log file.
 
