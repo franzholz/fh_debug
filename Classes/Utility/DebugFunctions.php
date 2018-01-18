@@ -1316,8 +1316,8 @@ class DebugFunctions {
                         true
                     ) . chr(13) .
                     '<h3>' . $name . $type . '</h3>';
-                $out .= '<br/>' . $backTrace . chr(13) .
-                    '<hr/>' . chr(13);
+                $out .= '<br />' . $backTrace . chr(13) .
+                    '<hr />' . chr(13);
             }
         }
 
