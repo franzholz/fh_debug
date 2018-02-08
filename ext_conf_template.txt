@@ -1,5 +1,5 @@
   # cat=basic/enable; type=string; label=IP address of the client browser: Enter your current IP address ###IP###, if you want to debug this client's actions. (You see here only a marker if the TYPO3 extension patchem has been installed.)
-IPADDRESS = 127.0.0.1
+IPADDRESS = ::1
   # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debugBegin and debugEnd. The first debugBegin will initialize the debug.
 DEBUGBEGIN = 0
   # cat=basic/enable; type=string; label= Typo3 Mode: FE, BE, ALL or OFF. Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging only enabled in this Mode. Use BE only with caution.
