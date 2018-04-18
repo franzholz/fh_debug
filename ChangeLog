@@ -1,3 +1,7 @@
+2018-04-18  Franz Holzinger  <franz@ttproducts.de>
+    * new feature: Use the option MAXSIZE to set the maximum size for a debug file.
+    * convert the code from self into static variable and method calls.
+
 2018-01-17  Franz Holzinger  <franz@ttproducts.de>
     * changed display: Move the variable name into the middle and the backtrace in reverse order to the bottom of the debug line.
 

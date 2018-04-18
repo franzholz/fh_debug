@@ -42,4 +42,6 @@ OOPS_AN_ERROR_OCCURRED = 1
 PROXY = 0
   # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel
 TITLE = Debug for my website
+  # cat=basic/conf; type=int; label=Maximum file size MB: maximum size in MByte of the debug output HTML file.
+MAXFILESIZE = 3
 
