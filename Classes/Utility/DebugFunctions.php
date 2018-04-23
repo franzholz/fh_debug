@@ -81,7 +81,7 @@ class DebugFunctions {
     static private $sysLog = false;
     static private $proxyForward = false;
     static private $title = 'debug file';
-    static private $maxFileSize = 30;
+    static private $maxFileSize = 3.0;
     static private $maxFileSizeReached = false;
 
     public function __construct (
@@ -132,7 +132,7 @@ class DebugFunctions {
         static::setHtml($extConf['HTML']);
         static::setProxyForward($extConf['PROXY']);
         static::setTitle($extConf['TITLE']);
-        static::setMaxFileSize($extConf['MAXFILESIZE']);
+        static::setMaxFileSize(floatval($extConf['MAXFILESIZE']));
 
         $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
         static::setTypo3Mode($typo3Mode);
@@ -1536,22 +1536,23 @@ class DebugFunctions {
                     false,
                     $debugLevel
                 );
-            }
-            $fileInformation = fstat(static::$hndFile);
 
-            if (is_array($fileInformation)) {
-                $size = round(($fileInformation['size'] / 1048576), 3);
-                if ($size > self::getMaxFileSize()) {
-                    self::setMaxFileSizeReached(true);
-                    static::writeOut(
-                        $size . ' MByte',
-                        'maximum filesize reached',
-                        0,
-                        static::getHtml(),
-                        false,
-                        false,
-                        0
-                    );
+                $fileInformation = fstat(static::$hndFile);
+
+                if (is_array($fileInformation)) {
+                    $size = round(($fileInformation['size'] / 1048576), 3);
+                    if ($size > self::getMaxFileSize()) {
+                        self::setMaxFileSizeReached(true);
+                        static::writeOut(
+                            $size . ' MByte',
+                            'fh_debug: Maximum filesize reached for the debug output file.',
+                            0,
+                            static::getHtml(),
+                            false,
+                            false,
+                            0
+                        );
+                    }
                 }
             }
 
