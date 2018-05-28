@@ -2,9 +2,6 @@
 
 namespace JambageCom\FhDebug\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-
 /***************************************************************
 *  Copyright notice
 *
@@ -27,6 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
 * Debug extension.
@@ -79,6 +78,7 @@ class DebugFunctions {
     static private $debugFileMode = 'wb';
     static private $devLog = false;
     static private $sysLog = false;
+    static private $sysLogExclude = '';
     static private $proxyForward = false;
     static private $title = 'debug file';
     static private $maxFileSize = 3.0;
@@ -111,7 +111,7 @@ class DebugFunctions {
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
 
-//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
+  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), true) . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -129,6 +129,7 @@ class DebugFunctions {
         static::setDebugFileMode($extConf['DEBUGFILEMODE']);
         static::setDevLog($extConf['DEVLOG']);
         static::setSysLog($extConf['SYSLOG']);
+        static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
         static::setHtml($extConf['HTML']);
         static::setProxyForward($extConf['PROXY']);
         static::setTitle($extConf['TITLE']);
@@ -278,6 +279,16 @@ class DebugFunctions {
 
     static public function getSysLog () {
         return static::$sysLog;
+    }
+
+    static public function setSysLogExclude (
+        $value
+    ) {
+        static::$sysLogExclude = $value;
+    }
+
+    static public function getSysLogExclude () {
+        return static::$sysLogExclude;
     }
 
     static public function setHtml (
@@ -711,13 +722,13 @@ class DebugFunctions {
                 ) {
                     GeneralUtility::devLog(
                         'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
-                        'fh_debug',
+                        FH_DEBUG_EXT,
                         0
                     );
 
                     GeneralUtility::sysLog(
                         'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
-                        'fh_debug',
+                        FH_DEBUG_EXT,
                         0
                     );
 // error_log('initFile no file handle ERROR = ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
@@ -728,7 +739,7 @@ class DebugFunctions {
 
                     GeneralUtility::devLog(
                         'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "',
-                        'fh_debug',
+                        FH_DEBUG_EXT,
                         0
                     );
                 }
@@ -1445,9 +1456,28 @@ class DebugFunctions {
         if (
             static::getSysLog() &&
             isset($name) &&
-            strpos($name, 'sysLog from fh_debug') !== false
+            strpos($name, 'sysLog from ' . FH_DEBUG_EXT) !== false
         ) {
             $debugSysLog = true;
+
+            if (
+                is_array($variable) &&
+                isset($variable['backTrace']) &&
+                is_array($variable['backTrace']) &&
+                isset($variable['backTrace']['args']) &&
+                is_array($variable['backTrace']['args']) &&
+                isset($variable['backTrace']['args']['0'])
+            ) {
+                $sysLogTopic = $variable['backTrace']['args']['0'];
+                $expression = '/' . preg_quote(static::getSysLogExclude(), '/') . '/';
+                preg_match($expression, $sysLogTopic, $matches);
+                if (
+                    !empty($matches) &&
+                    !empty($matches['0'])
+                ) {
+                    $debugSysLog = false;
+                }
+            }
         }
 
         if (
@@ -1481,8 +1511,8 @@ class DebugFunctions {
 
                     $cssPath = '';
                     $extConf = static::getExtConf();
-                    if ($extConf['CSSPATH'] == 'EXT:fh_debug') {
-                        $cssPath = '../' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath('fh_debug') . 'Resources/Public/Css/';
+                    if ($extConf['CSSPATH'] == 'EXT:' . FH_DEBUG_EXT) {
+                        $cssPath = '../' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
@@ -1545,7 +1575,7 @@ class DebugFunctions {
                         self::setMaxFileSizeReached(true);
                         static::writeOut(
                             $size . ' MByte',
-                            'fh_debug: Maximum filesize reached for the debug output file.',
+                            FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
                             0,
                             static::getHtml(),
                             false,

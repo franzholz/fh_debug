@@ -1,5 +1,5 @@
-Use this extension to debug the PHP code of TYPO3 and TYPO3 extensions in the Front End or Back End.
-Consider to also install **debug_mysql_db** if you want to debug the generated SQL queries or track the PHP errors in the table **sys_log** or the Developer traces written to the TYPO3 function **devLog**.
+Use this extension to generate debug output files for the PHP code of TYPO3 and TYPO3 extensions in the Front End or Back End if they have PHP debug statements.
+Consider to also install **debug_mysql_db** if you want to debug the generated SQL queries or track down the PHP errors in the table **sys_log** or the Developer traces written to the TYPO3 function **devLog**.
 
 The debug output is written into a HTML debug output file. All the configuration is done in the Extension Manager for fh_debug. You can design the output by the CSS file fhdebug.css.
 If you have a lot of debug output then you should put debugBegin and debugEnd commands around the PHP debug commands in order to have fewer debug output in the file. This will activate and deactivate the debug output.

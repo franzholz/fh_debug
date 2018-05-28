@@ -37,7 +37,7 @@ class CoreHooks {
 
         if (!class_exists('\\JambageCom\\FhDebug\\Utility\\DebugFunctions')) {
 
-            require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
+            require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
             // some configuration:
             \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
             // if you use the debug HTML file:
@@ -81,7 +81,7 @@ class CoreHooks {
     * @param	array		$devLogArray: log data array
     * @return	void
     */
-    static public function devLog($devLogArray) {
+    static public function devLog ($devLogArray) {
         $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
 
         if ($GLOBALS['error'] instanceof $class) {
@@ -110,7 +110,10 @@ class CoreHooks {
     static public function sysLog($params) {
         $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
 
-        if ($GLOBALS['error'] instanceof $class) {
+        if (
+            $GLOBALS['error'] instanceof $class &&
+            !isset($params['initLog'])
+        ) {
             $params['backTrace'] = $params['backTrace']['0'];
             debug($params, 'sysLog from fh_debug: $params');
         }

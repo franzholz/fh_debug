@@ -20,6 +20,8 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\AbstractContentObject;
 
+use JambageCom\FhDebug\Utility\DebugFunctions;
+
 /**
  * Exception handler class for content object rendering
  */
@@ -63,12 +65,19 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
         $typo3String = DIRECTORY_SEPARATOR . self::TYPO3_DIR;
         $typo3Position = strrpos($exception->getFile(), $typo3String);
         $result .= CRLF . $exception->getMessage() . CRLF . ' exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine() . CRLF;
-        $traceArray = $exception->getTrace();
-        debug ($traceArray, 'fh_debug  handle $traceArray'); // keep this
+        $trail = $exception->getTrace();
         $result .= 'fh_debug trace:' . CRLF;
-        $maxCount = 7;
+        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_EXCEPTION'];
 
-        foreach ($traceArray as $trace) {
+        $traceArray =
+            DebugFunctions::getTraceArray(
+                $trail,
+                $maxCount,
+                0
+            );
+        debug ($traceArray, 'fh_debug exception handler exception trace'); // keep this
+
+        foreach ($trail as $trace) {
             $typo3Position = strrpos($trace['file'], $typo3String);
             $result .= 'file: ' . substr($trace['file'], $typo3Position) . '" line:' .
                 $trace['line'] . ' function:' . $trace['function'];

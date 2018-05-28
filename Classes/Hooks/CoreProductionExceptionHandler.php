@@ -31,9 +31,15 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
      */
     public function echoExceptionWeb($exception)
     {
-        debugBegin();
-        debug('CoreProductionExceptionHandler::echoExceptionWeb', $exception);
-        debugEnd();
+        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_EXCEPTION'];
+        $trail = $exception->getTrace();
+        $traceArray =
+            DebugFunctions::getTraceArray(
+                $trail,
+                $maxCount,
+                0
+            );
+        debug ($traceArray, 'fh_debug exception handler exception trace'); // keep this
 
         $this->sendStatusHeaders($exception);
         $this->writeLogEntries($exception, self::CONTEXT_WEB);
@@ -42,6 +48,10 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
             $this->getMessage($exception),
             $this->getTitle($exception)
         );
+        debugBegin();
+        debug($messageObj, 'CoreProductionExceptionHandler::echoExceptionWeb $messageObj'); // keep this
+        debugEnd();
+
         $messageObj->output();
     }
 
@@ -57,10 +67,6 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
         if ($this->discloseExceptionInformation($exception) && method_exists($exception, 'getTitle') && $exception->getTitle() !== '') {
             return htmlspecialchars($exception->getTitle());
         } else {
-            debugBegin();
-            debug('CoreProductionExceptionHandler::getTitle', $exception);
-            debugEnd();
-
             return $this->defaultTitle;
         }
     }
