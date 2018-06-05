@@ -42,6 +42,7 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
                 $GLOBALS['error']->getTypo3Mode() == 'ALL' ||
                 $GLOBALS['error']->getTypo3Mode() == 'BE'
             )
+            // Other comparisons like the IP address is not needed because this xclass would not have been activated in such a case.
         ) {
             // do nothing
         } else {
