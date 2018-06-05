@@ -111,7 +111,7 @@ class DebugFunctions {
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
 
-  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
+//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), true) . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -525,14 +525,14 @@ class DebugFunctions {
         $typo3Mode = static::getTypo3Mode();
 //  error_log ('verifyTypo3Mode $typo3Mode ' . $typo3Mode . PHP_EOL, 3, static::getErrorLogFilename());
 
-        $bIsAllowed =
+        $result =
             (
                 $typo3Mode == $verifyMode ||
                 $typo3Mode == 'ALL'
             );
 
-//  error_log ('verifyTypo3Mode $bIsAllowed ' . $bIsAllowed . PHP_EOL, 3, static::getErrorLogFilename());
-        return $bIsAllowed;
+//  error_log ('verifyTypo3Mode $result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
+        return $result;
     }
 
     static public function initIpAddress (
@@ -1609,9 +1609,9 @@ class DebugFunctions {
 
         if (static::getUseErrorLog()) {
             $errorLogFilename = static::getErrorLogFilename();
-            $result = 'The debug messages have been written to the files "' . $debugFilename . '" and "' . $errorLogFilename . '"';
+            $result = FH_DEBUG_EXT . ': Debug messages have been written to the files "' . $debugFilename . '" and "' . $errorLogFilename . '"';
         } else {
-            $result = 'The debug messages have been written to the file "' . $debugFilename . '"';
+            $result = FH_DEBUG_EXT . ': Debug messages have been written to the file "' . $debugFilename . '"';
         }
 
         return $result;
@@ -1649,7 +1649,8 @@ class DebugFunctions {
         }
     }
 
-    public function __destruct () {
+    public function __destruct ()
+    {
 
         static::close();
     }

@@ -1,3 +1,5 @@
+2018-06-05  Franz Holzinger  <franz@ttproducts.de>
+    * bugfix: only use the hooks if the IP addresses and the TYPO3 mode match
 
 2018-05-28  Franz Holzinger  <franz@ttproducts.de>
     * new feature: option to set a regular expression for sys_log entries which will not produce an entry in the debug log. This is needed in order not to overwrite a debug file with uninteresting no_cache warnings.

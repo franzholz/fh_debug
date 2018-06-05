@@ -33,7 +33,7 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
     public function routeAction(ServerRequestInterface $request, ResponseInterface $response)
     {
     // FHO start
-        $class = '\JambageCom\FhDebug\Utility\DebugFunctions';
+        $class = \JambageCom\FhDebug\Utility\DebugFunctions::class;
         if (
             isset($GLOBALS['error']) &&
             is_object($GLOBALS['error']) &&
