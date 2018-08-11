@@ -9,7 +9,7 @@ $EM_CONF[$_EXTKEY] = array(
     'description' => 'This generates a PHP debug output file. And this is a sys_log and devLog data logger',
     'category' => 'misc',
     'shy' => 0,
-    'version' => '0.6.2',
+    'version' => '0.6.3',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',
@@ -29,7 +29,7 @@ $EM_CONF[$_EXTKEY] = array(
     'constraints' => array(
         'depends' => array(
             'php' => '5.5.0-7.99.99',
-            'typo3' => '7.6.18-8.99.99',
+            'typo3' => '7.6.18-9.3.99',
         ),
         'conflicts' => array(
         ),

@@ -4,6 +4,8 @@
 2018-05-28  Franz Holzinger  <franz@ttproducts.de>
     * new feature: option to set a regular expression for sys_log entries which will not produce an entry in the debug log. This is needed in order not to overwrite a debug file with uninteresting no_cache warnings.
     * do not debug sys_log if $params['initLog'] is true
+2018-08-11 Franz Holzinger <franz@ttproducts.de>
+    * support for TYPO3 9.3.x: see the manual for instructions
 
 2018-04-18  Franz Holzinger  <franz@ttproducts.de>
     * new feature: Use the option MAXSIZE to set the maximum size for a debug file.
