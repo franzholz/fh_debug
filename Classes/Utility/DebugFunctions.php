@@ -1291,8 +1291,7 @@ class DebugFunctions {
         $recursiveDepth,
         $html,
         $showTrace = true,
-        $showHeader = false,
-        $debugLevel = E_DEBUG
+        $showHeader = false
     ) {
         $type = '';
         $out = '';
@@ -1322,8 +1321,7 @@ class DebugFunctions {
                     static::getTraceArray(
                         $trail,
                         static::getTraceDepth(),
-                        0,
-                        $debugLevel
+                        0
                     );
                 $traceArray = array_reverse($traceArray);
                 $backTrace = static::printTraceLine($traceArray, $html);
@@ -1422,7 +1420,7 @@ class DebugFunctions {
         $line = '*line*',
         $file = '*file*',
         $recursiveDepth = 3,
-        $debugLevel = E_DEBUG
+        $debugLevel = 'E_DEBUG'
     ) {
 // error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // 
@@ -1552,8 +1550,7 @@ class DebugFunctions {
                         $recursiveDepth,
                         static::getHtml(),
                         false,
-                        true,
-                        $debugLevel
+                        true
                     );
                 }
 
@@ -1563,8 +1560,7 @@ class DebugFunctions {
                     $recursiveDepth,
                     static::getHtml(),
                     true,
-                    false,
-                    $debugLevel
+                    false
                 );
 
                 $fileInformation = fstat(static::$hndFile);
@@ -1579,8 +1575,7 @@ class DebugFunctions {
                             0,
                             static::getHtml(),
                             false,
-                            false,
-                            0
+                            false
                         );
                     }
                 }
@@ -1629,8 +1624,7 @@ class DebugFunctions {
                 static::getRecursiveDepth(),
                 static::getHtml(),
                 false,
-                true,
-                0
+                true
             );
 
             static::$instanceCount--;
