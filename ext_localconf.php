@@ -4,31 +4,31 @@ if (!defined ('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-define('FH_DEBUG_EXT', $_EXTKEY);
+define('FH_DEBUG_EXT', 'fh_debug');
 
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
 if (
-    isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]) &&
-    is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
+    isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
+    is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
 ) {
-    $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
+    $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
 } else {
     unset($tmpArray);
 }
 
 if (isset($_EXTCONF) && is_array($_EXTCONF)) {
-    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY] = $_EXTCONF;
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = $_EXTCONF;
     if (isset($tmpArray) && is_array($tmpArray)) {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY], $tmpArray);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT], $tmpArray);
     }
 }
 
 if (
     defined('TYPO3_version') &&
     version_compare(TYPO3_version, '6.0.0', '>=') &&
-    isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]) &&
-    is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY])
+    isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
+    is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
 ) {
     $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
     if (
@@ -36,7 +36,7 @@ if (
         !is_object($GLOBALS['error']) ||
         !($GLOBALS['error'] instanceof $class)
     ) {
-        $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY];
+        $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
         $myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
         $ipIsAllowed = false;
         $ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($ipIsAllowed);
@@ -53,11 +53,11 @@ if (
             \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
 
             if ($newExtConf['DEVLOG']) {
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
+                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
             }
 
             if ($newExtConf['SYSLOG']) {
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
+                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
             }
 
             if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
@@ -69,7 +69,7 @@ if (
                 );
             }
 
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][$_EXTKEY] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
 
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
                 'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'

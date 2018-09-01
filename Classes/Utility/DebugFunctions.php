@@ -386,7 +386,7 @@ class DebugFunctions {
     static public function setMaxFileSize (
         $value
     ) {
-        static::$maxFileSize = $value;
+        static::$maxFileSize = (int) $value;
     }
 
     static public function getMaxFileSize () {
@@ -1567,7 +1567,11 @@ class DebugFunctions {
 
                 if (is_array($fileInformation)) {
                     $size = round(($fileInformation['size'] / 1048576), 3);
-                    if ($size > self::getMaxFileSize()) {
+                    $maxSize = self::getMaxFileSize();
+                    if (
+                        $size > $maxSize &&
+                        $maxSize > 0
+                    ) {
                         self::setMaxFileSizeReached(true);
                         static::writeOut(
                             $size . ' MByte',

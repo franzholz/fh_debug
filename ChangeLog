@@ -1,3 +1,7 @@
+2018-09-01 Franz Holzinger <franz@ttproducts.de>
+     * add a Patches folder with the necessary patch of the file GlobalDebugFunctions.php for TYPO3 9.3.3
+     * deprecation: do not use the variable $_EXTKEY any more.
+     * new feature: only check for a maximum file size if it is greater than 0
 
 2018-08-21 Franz Holzinger <franz@ttproducts.de>
     * support for TYPO3 8.7.x: Remove the parameter $debugLevel which has never been used.
