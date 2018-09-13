@@ -446,8 +446,6 @@ class DebugFunctions {
 
     static public function readIpAddress () {
         $ipAddress = '';
-// error_log ('readIpAddress $_SERVER ' . print_r($_SERVER, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
     // Nothing to do without any reliable information
         if (!isset ($_SERVER['REMOTE_ADDR'])) {
             return NULL;
@@ -571,8 +569,6 @@ class DebugFunctions {
     static public function init (
         $ipAddress
     ) {
-//  error_log ('init START ========================================== ' . PHP_EOL, 3, static::getErrorLogFilename());
-
         if (static::hasBeenInitialized()) {
 // error_log ('init Abbruch $bHasBeenInitialized' . PHP_EOL, 3, static::getErrorLogFilename());
             return false;
@@ -633,7 +629,6 @@ class DebugFunctions {
 
         static::setHasBeenInitialized(true);
         static::setIsInitialization(false);
-//  error_log ('init ENDE ========================================== '. PHP_EOL, 3, static::getErrorLogFilename());
         return true;
     }
 
@@ -744,7 +739,6 @@ class DebugFunctions {
                     );
                 }
 // error_log('initFile not writable directory "' . $path_parts['dirname'] . '"' . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log ('Pos 3 vor setActive false ' . PHP_EOL, 3, static::getErrorLogFilename() );
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
@@ -1201,7 +1195,6 @@ class DebugFunctions {
     }
 
     static public function processUser () {
-
         if (
             TYPO3_MODE == 'FE' &&
             static::getFeUserNames() != '' &&
@@ -1504,7 +1497,6 @@ class DebugFunctions {
 
                     $headerPostFix = '';
                     $headerValue = '';
-
 //  error_log('debug static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
 
                     $cssPath = '';

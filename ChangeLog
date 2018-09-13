@@ -1,3 +1,6 @@
+2018-09-13 Franz Holzinger <franz@ttproducts.de>
+     * important bugtracker entry 86220 based on 23899: debugBegin and debugEnd is missing in TYPO3 9.3.3
+
 2018-09-01 Franz Holzinger <franz@ttproducts.de>
      * add a Patches folder with the necessary patch of the file GlobalDebugFunctions.php for TYPO3 9.3.3
      * deprecation: do not use the variable $_EXTKEY any more.
