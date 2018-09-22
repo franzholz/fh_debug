@@ -18,4 +18,15 @@ function debug($variable = '', $title = null, $group = null)
     }
 }
 
+function debugBegin (...$parameters) {
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
+        \JambageCom\Fhdebug\Utility\DebugFunctions::debugBegin($parameters);
+    }
+}
+
+function debugEnd (...$parameters) {
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
+        \JambageCom\Fhdebug\Utility\DebugFunctions::debugEnd($parameters);
+    }
+}
 

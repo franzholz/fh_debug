@@ -1,3 +1,6 @@
+2018-09-22 Franz Holzinger <franz@ttproducts.de>
+     * bugfix for TYPO3 9.3: add debugBegin and debugEnd to the patch for TYPO3 9.3.3
+
 2018-09-13 Franz Holzinger <franz@ttproducts.de>
      * important bugtracker entry 86220 based on 23899: debugBegin and debugEnd is missing in TYPO3 9.3.3
 
