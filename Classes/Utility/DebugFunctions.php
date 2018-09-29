@@ -1096,6 +1096,21 @@ class DebugFunctions {
         return $result;
     }
 
+    static public function object2array ($instance)
+    {
+        $clone = (array) $instance;
+        $result = array();
+        $sourceKeys = $clone;
+
+        foreach ($clone as $key => $value) {
+            $aux = explode("\0", $key);
+            $newkey = $aux[count($aux) - 1];
+            $result[$newkey] = $sourceKeys[$key];
+        }
+
+        return $result;
+    }
+
     static public function printObjectVariable (
         $header,
         $variable,
@@ -1104,23 +1119,17 @@ class DebugFunctions {
         $html
     ) { // TODO: show private member variables
         //Instantiate the reflection object
-        $reflector = new \ReflectionClass($variable);
-        $properties = $reflector->getProperties();
+// error_log ('printObjectVariable $header = ' . print_r($header, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
-        $variableArray = array();
-        foreach($properties as $property) {
+        $variableArray = static::object2array($variable);
 
-            //Populating properties
-
-            $theProperty = $reflector->getProperty($property->getName());
-            $theProperty->setAccessible(true);
-            $variableArray[$property->getName()] = $theProperty->getValue($variable);
-        }
+// error_log ('printObjectVariable $variableArray = ' . print_r($variableArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         $classname = @get_class($variable);
         $header .= $classname;
         $result = static::printArrayVariable($header, $variableArray, $depth, $recursiveDepth, $html);
 
+// error_log ('printObjectVariable $result = ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -1148,7 +1157,7 @@ class DebugFunctions {
                     $html
                 );
         } else if (is_object($variable)) {
-            if (!$header) {
+            if ($header == '') {
                 $header = 'Object ';
             }
             $result =
@@ -1185,12 +1194,13 @@ class DebugFunctions {
                     $result = '<p>*RESOURCE*</p>';
                 } else {
                     $result = '<p>' . nl2br(htmlspecialchars((string) $variable)) . '</p>';
-// 	error_log ('printVariable Pos 5 $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
                 }
             } else {
                 $result = $variable;
             }
         }
+
+// 	error_log ('printVariable Ende $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -1295,7 +1305,7 @@ class DebugFunctions {
             $type = static::getTypeView($variable);
         }
 
-// error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+//   error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 //   error_log('writeOut $name ' . $name . PHP_EOL, 3, static::getErrorLogFilename());
 //   error_log('writeOut $recursiveDepth ' . $recursiveDepth . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -1415,9 +1425,8 @@ class DebugFunctions {
         $recursiveDepth = 3,
         $debugLevel = 'E_DEBUG'
     ) {
-// error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+// error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             GeneralUtility::inList(static::getIgnore(), $name)

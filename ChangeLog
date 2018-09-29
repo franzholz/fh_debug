@@ -1,3 +1,8 @@
+
+
+2018-09-29 Franz Holzinger <franz@ttproducts.de>
+    * improvement: replace the ReflectionClass and the methods getProperties and getProperty by a conversion function from object to array from http://php.net/manual/en/function.get-object-vars.php . This is needed because a stdClass object did not show any member variables.
+
 2018-09-22 Franz Holzinger <franz@ttproducts.de>
      * bugfix for TYPO3 9.3: add debugBegin and debugEnd to the patch for TYPO3 9.3.3
 
