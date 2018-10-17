@@ -1,4 +1,9 @@
+2018-10-17 Franz Holzinger <franz@ttproducts.de>
+     * Do not debug any output from sysLog if the exclude expression matches even if a debugBegin has been executed before.
+     * modification of composer.json
 
+2018-10-03 Franz Holzinger <franz@ttproducts.de>
+     * remove the reset file feature because it seems not to be useful
 
 2018-09-29 Franz Holzinger <franz@ttproducts.de>
     * improvement: replace the ReflectionClass and the methods getProperties and getProperty by a conversion function from object to array from http://php.net/manual/en/function.get-object-vars.php . This is needed because a stdClass object did not show any member variables.

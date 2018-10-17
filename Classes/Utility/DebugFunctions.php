@@ -594,17 +594,9 @@ class DebugFunctions {
             }
 
             if (!$bStartFileFound) {
-//  error_log('init backtrace: ' . print_r($backtrace, true) . PHP_EOL, 3, static::getErrorLogFilename());
-//   error_log('init cancelled because no STARTFILES for "' . $backtrace['0']['file'] . '"' . PHP_EOL, 3, static::getErrorLogFilename());
                 return false;
             }
         }
-
-        $resetFileFound = false;
-        if ($backtrace['0']['file'] == 'mod.php') {
-            $resetFileFound = true;
-        }
-//  error_log('init $resetFileFound: ' . $resetFileFound . PHP_EOL, 3, static::getErrorLogFilename());
 
         static::setIsInitialization(true);
 
@@ -664,7 +656,6 @@ class DebugFunctions {
                 }
 
                 if (
-                    $resetFileFound ||
                     $processCount > intval(static::getAppendDepth())
                 ) {
                     $processCount = 1;
@@ -889,6 +880,7 @@ class DebugFunctions {
                 !is_array($theTrail) ||
                 $theTrail['file'] == '' ||
                 $theTrail['line'] == '' ||
+                isset($theTrail['class']) &&
                 strpos($theTrail['class'], '\\FhDebug\\') !== false
             ) {
                 continue;
@@ -1452,6 +1444,7 @@ class DebugFunctions {
         }
 
         $debugSysLog = false;
+        $excludeSysLog = false;
 
         if (
             static::getSysLog() &&
@@ -1471,17 +1464,20 @@ class DebugFunctions {
                 $sysLogTopic = $variable['backTrace']['args']['0'];
                 $expression = '/' . preg_quote(static::getSysLogExclude(), '/') . '/';
                 preg_match($expression, $sysLogTopic, $matches);
+ 
                 if (
                     !empty($matches) &&
                     !empty($matches['0'])
                 ) {
                     $debugSysLog = false;
+                    $excludeSysLog = true;
                 }
             }
         }
 
         if (
             !$bControlMode &&
+            !$excludeSysLog &&
             (
                 $storeIsActive ||
                 static::bIsInitialization() ||
@@ -1489,7 +1485,6 @@ class DebugFunctions {
             ) &&
             !self::getMaxFileSizeReached()
         ) {
-// error_log ('debug Bearbeitung: Pos 7 vor setActive false ' . PHP_EOL, 3, static::getErrorLogFilename() );
 
             static::setActive(false);
 
