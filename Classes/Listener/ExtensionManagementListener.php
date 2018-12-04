@@ -34,15 +34,14 @@ namespace JambageCom\FhDebug\Listener;
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  */
-class ExtensionManagementListener {
+class ExtensionManagementListener
+{
+    public function executeOnSignal ($extensionKey = null)
+    {
+        if ($extensionKey == 'fh_debug') {
 
-
-    public function executeOnSignal ($extensionKey = null) {
-
-		if ($extensionKey == 'fh_debug') {
-
-			\JambageCom\FhDebug\DebugFunctions::truncateFile();
-		}
-	}
+            \JambageCom\FhDebug\DebugFunctions::truncateFile();
+        }
+    }
 }
 

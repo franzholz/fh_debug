@@ -33,8 +33,8 @@ namespace JambageCom\FhDebug\Hooks;
  *
  */
 class CoreHooks {
-    public function preprocessRequest () {
-
+    public function preprocessRequest ()
+    {
         if (!class_exists('\\JambageCom\\FhDebug\\Utility\\DebugFunctions')) {
 
             require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
@@ -107,7 +107,8 @@ class CoreHooks {
     * @param    array       $params: log data array
     * @return   void
     */
-    static public function sysLog($params) {
+    static public function sysLog($params)
+    {
         $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
 
         if (

@@ -34,9 +34,10 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  */
-class PatchemHooks {
-    public function buildConfigurationArray(&$params, $pObj) {
-
+class PatchemHooks
+{
+    public function buildConfigurationArray(&$params, $pObj)
+    {
         if (
             isset($params) &&
             is_array($params) &&
