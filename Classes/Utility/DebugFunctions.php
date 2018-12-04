@@ -57,7 +57,7 @@ class DebugFunctions {
     static private $bHasBeenInitialized = false;
     static private $bNeedsFileInit = true;
     static private $starttimeArray = array();
-    static private $bCreateFile = false;
+    static private $createFile = false;
     static private $hndProcessfile = false;
     static private $processCount = 0;
     static private $recursiveDepth = 3;
@@ -218,14 +218,10 @@ class DebugFunctions {
     static public function setDebugBegin (
         $value
     ) {
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::setDebugBegin : ' .  $value . PHP_EOL, 3, static::getErrorLogFilename());
-
         static::$debugBegin = (boolean) ($value);
     }
 
     static public function getDebugBegin () {
-// error_log('JambageCom\FhDebug\Utility\DebugFunctions::getDebugBegin : ' .  static::$debugBegin . PHP_EOL, 3, static::getErrorLogFilename());
-
         return static::$debugBegin;
     }
 
@@ -266,8 +262,6 @@ class DebugFunctions {
     }
 
     static public function getDevLog () {
-// error_log('getDevLog static::$devLog = ' . static::$devLog . PHP_EOL, 3, static::getErrorLogFilename());
-
         return static::$devLog;
     }
 
@@ -679,7 +673,7 @@ class DebugFunctions {
 //  	error_log ('initFile write static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
 
                 if (static::getAppendDepth() > 1) {
-                    if (static::$bCreateFile) {
+                    if (static::getCreateFile()) {
                         $openMode = 'w+b';
 // error_log('initFile $openMode Pos 1 = ' . $openMode . PHP_EOL, 3, static::getErrorLogFilename());
                     } else {
@@ -782,7 +776,12 @@ class DebugFunctions {
 
     static public function setCreateFile () {
 
-        static::$bCreateFile = true;
+        static::$createFile = true;
+    }
+
+    static public function getCreateFile () {
+
+        return static::$createFile;
     }
 
     static public function debugBegin () {
