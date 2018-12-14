@@ -1,3 +1,6 @@
+2018-12-14 Franz Holzinger <franz@ttproducts.de>
+    * new feature: allow a prefix before the path to the CSS file
+
 2018-10-17 Franz Holzinger <franz@ttproducts.de>
      * Do not debug any output from sysLog if the exclude expression matches even if a debugBegin has been executed before.
      * modification of composer.json

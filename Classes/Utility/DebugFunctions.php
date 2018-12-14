@@ -109,6 +109,7 @@ class DebugFunctions {
 
         static::setErrorLogFile($errorLogFile);
         static::setDebugFile($debugFile);
+        static::setDebugFileMode($extConf['DEBUGFILEMODE']);
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -127,7 +128,6 @@ class DebugFunctions {
         static::setDebugBegin($extConf['DEBUGBEGIN']);
         static::setTraceFields($extConf['TRACEFIELDS']);
         static::setFeUserNames($extConf['FEUSERNAMES']);
-        static::setDebugFileMode($extConf['DEBUGFILEMODE']);
         static::setDevLog($extConf['DEVLOG']);
         static::setSysLog($extConf['SYSLOG']);
         static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
@@ -138,8 +138,6 @@ class DebugFunctions {
 
         $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
         static::setTypo3Mode($typo3Mode);
-
-//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ENDE ' . PHP_EOL, 3, static::getErrorLogFilename());
     }
 
     static public function setTypo3Mode
@@ -484,7 +482,7 @@ class DebugFunctions {
         $ipAddress = '';
     // Nothing to do without any reliable information
         if (!isset ($_SERVER['REMOTE_ADDR'])) {
-            return NULL;
+            return null;
         }
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -1539,16 +1537,18 @@ class DebugFunctions {
 
 // error_log('debug static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
                 if (static::$bWriteHeader) {
-// error_log('debug static::$processCount = ' . static::$processCount . PHP_EOL, 3, static::getErrorLogFilename());
 
                     $headerPostFix = '';
                     $headerValue = '';
-//  error_log('debug static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
 
                     $cssPath = '';
                     $extConf = static::getExtConf();
-                    if ($extConf['CSSPATH'] == 'EXT:' . FH_DEBUG_EXT) {
-                        $cssPath = '../' . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
+                    if (($position = strpos($extConf['CSSPATH'], 'EXT:' . FH_DEBUG_EXT)) !== false) {
+                        $subdirectory = '';
+                        if ($position > 0) {
+                            $subdirectory = substr($extConf['CSSPATH'], 0, $position);
+                        }
+                        $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
@@ -1674,7 +1674,7 @@ class DebugFunctions {
             if (!static::$instanceCount) {
                 fclose(static::$hndFile);
                 static::setHasBeenInitialized(false);
-                static::$hndFile = NULL; // this is a static class which remains even after the closing of the object
+                static::$hndFile = null; // this is a static class which remains even after the closing of the object
             } else {
                 fflush(static::$hndFile);
             }
