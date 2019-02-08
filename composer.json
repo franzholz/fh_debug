@@ -30,7 +30,7 @@
   ],
   "replace": {
     "fh_debug": "self.version",
-    "typo3-ter/fh-debug": "self.version"
+    "jambagecom/fh-debug": "self.version"
   },
   "require": {
     "php": ">=5.5.0",

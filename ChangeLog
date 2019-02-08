@@ -1,3 +1,6 @@
+2019-02-08 Franz Holzinger <franz@ttproducts.de>
+    * new feature: Determine the relative path to the domain for TYPO3 in order to determine the path to the CSS file
+
 2018-12-14 Franz Holzinger <franz@ttproducts.de>
     * new feature: allow a prefix before the path to the CSS file
 

@@ -64,7 +64,7 @@ class DebugFunctions {
     static private $traceDepth = 5;
     static private $appendDepth = 3;
     static private $html = true;
-    static private $bWriteHeader = false;
+    static private $headerWritten = false;
     static private $instanceCount = 0;
     static private $errorLogFilename = '';
     static private $debugFilename = '';
@@ -715,8 +715,8 @@ class DebugFunctions {
                 $filename != '' &&
                 is_writable($path_parts['dirname'])
             ) {
-                static::$bWriteHeader = static::getHtml();
-//  	error_log ('initFile write static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
+                static::$headerWritten = static::getHtml();
+//  	error_log ('initFile write static::$headerWritten = ' . static::$headerWritten . PHP_EOL, 3, static::getErrorLogFilename());
 
                 if (static::getAppendDepth() > 1) {
                     if (static::getCreateFile()) {
@@ -1535,8 +1535,8 @@ class DebugFunctions {
                     static::$bNeedsFileInit = false;
                 }
 
-// error_log('debug static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
-                if (static::$bWriteHeader) {
+// error_log('debug static::$headerWritten = ' . static::$headerWritten . PHP_EOL, 3, static::getErrorLogFilename());
+                if (static::$headerWritten) {
 
                     $headerPostFix = '';
                     $headerValue = '';
@@ -1544,17 +1544,28 @@ class DebugFunctions {
                     $cssPath = '';
                     $extConf = static::getExtConf();
                     if (($position = strpos($extConf['CSSPATH'], 'EXT:' . FH_DEBUG_EXT)) !== false) {
+//  error_log('$_SERVER = ' . print_r($_SERVER, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         $subdirectory = '';
                         if ($position > 0) {
                             $subdirectory = substr($extConf['CSSPATH'], 0, $position);
+                        } else {
+                            $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
+                            if (
+                                is_array($slashArray) &&
+                                count($slashArray) > 1
+                            ) {
+                                array_pop($slashArray);
+                                $subdirectory = implode('/', $slashArray);
+                                $subdirectory .= '/';
+                            }
                         }
                         $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
+//  error_log('$cssPath = ' . $cssPath . PHP_EOL, 3, static::getErrorLogFilename());
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
                     static::writeHeader($cssPath . $extConf['CSSFILE']);
-                    static::$bWriteHeader = false;
-//  error_log('nach  static::$bWriteHeader = ' . static::$bWriteHeader . PHP_EOL, 3, static::getErrorLogFilename());
+                    static::$headerWritten = false;
 
 // error_log('static::$starttimeArray: ' . print_r(static::$starttimeArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
                     if (count(static::$starttimeArray)) {
