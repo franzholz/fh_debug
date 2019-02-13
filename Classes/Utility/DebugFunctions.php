@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2018 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2019 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -1525,7 +1525,6 @@ class DebugFunctions {
             ) &&
             !self::getMaxFileSizeReached()
         ) {
-
             static::setActive(false);
 
             if (static::$bUserAllowed) {
@@ -1548,6 +1547,7 @@ class DebugFunctions {
                         $subdirectory = '';
                         if ($position > 0) {
                             $subdirectory = substr($extConf['CSSPATH'], 0, $position);
+//  error_log('Pos 1 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         } else {
                             $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
                             if (
@@ -1558,6 +1558,12 @@ class DebugFunctions {
                                 $subdirectory = implode('/', $slashArray);
                                 $subdirectory .= '/';
                             }
+                            if (TYPO3_MODE == 'BE') {
+                                $position = strpos($subdirectory, 'typo3/');
+                                    // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
+                                $subdirectory = substr($subdirectory, 0, $position);
+                            }
+//  error_log('Pos 2 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         }
                         $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
 //  error_log('$cssPath = ' . $cssPath . PHP_EOL, 3, static::getErrorLogFilename());
@@ -1567,7 +1573,6 @@ class DebugFunctions {
                     static::writeHeader($cssPath . $extConf['CSSFILE']);
                     static::$headerWritten = false;
 
-// error_log('static::$starttimeArray: ' . print_r(static::$starttimeArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
                     if (count(static::$starttimeArray)) {
                         $headerPostFix = static::$starttimeArray['1'];
                         $headerValue = static::$starttimeArray['0'];
