@@ -48,4 +48,8 @@ PROXY = 0
 TITLE = Debug for my website
   # cat=basic/conf; type=int; label=Maximum file size MB: maximum size in MByte of the debug output HTML file.
 MAXFILESIZE = 3
+  # cat=basic/conf; type=string; label=Date Time format: see the PHP date function for the format, e.g. H:i:s  d.m.Y
+DATETIME = H:i:s  d.m.Y
+
+
 

@@ -1,3 +1,6 @@
+2019-03-03 Franz Holzinger <franz@ttproducts.de>
+    * new feature: Make the date time format configurable. Add a date time stamp with each debugBegin and debugEnd.
+
 2019-02-08 Franz Holzinger <franz@ttproducts.de>
     * new feature: Determine the relative path to the domain for TYPO3 in order to determine the path to the CSS file
 

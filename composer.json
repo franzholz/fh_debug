@@ -30,11 +30,11 @@
   ],
   "replace": {
     "fh_debug": "self.version",
-    "jambagecom/fh-debug": "self.version"
+    "typo3-ter/fh-debug": "self.version"
   },
   "require": {
     "php": ">=5.5.0",
-    "typo3/cms-core": ">=7.6,<9.4"
+    "typo3/cms-core": ">=7.6,<9.6"
   },
   "autoload": {
     "psr-4": {

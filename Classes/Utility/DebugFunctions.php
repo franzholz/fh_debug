@@ -83,6 +83,7 @@ class DebugFunctions {
     static private $title = 'debug file';
     static private $maxFileSize = 3.0;
     static private $maxFileSizeReached = false;
+    static private $dateTime = 'l jS \of F Y h:i:s A';
 
     public function __construct (
         $extConf
@@ -135,6 +136,9 @@ class DebugFunctions {
         static::setProxyForward($extConf['PROXY']);
         static::setTitle($extConf['TITLE']);
         static::setMaxFileSize(floatval($extConf['MAXFILESIZE']));
+        if ($extConf['DATETIME'] != '') {
+            static::setDateTime($extConf['DATETIME']);
+        }
 
         $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
         static::setTypo3Mode($typo3Mode);
@@ -423,6 +427,18 @@ class DebugFunctions {
     static public function getMaxFileSize ()
     {
         return static::$maxFileSize;
+    }
+
+    static public function setDateTime (
+        $value
+    )
+    {
+        static::$dateTime = $value;
+    }
+
+    static public function getDateTime ()
+    {
+        return static::$dateTime;
     }
 
     static public function hasError ()
@@ -739,7 +755,7 @@ class DebugFunctions {
                     $ipAddress = static::readIpAddress();
                     static::$starttimeArray =
                         array(
-                            date('H:i:s  d.m.Y') . '  (' . $ipAddress . ')',
+                            date(static::getDateTime()) . '  (' . $ipAddress . ')',
                             'start time, date and IP of debug session (mode "' . $openMode . '")'
                         );
                 } else if (
@@ -848,7 +864,7 @@ class DebugFunctions {
 
                 $ipAddress = static::readIpAddress();
                 static::debug(
-                    'debugBegin (' . $ipAddress . ') BEGIN [--->',
+                    'debugBegin (' . date(static::getDateTime()) . ', ' . $ipAddress . ') BEGIN [--->',
                     'debugBegin',
                     '',
                     '',
@@ -867,7 +883,7 @@ class DebugFunctions {
             if (static::getDebugBegin()) {
                 $ipAddress = static::readIpAddress();
                 static::debug(
-                    'debugEnd (' . $ipAddress . ') END <---]',
+                    'debugEnd (' . date(static::getDateTime()) . ', ' . $ipAddress . ') END <---]',
                     'debugEnd',
                     '',
                     '',
@@ -1669,7 +1685,7 @@ class DebugFunctions {
     {
         if (static::$hndFile) {
 
-            $headerValue = date('H:i:s  d.m.Y') . '  (' . static::readIpAddress() . ')';
+            $headerValue = date(static::getDateTime()) . '  (' . static::readIpAddress() . ')';
             $head = '=== END time, date and IP of debug session  ===';
 
             static::writeOut(
