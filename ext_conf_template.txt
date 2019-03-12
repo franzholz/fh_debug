@@ -16,6 +16,8 @@ USE_ERROR_LOG = 0
 IGNORE =
   # cat=basic/enable; type=string; label= start files: names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
 STARTFILES =
+  # cat=basic/enable; type=string; label= part files: names of any of the PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the backtrace.
+PARTFILES =
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
 DEBUGFILEMODE = wb
   # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible fiel names: file, line, function, class, object, type, args

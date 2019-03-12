@@ -1,4 +1,11 @@
-2019-03-03 Franz Holzinger <franz@ttproducts.de>
+2019-03-12 Franz Holzinger <franz@ttproducts.de>
+    * new feature: partfiles give a list of files from which one must be included in the backtrace in order to generate a debug output
+
+2019-03-06 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: Do not add the id parameter to the title if append is used, because the debug output can come from many pages.
+    * new feature: add the id parameter to debugBegin and debugEnd
+
+2019-03-02 Franz Holzinger <franz@ttproducts.de>
     * new feature: Make the date time format configurable. Add a date time stamp with each debugBegin and debugEnd.
 
 2019-02-08 Franz Holzinger <franz@ttproducts.de>

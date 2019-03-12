@@ -51,11 +51,11 @@ class DebugFunctions {
     static protected $useErrorLog = false;
 
     static private $username;
-    static private $bUserAllowed = true;
+    static private $isUserAllowed = true;
     static private $extConf = array();
     static private $hndFile = 0;
-    static private $bHasBeenInitialized = false;
-    static private $bNeedsFileInit = true;
+    static private $hasBeenInitialized = false;
+    static private $needsFileInit = true;
     static private $starttimeArray = array();
     static private $createFile = false;
     static private $hndProcessfile = false;
@@ -70,6 +70,7 @@ class DebugFunctions {
     static private $debugFilename = '';
     static private $typo3Mode = 'ALL';
     static private $startFiles = '';
+    static private $partFiles = '';
     static private $ignore = '';
     static private $ipAddress = '127.0.0.1';
     static private $debugBegin = false;
@@ -122,6 +123,7 @@ class DebugFunctions {
         static::setTraceDepth($extConf['TRACEDEPTH']);
         static::setAppendDepth($extConf['APPENDDEPTH']);
         static::setStartFiles($extConf['STARTFILES']);
+        static::setPartFiles($extConf['PARTFILES']);
 
         static::setIgnore($extConf['IGNORE']);
 
@@ -202,6 +204,18 @@ class DebugFunctions {
     static public function getStartFiles ()
     {
         return static::$startFiles;
+    }
+
+    static public function setPartFiles (
+        $value
+    )
+    {
+        static::$partFiles = trim($value);
+    }
+
+    static public function getPartFiles ()
+    {
+        return static::$partFiles;
     }
 
     static public function setIgnore (
@@ -453,7 +467,10 @@ class DebugFunctions {
     {
         $title = static::getTitle();
 
-        if (TYPO3_MODE == 'FE') {
+        if (
+            TYPO3_MODE == 'FE' &&
+            !static::getAppendDepth()
+        ) {
             $title .= ' id=' . $GLOBALS['TSFE']->id;
         }
 
@@ -624,43 +641,80 @@ class DebugFunctions {
         $ipAddress
     )
     {
-        if (static::hasBeenInitialized()) {
-// error_log ('init Abbruch $bHasBeenInitialized' . PHP_EOL, 3, static::getErrorLogFilename());
+        $result = true;
+        $startFiles = static::getStartFiles();
+        $partFiles = static::getPartFiles();
+// error_log('init $startFiles: ' . $startFiles . PHP_EOL, 3, static::getErrorLogFilename());
+        $initialized = static::hasBeenInitialized();
+
+        if (
+            $initialized &&
+            $startFiles == '' &&
+            $partFiles == ''
+        ) {
             return false;
         }
 
 //  error_log('init $ipAddress: ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
 
-        $extConf = static::getExtConf();
-        $trail = debug_backtrace(false);
+        $trail = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $backtrace = static::getTraceArray($trail);
-        $startFiles = static::getStartFiles();
 
-        if ($startFiles != '') {
+        if ($startFiles != '' && !empty($backtrace)) {
             $startFileArray = GeneralUtility::trimExplode(',', $startFiles);
-            $bStartFileFound = false;
-            if (is_array($startFileArray)) {
-                foreach ($startFileArray as $startFile) {
-                    if ($backtrace['0']['file'] == $startFile) {
-                        $bStartFileFound = true;
-                        break;
-                    }
+            $startFileFound = false;
+            $backtraceRow = current($backtrace);
+
+            foreach ($startFileArray as $startFile) {
+                if ($backtraceRow['file'] == $startFile) {
+                    $startFileFound = true;
+                    break;
                 }
             }
 
-            if (!$bStartFileFound) {
-                return false;
+            if (!$startFileFound) {
+                $result = false;
+            }
+        }
+
+        if ($partFiles != '' && !empty($backtrace)) {
+            $partFileArray = GeneralUtility::trimExplode(',', $partFiles);
+            $partFileFound = false;
+
+            foreach ($backtrace as $backtraceRow) {
+
+                foreach ($partFileArray as $partFile) {
+                    if ($backtraceRow['file'] == $partFile) {
+                        $partFileFound = true;
+                        break;
+                    }
+                }
+
+                if ($partFileFound) {
+                    break;
+                }
+            } 
+
+            if (!$partFileFound) {
+                $result = false;
             }
         }
 
         static::setIsInitialization(true);
 
-        if (!static::getDebugBegin()) {
-//   error_log ('Pos 1 vor setActive true ' . PHP_EOL, 3, static::getErrorLogFilename() );
+        if (
+            !$initialized &&
+            $result &&
+            !static::getDebugBegin()
+        ) {
             static::setActive(true);
         }
 
-        if (GeneralUtility::cmpIP($ipAddress, '127.0.0.1')) {
+        if (
+            !$initialized &&
+            $result &&
+            GeneralUtility::cmpIP($ipAddress, '127.0.0.1')
+        ) {
             if (
                 !GeneralUtility::cmpIP(
                     $ipAddress,
@@ -668,15 +722,18 @@ class DebugFunctions {
                 )
             ) {
                 static::$starttimeArray = array('no debugging possible', 'Attention: The server variable REMOTE_ADDR is set to local.');
-
-//   error_log ('Pos 2 vor setActive false ' . PHP_EOL, 3, static::getErrorLogFilename() );
                 static::setActive(false);
+                $result = false;
             }
         }
 
-        static::setHasBeenInitialized(true);
+        if ($result) {
+            static::setHasBeenInitialized(true);
+        } else {
+            static::setHasBeenInitialized(false);
+        }
         static::setIsInitialization(false);
-        return true;
+        return $result;
     }
 
     static public function initFile ()
@@ -685,9 +742,9 @@ class DebugFunctions {
 
         $extConf = static::getExtConf();
 
-//  error_log('initFile static::$bUserAllowed: ' . static::$bUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('initFile static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
-        if (static::$bUserAllowed && static::getDebugFilename() != '') {
+        if (static::$isUserAllowed && static::getDebugFilename() != '') {
 
             $processFilename = static::getProcessFilename();
 // 	 error_log ('initFile $processFilename = ' . $processFilename . PHP_EOL, 3, static::getErrorLogFilename());
@@ -820,15 +877,15 @@ class DebugFunctions {
     }
 
     static public function setHasBeenInitialized (
-        $bHasBeenInitialized
+        $hasBeenInitialized
     )
     {
-        static::$bHasBeenInitialized = $bHasBeenInitialized;
+        static::$hasBeenInitialized = $hasBeenInitialized;
     }
 
     static public function hasBeenInitialized ()
     {
-        return static::$bHasBeenInitialized;
+        return static::$hasBeenInitialized;
     }
 
     static public function truncateFile ()
@@ -853,6 +910,15 @@ class DebugFunctions {
         return static::$createFile;
     }
 
+    static public function createInfoText () {
+        $ipAddress = static::readIpAddress();
+        $result = date(static::getDateTime()) . ', ' . $ipAddress;
+        if (TYPO3_MODE == 'FE') {
+            $result .= ', id=' . $GLOBALS['TSFE']->id;
+        }
+        return $result;
+    }
+
     static public function debugBegin ()
     {
         static::$internalErrorLog = true;
@@ -862,9 +928,9 @@ class DebugFunctions {
             if (static::getDebugBegin()) {
                 static::setActive(true);
 
-                $ipAddress = static::readIpAddress();
+                $infoText = static::createInfoText();
                 static::debug(
-                    'debugBegin (' . date(static::getDateTime()) . ', ' . $ipAddress . ') BEGIN [--->',
+                    'debugBegin (' . $infoText . ') BEGIN [--->',
                     'debugBegin',
                     '',
                     '',
@@ -881,9 +947,9 @@ class DebugFunctions {
         if (static::hasBeenInitialized() && !static::hasError()) {
 
             if (static::getDebugBegin()) {
-                $ipAddress = static::readIpAddress();
+                $infoText = static::createInfoText();
                 static::debug(
-                    'debugEnd (' . date(static::getDateTime()) . ', ' . $ipAddress . ') END <---]',
+                    'debugEnd (' . $infoText . ') END <---]',
                     'debugEnd',
                     '',
                     '',
@@ -1267,10 +1333,10 @@ class DebugFunctions {
                 $bAllowFeuser = static::verifyFeusername(
                     $username
                 );
-//  error_log('processUser vorher static::$bUserAllowed: ' . static::$bUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('processUser vorher static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
-                static::$bUserAllowed = $bAllowFeuser;
-//  error_log('processUser nachher static::$bUserAllowed: ' . static::$bUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
+                static::$isUserAllowed = $bAllowFeuser;
+//  error_log('processUser nachher static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
                 if ($bAllowFeuser) {
                     static::$username = $username;
@@ -1365,7 +1431,7 @@ class DebugFunctions {
             $debugFile == ''
         ) {
             if ($showTrace) {
-                $trail = debug_backtrace(false);
+                $trail = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
                 $traceArray =
                     static::getTraceArray(
@@ -1475,7 +1541,7 @@ class DebugFunctions {
     {
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
+// 
         if (
             GeneralUtility::inList(static::getIgnore(), $name)
         ) {
@@ -1543,11 +1609,11 @@ class DebugFunctions {
         ) {
             static::setActive(false);
 
-            if (static::$bUserAllowed) {
+            if (static::$isUserAllowed) {
 
-                if (static::$bNeedsFileInit) {
+                if (static::$needsFileInit) {
                     static::initFile();
-                    static::$bNeedsFileInit = false;
+                    static::$needsFileInit = false;
                 }
 
 // error_log('debug static::$headerWritten = ' . static::$headerWritten . PHP_EOL, 3, static::getErrorLogFilename());
