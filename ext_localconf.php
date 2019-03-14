@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') or die('Access denied.');
+defined('TYPO3_MODE') || die('Access denied.');
 
 define('FH_DEBUG_EXT', 'fh_debug');
 
@@ -31,13 +31,18 @@ if (
     if (
         !isset($GLOBALS['error']) ||
         !is_object($GLOBALS['error']) ||
-        !($GLOBALS['error'] instanceof $class)
+        !($GLOBALS['error'] instanceof $class) ||
+        !$GLOBALS['error']->hasBeenInitialized()
     ) {
         $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
-        $myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
+        if (!($GLOBALS['error'] instanceof $class)) {
+            $myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
+            // The contructor contains important static initializations which are needed immediately.
+        }
         $ipIsAllowed = false;
         $ipAdress = \JambageCom\FhDebug\Utility\DebugFunctions::initIpAddress($ipIsAllowed);
         $modeIsAllowed = \JambageCom\FhDebug\Utility\DebugFunctions::verifyTypo3Mode(TYPO3_MODE);
+        $initResult = false;
 
         if (
             $modeIsAllowed &&
@@ -47,34 +52,40 @@ if (
                 TYPO3_MODE == 'FE' && $newExtConf['FEUSERNAMES']
             )
         ) {
-            \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
+            if ($GLOBALS['error'] instanceof $class) {
+                $GLOBALS['error']->init($ipAdress);
+            } else {
+                $initResult = \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
 
-            if ($newExtConf['DEVLOG']) {
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
-            }
+                if ($newExtConf['DEVLOG']) {
+                    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
+                }
 
-            if ($newExtConf['SYSLOG']) {
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
-            }
+                if ($newExtConf['SYSLOG']) {
+                    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
+                }
 
-            if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = array(
-                    'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
+                if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = array(
+                        'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
+                    );
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Error\\ProductionExceptionHandler'] = array(
+                        'className' => 'JambageCom\\FhDebug\\Hooks\\CoreProductionExceptionHandler',
+                    );
+                }
+
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
+
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
+                    'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
                 );
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Error\\ProductionExceptionHandler'] = array(
-                    'className' => 'JambageCom\\FhDebug\\Hooks\\CoreProductionExceptionHandler',
-                );
             }
-
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
-
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
-                'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
-            );
         }
 
+        if (!($GLOBALS['error'] instanceof $class)) {
         // the error object must always be set in order to show the debug output or to disable it
-        $GLOBALS['error'] = $myDebugObject;
+            $GLOBALS['error'] = $myDebugObject;
+        }
 
 // 		if (TYPO3_MODE === 'BE') {
 // 			$signalSlotDispatcher =
@@ -86,7 +97,7 @@ if (
 // 				'executeOnSignal'
 // 			);
 // 		}
+
     }
 }
-
 

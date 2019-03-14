@@ -71,6 +71,7 @@ class DebugFunctions {
     static private $typo3Mode = 'ALL';
     static private $startFiles = '';
     static private $partFiles = '';
+    static private $excludeFiles = '';
     static private $ignore = '';
     static private $ipAddress = '127.0.0.1';
     static private $debugBegin = false;
@@ -124,6 +125,7 @@ class DebugFunctions {
         static::setAppendDepth($extConf['APPENDDEPTH']);
         static::setStartFiles($extConf['STARTFILES']);
         static::setPartFiles($extConf['PARTFILES']);
+        static::setExcludeFiles($extConf['EXCLUDEFILES']);
 
         static::setIgnore($extConf['IGNORE']);
 
@@ -216,6 +218,18 @@ class DebugFunctions {
     static public function getPartFiles ()
     {
         return static::$partFiles;
+    }
+
+    static public function setExcludeFiles (
+        $value
+    )
+    {
+        static::$excludeFiles = trim($value);
+    }
+
+    static public function getExcludeFiles ()
+    {
+        return static::$excludeFiles;
     }
 
     static public function setIgnore (
@@ -608,11 +622,9 @@ class DebugFunctions {
     )
     {
         $ipAdress = static::readIpAddress();
-//  error_log ('initIpAddress $ipAdress ' . $ipAdress . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (!$ipIsAllowed) {
             $ipIsAllowed = static::verifyIpAddress($ipAdress);
-//  error_log ('initIpAddress $ipIsAllowed ' . $ipIsAllowed . PHP_EOL, 3, static::getErrorLogFilename());
         }
 
         if ($ipIsAllowed) {
@@ -638,35 +650,41 @@ class DebugFunctions {
     }
 
     static public function init (
-        $ipAddress
+        $ipAddress = ''
     )
     {
         $result = true;
         $startFiles = static::getStartFiles();
-        $partFiles = static::getPartFiles();
-// error_log('init $startFiles: ' . $startFiles . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('init $startFiles: ' . print_r($startFiles, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $initialized = static::hasBeenInitialized();
+//  error_log('init $initialized: ' . print_r($initialized, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             $initialized &&
-            $startFiles == '' &&
-            $partFiles == ''
+            $startFiles == ''
         ) {
             return false;
         }
 
-//  error_log('init $ipAddress: ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
-
-        $trail = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        $traceFieldArray = static::getTraceFieldArray();
+        $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
+        if (in_array('args', $traceFieldArray)) {
+            $trailOptions = '';
+        }
+        $trail = debug_backtrace($trailOptions);
         $backtrace = static::getTraceArray($trail);
 
-        if ($startFiles != '' && !empty($backtrace)) {
+        if (
+            $startFiles != '' &&
+            is_array($backtrace) &&
+            !empty($backtrace)
+        ) {
             $startFileArray = GeneralUtility::trimExplode(',', $startFiles);
             $startFileFound = false;
-            $backtraceRow = current($backtrace);
+            $traceRow = current($backtrace);
 
             foreach ($startFileArray as $startFile) {
-                if ($backtraceRow['file'] == $startFile) {
+                if ($traceRow['file'] == $startFile) {
                     $startFileFound = true;
                     break;
                 }
@@ -677,33 +695,9 @@ class DebugFunctions {
             }
         }
 
-        if ($partFiles != '' && !empty($backtrace)) {
-            $partFileArray = GeneralUtility::trimExplode(',', $partFiles);
-            $partFileFound = false;
-
-            foreach ($backtrace as $backtraceRow) {
-
-                foreach ($partFileArray as $partFile) {
-                    if ($backtraceRow['file'] == $partFile) {
-                        $partFileFound = true;
-                        break;
-                    }
-                }
-
-                if ($partFileFound) {
-                    break;
-                }
-            } 
-
-            if (!$partFileFound) {
-                $result = false;
-            }
-        }
-
         static::setIsInitialization(true);
 
         if (
-            !$initialized &&
             $result &&
             !static::getDebugBegin()
         ) {
@@ -711,7 +705,6 @@ class DebugFunctions {
         }
 
         if (
-            !$initialized &&
             $result &&
             GeneralUtility::cmpIP($ipAddress, '127.0.0.1')
         ) {
@@ -721,7 +714,11 @@ class DebugFunctions {
                     static::getIpAddress()
                 )
             ) {
-                static::$starttimeArray = array('no debugging possible', 'Attention: The server variable REMOTE_ADDR is set to local.');
+                static::$starttimeArray =
+                    array(
+                        'no debugging possible',
+                        'Attention: The server variable REMOTE_ADDR is set to local.'
+                    );
                 static::setActive(false);
                 $result = false;
             }
@@ -1400,12 +1397,33 @@ class DebugFunctions {
         return $result;
     }
 
+    static function readBackTrace () {
+// ++++ Anfang
+        $traceFieldArray = static::getTraceFieldArray();
+        $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
+        if (in_array('args', $traceFieldArray)) {
+            $trailOptions = '';
+        }
+        $trail = debug_backtrace($trailOptions);
+
+        $traceArray =
+            static::getTraceArray(
+                $trail,
+                static::getTraceDepth(),
+                0
+            );
+        $result = array_reverse($traceArray);
+        return $result;
+    }
+
+// ++++ Ende
+
     static public function writeOut (
         $variable,
         $name,
         $recursiveDepth,
         $html,
-        $showTrace = true,
+        $traceArray = array(),
         $showHeader = false
     )
     {
@@ -1430,16 +1448,7 @@ class DebugFunctions {
             static::getUseErrorLog() ||
             $debugFile == ''
         ) {
-            if ($showTrace) {
-                $trail = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-
-                $traceArray =
-                    static::getTraceArray(
-                        $trail,
-                        static::getTraceDepth(),
-                        0
-                    );
-                $traceArray = array_reverse($traceArray);
+            if (!empty($traceArray)) {
                 $backTrace = static::printTraceLine($traceArray, $html);
             }
 
@@ -1530,6 +1539,74 @@ class DebugFunctions {
         return $bWritten;
     }
 
+    static function checkTrace ($traceArray) {
+        $result = true;
+        $partFiles = static::getPartFiles();
+        $excludeFiles = static::getExcludeFiles();
+        $partFileCheck = true;
+
+//  error_log('checkTrace $traceArray: ' . print_r($traceArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
+
+        if (
+            (
+                $partFiles != '' ||
+                $excludeFiles != ''
+            ) && 
+            is_array($traceArray) &&
+            !empty($traceArray)
+        ) {
+            $partFileArray = GeneralUtility::trimExplode(',', $partFiles);
+            $excludeFileArray = GeneralUtility::trimExplode(',', $excludeFiles);
+            $partFileFound = false;
+            if ($partFiles == '') {
+                $partFileCheck = false;
+            }
+            $excludeFileFound = false;
+
+            foreach ($traceArray as $traceRow) {
+//  error_log('checkTrace $traceRow: ' . print_r($traceRow, true) . PHP_EOL, 3, static::getErrorLogFilename());
+
+                if ($partFileCheck) {
+                    foreach ($partFileArray as $partFile) {
+                        if ($traceRow['file'] == $partFile) {
+//     error_log('checkTrace $partFileFound found: ' . print_r($partFile, true) . PHP_EOL, 3, static::getErrorLogFilename());
+                            $partFileFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                foreach ($excludeFileArray as $excludeFile) {
+                    if ($traceRow['file'] == $excludeFile) {
+//  error_log('checkTrace $excludeFile found: ' . print_r($excludeFile, true) . PHP_EOL, 3, static::getErrorLogFilename());
+                        $excludeFileFound = true;
+                        break;
+                    }
+                }
+
+                if (
+                    $partFileCheck && $partFileFound ||
+                    $excludeFileFound
+                ) {
+                    break;
+                }
+            } 
+
+            if (
+                $partFileCheck && !$partFileFound ||
+                $excludeFileFound
+            ) {
+                $result = false;
+            }
+        }
+/*
+ error_log('checkTrace $partFileFound: ' . print_r($partFileFound, true) . PHP_EOL, 3, static::getErrorLogFilename());
+ error_log('checkTrace $excludeFileFound: ' . print_r($excludeFileFound, true) . PHP_EOL, 3, static::getErrorLogFilename());
+ error_log('checkTrace $result: ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());*/
+
+        return $result;
+    }
+
     static public function debug (
         $variable = '',
         $name = '*variable*',
@@ -1541,7 +1618,7 @@ class DebugFunctions {
     {
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// 
+
         if (
             GeneralUtility::inList(static::getIgnore(), $name)
         ) {
@@ -1549,7 +1626,8 @@ class DebugFunctions {
         }
 
         $storeIsActive = static::getActive();
-        $bControlMode = false;
+        $isValidTrace = false;
+        $isControlMode = false;
         $charset = '';
 
         if ($storeIsActive) {
@@ -1561,8 +1639,7 @@ class DebugFunctions {
 
         if ($name == 'control:resetTemporaryFile') {
             static::truncateFile();
-            $bControlMode = true;
-// error_log('### debug $bControlMode = ' . print_r($bControlMode, true) . PHP_EOL, 3, static::getErrorLogFilename());
+            $isControlMode = true;
         }
 
         $debugSysLog = false;
@@ -1598,7 +1675,7 @@ class DebugFunctions {
         }
 
         if (
-            !$bControlMode &&
+            !$isControlMode &&
             !$excludeSysLog &&
             (
                 $storeIsActive ||
@@ -1610,15 +1687,12 @@ class DebugFunctions {
             static::setActive(false);
 
             if (static::$isUserAllowed) {
-
                 if (static::$needsFileInit) {
                     static::initFile();
                     static::$needsFileInit = false;
                 }
 
-// error_log('debug static::$headerWritten = ' . static::$headerWritten . PHP_EOL, 3, static::getErrorLogFilename());
                 if (static::$headerWritten) {
-
                     $headerPostFix = '';
                     $headerValue = '';
 
@@ -1685,43 +1759,48 @@ class DebugFunctions {
                         $head,
                         $recursiveDepth,
                         static::getHtml(),
-                        false,
+                        array(),
                         true
                     );
                 }
+                $traceArray = static::readBackTrace();
+                $isValidTrace = static::checkTrace($traceArray);
+//  error_log('debug $isValidTrace = ' . $isValidTrace . PHP_EOL, 3, static::getErrorLogFilename());
 
-                static::writeOut(
-                    $variable,
-                    $name,
-                    $recursiveDepth,
-                    static::getHtml(),
-                    true,
-                    false
-                );
+                if ($isValidTrace) {
+                    static::writeOut(
+                        $variable,
+                        $name,
+                        $recursiveDepth,
+                        static::getHtml(),
+                        $traceArray,
+                        false
+                    );
 
-                $fileInformation = fstat(static::$hndFile);
+                    $fileInformation = fstat(static::$hndFile);
 
-                if (is_array($fileInformation)) {
-                    $size = round(($fileInformation['size'] / 1048576), 3);
-                    $maxSize = self::getMaxFileSize();
-                    if (
-                        $size > $maxSize &&
-                        $maxSize > 0
-                    ) {
-                        self::setMaxFileSizeReached(true);
-                        static::writeOut(
-                            $size . ' MByte',
-                            FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
-                            0,
-                            static::getHtml(),
-                            false,
-                            false
-                        );
+                    if (is_array($fileInformation)) {
+                        $size = round(($fileInformation['size'] / 1048576), 3);
+                        $maxSize = self::getMaxFileSize();
+                        if (
+                            $size > $maxSize &&
+                            $maxSize > 0
+                        ) {
+                            self::setMaxFileSizeReached(true);
+                            static::writeOut(
+                                $size . ' MByte',
+                                FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
+                                0,
+                                static::getHtml(),
+                                array(),
+                                false
+                            );
+                        }
                     }
                 }
             }
 
-            if (!self::getMaxFileSizeReached()) {
+            if (!$isValidTrace || !self::getMaxFileSizeReached()) {
                 static::setActive($storeIsActive);
             }
         }
@@ -1759,7 +1838,7 @@ class DebugFunctions {
                 $head,
                 static::getRecursiveDepth(),
                 static::getHtml(),
-                false,
+                array(),
                 true
             );
 
