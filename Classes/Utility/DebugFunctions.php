@@ -1066,7 +1066,6 @@ class DebugFunctions {
                     $debugTrail[$i] .= chr(13);
                 }
             }
-//  error_log('printTraceLine $debugTrail: ' . print_r($debugTrail, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
             $result = implode('', $debugTrail);
             if ($html) {
@@ -1398,7 +1397,6 @@ class DebugFunctions {
     }
 
     static function readBackTrace () {
-// ++++ Anfang
         $traceFieldArray = static::getTraceFieldArray();
         $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
         if (in_array('args', $traceFieldArray)) {
@@ -1415,8 +1413,6 @@ class DebugFunctions {
         $result = array_reverse($traceArray);
         return $result;
     }
-
-// ++++ Ende
 
     static public function writeOut (
         $variable,
@@ -1564,8 +1560,6 @@ class DebugFunctions {
             $excludeFileFound = false;
 
             foreach ($traceArray as $traceRow) {
-//  error_log('checkTrace $traceRow: ' . print_r($traceRow, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
                 if ($partFileCheck) {
                     foreach ($partFileArray as $partFile) {
                         if ($traceRow['file'] == $partFile) {
@@ -1600,8 +1594,6 @@ class DebugFunctions {
             }
         }
 /*
- error_log('checkTrace $partFileFound: ' . print_r($partFileFound, true) . PHP_EOL, 3, static::getErrorLogFilename());
- error_log('checkTrace $excludeFileFound: ' . print_r($excludeFileFound, true) . PHP_EOL, 3, static::getErrorLogFilename());
  error_log('checkTrace $result: ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());*/
 
         return $result;
