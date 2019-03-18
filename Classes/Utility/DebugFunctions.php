@@ -118,8 +118,6 @@ class DebugFunctions {
 
 //   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  print_r(\JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray(4), true) . PHP_EOL, 3, static::getErrorLogFilename());
-
         static::setRecursiveDepth($extConf['LEVEL']);
         static::setTraceDepth($extConf['TRACEDEPTH']);
         static::setAppendDepth($extConf['APPENDDEPTH']);
@@ -574,17 +572,14 @@ class DebugFunctions {
         $username
     )
     {
-// error_log ('verifyFeusername $username ' . $username . PHP_EOL, 3, static::getErrorLogFilename());
         $result = true;
         $feUserNames = static::getFeUserNames();
-// error_log ('verifyFeusername $feUserNames ' . $feUserNames . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             TYPO3_MODE == 'FE' &&
             $feUserNames != ''
         ) {
             $tmpArray = GeneralUtility::trimExplode(',', $feUserNames);
-// error_log ('verifyFeusername $tmpArray ' . print_r($tmpArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
             if (
                 isset($tmpArray) &&
@@ -592,11 +587,9 @@ class DebugFunctions {
                 in_array($username, $tmpArray) === false
             ) {
                 $result = false;
-// error_log ('verifyFeusername $username not found. ' . PHP_EOL, 3, static::getErrorLogFilename());
             }
         }
 
-// error_log ('verifyFeusername $result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -605,7 +598,6 @@ class DebugFunctions {
     )
     {
         $typo3Mode = static::getTypo3Mode();
-//  error_log ('verifyTypo3Mode $typo3Mode ' . $typo3Mode . PHP_EOL, 3, static::getErrorLogFilename());
 
         $result =
             (
@@ -613,7 +605,6 @@ class DebugFunctions {
                 $typo3Mode == 'ALL'
             );
 
-//  error_log ('verifyTypo3Mode $result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -759,26 +750,21 @@ class DebugFunctions {
                 if ($readBytes) {
                     $processCount = intval(fread(static::$hndProcessfile, $readBytes));
                     $processCount++;
-// 	error_log ('initFile $processCount = ' . $processCount . ' Pos 1 ' . PHP_EOL, 3, static::getErrorLogFilename());
                 } else {
                     $processCount = 1;
-// 	error_log ('initFile $processCount = ' . $processCount . ' Pos 2 ' .  PHP_EOL, 3, static::getErrorLogFilename());
                 }
 
                 if (
                     $processCount > intval(static::getAppendDepth())
                 ) {
                     $processCount = 1;
-// 	error_log ('initFile $processCount = ' . $processCount . ' Pos 3 ' .  PHP_EOL, 3, static::getErrorLogFilename());
                     static::setCreateFile();
                 }
-// 	error_log ('initFile write $processCount = ' . $processCount  .  ' Pos 8 ' . PHP_EOL, 3, static::getErrorLogFilename());
                 static::writeTemporaryFile($processCount);
             }
 
             $extPath = PATH_typo3conf;
             $filename = static::getDebugFilename();
-//  	error_log ('initFile write $filename = ' . $filename . PHP_EOL, 3, static::getErrorLogFilename());
             $path_parts = pathinfo($filename);
 
             if (
@@ -791,16 +777,12 @@ class DebugFunctions {
                 if (static::getAppendDepth() > 1) {
                     if (static::getCreateFile()) {
                         $openMode = 'w+b';
-// error_log('initFile $openMode Pos 1 = ' . $openMode . PHP_EOL, 3, static::getErrorLogFilename());
                     } else {
                         $openMode = 'a+b';
-// error_log('initFile $openMode Pos 2 = ' . $openMode . PHP_EOL, 3, static::getErrorLogFilename());
                     }
                 } else {
                     $openMode = static::getDebugFileMode();
-// error_log('initFile $openMode Pos 3 = ' . $openMode . PHP_EOL, 3, static::getErrorLogFilename());
                 }
-// error_log ('initFile fopen(' . $filename . ', ' . $openMode . ') ' . PHP_EOL, 3, static::getErrorLogFilename() );
 
                 static::$hndFile = fopen($filename, $openMode);
 
@@ -827,19 +809,15 @@ class DebugFunctions {
                         FH_DEBUG_EXT,
                         0
                     );
-// error_log('initFile no file handle ERROR = ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
                 }
             } else {
                 if (static::getDevLog()) {
-// error_log('devLog initFile not writable directory "' . $path_parts['dirname'] . '"' . PHP_EOL, 3, static::getErrorLogFilename());
-
                     GeneralUtility::devLog(
                         'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "',
                         FH_DEBUG_EXT,
                         0
                     );
                 }
-// error_log('initFile not writable directory "' . $path_parts['dirname'] . '"' . PHP_EOL, 3, static::getErrorLogFilename());
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
@@ -976,24 +954,39 @@ class DebugFunctions {
         $offset = 0
     )
     {
-        $last = count($trail) - 1;
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 1 $trail: ' .  print_r($trail, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
-        if (!$depth) {
+        $last = count($trail) - 1;
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $last : ' .  $last . PHP_EOL, 3, static::getErrorLogFilename());
+
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 1 $depth : ' .  $depth . PHP_EOL, 3, static::getErrorLogFilename());
+        if (
+            !$depth
+        ) {
             $depth = $last + 1;
             $offset = 0;
+        } else  if (
+            $depth - $offset > $last
+        ) {
+            $depth = $last - $offset + 1;
         }
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 2 $depth : ' .  $depth . PHP_EOL, 3, static::getErrorLogFilename());
+// 
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $offset : ' .  $offset . PHP_EOL, 3, static::getErrorLogFilename());
 
         $theFilename = basename(__FILE__);
         $traceFieldArray = static::getTraceFieldArray();
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $traceFieldArray : ' .  print_r($traceFieldArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $traceArray = array();
-        $j = $depth - 1;
+        $j = 0;
 
         for ($i = $offset; $i <= $last ; ++$i) {
-            unset($trail[$i]['args']);
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $i : ' .  $i . PHP_EOL, 3, static::getErrorLogFilename());
             if (!isset($trail[$i])) {
                 continue;
             }
             $theTrail = $trail[$i];
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $theTrail : ' .  print_r($theTrail, true) . PHP_EOL, 3, static::getErrorLogFilename());
             if (
                 !is_array($theTrail) ||
                 $theTrail['file'] == '' ||
@@ -1028,26 +1021,30 @@ class DebugFunctions {
 
                 $traceArray[$j][$traceField] = $traceValue;
             }
-            $j--;
 
-            if ($j < 0) {
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $traceArray['.$j.'] : ' .  print_r($traceArray[$j], true) . PHP_EOL, 3, static::getErrorLogFilename());
+            $j++;
+            if ($j > $depth) {
                 break;
             }
         }
-        ksort($traceArray);
 
         return $traceArray;
     }
 
     static public function printTraceLine (
         array $traceArray,
-        $html
+        $html,
+        $inverted = true
     )
     {
         $result = '';
         $debugTrail = array();
 
         if (!empty($traceArray)) {
+            if ($inverted) {
+                $traceArray = array_reverse($traceArray);
+            }
             foreach ($traceArray as $i => $trace) {
                 if ($html) {
                     $debugTrail[$i] .= '<tr>';
@@ -1141,7 +1138,7 @@ class DebugFunctions {
                         $value .= '<td class="el">';
                         $value .= static::printTypeVariable(
                             'Boolean',
-                            ($v1 ? 'true' : 'false') ,
+                            ($v1 ? 'true' : 'false'),
                             true
                         );
                         $value .= '</td>';
@@ -1250,8 +1247,6 @@ class DebugFunctions {
     ) {
         $result = '';
         $debugArray = array();
-// error_log ('printVariable $header = ' . print_r($header, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log ('printVariable $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (is_array($variable)) {
             if (!$header) {
@@ -1287,7 +1282,6 @@ class DebugFunctions {
                         true
                     );
                     $result .= '</td>';
-// 	error_log ('printVariable Pos 3 $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
                 } else if (is_long($variable) || is_double($variable)) {
                     $result = '<td class="el">';
                     $result .= static::printTypeVariable(
@@ -1296,7 +1290,6 @@ class DebugFunctions {
                         true
                     );
                     $result .= '</td>';
-// 	error_log ('printVariable Pos 4 $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
                 } else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
                     $result = '<p>unloaded object of class "' . get_class($variable) . '"</p>';
                 } else if (is_resource($variable)) {
@@ -1329,10 +1322,8 @@ class DebugFunctions {
                 $bAllowFeuser = static::verifyFeusername(
                     $username
                 );
-//  error_log('processUser vorher static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
                 static::$isUserAllowed = $bAllowFeuser;
-//  error_log('processUser nachher static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
                 if ($bAllowFeuser) {
                     static::$username = $username;
@@ -1377,7 +1368,6 @@ class DebugFunctions {
         $bPrintOnScreen
     )
     {
-//   error_log('write START ' . PHP_EOL, 3, static::getErrorLogFilename());
         $result = true;
 
         if ($errorOut != '') {
@@ -1445,7 +1435,7 @@ class DebugFunctions {
             $debugFile == ''
         ) {
             if (!empty($traceArray)) {
-                $backTrace = static::printTraceLine($traceArray, $html);
+                $backTrace = static::printTraceLine($traceArray, $html, true);
             }
 
             if (
@@ -1593,9 +1583,8 @@ class DebugFunctions {
                 $result = false;
             }
         }
-/*
- error_log('checkTrace $result: ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());*/
 
+//  error_log('checkTrace $result: ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
