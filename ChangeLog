@@ -1,3 +1,6 @@
+2019-03-18 Franz Holzinger <franz@ttproducts.de>
+    * delay the trace array inversion. The index of the trace array shall start from 0 and increase continually.
+
 2019-03-14 Franz Holzinger <franz@ttproducts.de>
     * bugfix to the new partfiles feature
 
