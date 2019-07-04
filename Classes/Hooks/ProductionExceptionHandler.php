@@ -59,7 +59,12 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
             }
         }
         $errorMessage = isset($this->configuration['errorMessage']) ? $this->configuration['errorMessage'] : 'Oops, an error occurred! Code: %s';
-        $code = date('YmdHis', $_SERVER['REQUEST_TIME']) . GeneralUtility::getRandomHexString(8);
+        $code = date('YmdHis', $_SERVER['REQUEST_TIME']);
+        $randomHex = '';
+
+        $randomHex = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Crypto\Random::class)->generateRandomHexString(8);
+        $code .= $randomHex;
+
         $result = sprintf($errorMessage, $code);
 
         $typo3String = DIRECTORY_SEPARATOR . self::TYPO3_DIR;

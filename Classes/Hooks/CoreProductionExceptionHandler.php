@@ -15,60 +15,51 @@ namespace JambageCom\FhDebug\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Controller\ErrorPageController;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use JambageCom\FhDebug\Utility\DebugFunctions;
+
 
 /**
  * Exception handler class for content object rendering
  */
 class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExceptionHandler
 {
-
     /**
      * Echoes an exception for the web.
      *
-     * @param \Exception|\Throwable $exception The exception
-     * @return void
-     * @TODO #72293 This will change to \Throwable only if we are >= PHP7.0 only
+     * @param \Throwable $exception The throwable object.
      */
-    public function echoExceptionWeb($exception)
+    public function echoExceptionWeb(\Throwable $exception)
     {
         $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_EXCEPTION'];
         $trail = $exception->getTrace();
+
         $traceArray =
             DebugFunctions::getTraceArray(
                 $trail,
                 $maxCount,
                 0
             );
-        debug ($traceArray, 'fh_debug exception handler exception trace'); // keep this
-
         $this->sendStatusHeaders($exception);
         $this->writeLogEntries($exception, self::CONTEXT_WEB);
-        $messageObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Messaging\ErrorpageMessage::class,
+        $content = GeneralUtility::makeInstance(ErrorPageController::class)->errorAction(
+            $this->getTitle($exception),
             $this->getMessage($exception),
-            $this->getTitle($exception)
+            AbstractMessage::ERROR,
+            $this->discloseExceptionInformation($exception) ? $exception->getCode() : 0
         );
+
         debugBegin();
-        debug($messageObj, 'CoreProductionExceptionHandler::echoExceptionWeb $messageObj'); // keep this
+        debug ($traceArray, 'fh_debug exception handler exception trace'); // keep this
+        debug ($exception->getFile(), 'fh_debug exception handler exception File'); // keep this
+        debug ($exception->getLine(), 'fh_debug exception handler exception Line'); // keep this
+        debug($content, 'CoreProductionExceptionHandler::echoExceptionWeb $content'); // keep this
         debugEnd();
 
-        $messageObj->output();
-    }
-
-    /**
-     * Returns the title for the error message
-     *
-     * @param \Exception|\Throwable $exception Exception causing the error
-     * @return string
-     * @TODO #72293 This will change to \Throwable only if we are >= PHP7.0 only
-     */
-    protected function getTitle($exception)
-    {
-        if ($this->discloseExceptionInformation($exception) && method_exists($exception, 'getTitle') && $exception->getTitle() !== '') {
-            return htmlspecialchars($exception->getTitle());
-        } else {
-            return $this->defaultTitle;
-        }
+        echo $content;
     }
 }
 

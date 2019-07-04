@@ -598,7 +598,6 @@ class DebugFunctions {
     )
     {
         $typo3Mode = static::getTypo3Mode();
-
         $result =
             (
                 $typo3Mode == $verifyMode ||
@@ -954,12 +953,8 @@ class DebugFunctions {
         $offset = 0
     )
     {
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 1 $trail: ' .  print_r($trail, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
         $last = count($trail) - 1;
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $last : ' .  $last . PHP_EOL, 3, static::getErrorLogFilename());
 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 1 $depth : ' .  $depth . PHP_EOL, 3, static::getErrorLogFilename());
         if (
             !$depth
         ) {
@@ -970,23 +965,18 @@ class DebugFunctions {
         ) {
             $depth = $last - $offset + 1;
         }
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray Pos 2 $depth : ' .  $depth . PHP_EOL, 3, static::getErrorLogFilename());
-// 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $offset : ' .  $offset . PHP_EOL, 3, static::getErrorLogFilename());
 
         $theFilename = basename(__FILE__);
         $traceFieldArray = static::getTraceFieldArray();
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $traceFieldArray : ' .  print_r($traceFieldArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $traceArray = array();
         $j = 0;
 
         for ($i = $offset; $i <= $last ; ++$i) {
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $i : ' .  $i . PHP_EOL, 3, static::getErrorLogFilename());
             if (!isset($trail[$i])) {
                 continue;
             }
             $theTrail = $trail[$i];
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $theTrail : ' .  print_r($theTrail, true) . PHP_EOL, 3, static::getErrorLogFilename());
+ 
             if (
                 !is_array($theTrail) ||
                 $theTrail['file'] == '' ||
@@ -1022,7 +1012,6 @@ class DebugFunctions {
                 $traceArray[$j][$traceField] = $traceValue;
             }
 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::getTraceArray $traceArray['.$j.'] : ' .  print_r($traceArray[$j], true) . PHP_EOL, 3, static::getErrorLogFilename());
             $j++;
             if ($j > $depth) {
                 break;
@@ -1553,7 +1542,6 @@ class DebugFunctions {
                 if ($partFileCheck) {
                     foreach ($partFileArray as $partFile) {
                         if ($traceRow['file'] == $partFile) {
-//     error_log('checkTrace $partFileFound found: ' . print_r($partFile, true) . PHP_EOL, 3, static::getErrorLogFilename());
                             $partFileFound = true;
                             break;
                         }
@@ -1562,7 +1550,6 @@ class DebugFunctions {
 
                 foreach ($excludeFileArray as $excludeFile) {
                     if ($traceRow['file'] == $excludeFile) {
-//  error_log('checkTrace $excludeFile found: ' . print_r($excludeFile, true) . PHP_EOL, 3, static::getErrorLogFilename());
                         $excludeFileFound = true;
                         break;
                     }
@@ -1807,7 +1794,7 @@ class DebugFunctions {
         return $result;
     }
 
-    public function close ()
+    static public function close ()
     {
         if (static::$hndFile) {
 

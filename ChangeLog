@@ -1,3 +1,8 @@
+2019-07-04 Franz Holzinger <franz@ttproducts.de>
+    * ready for TYPO3 9.5
+    * no any more support for TYPO3 7
+    * bugfix: JambageCom\\FhDebug\\Hooks\\CoreProductionExceptionHandler must not be used with $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Error\\ProductionExceptionHandler'] because the Core Bootstrap does not support this. You must use the Install Tool to use this exception handler.
+
 2019-03-18 Franz Holzinger <franz@ttproducts.de>
     * delay the trace array inversion. The index of the trace array shall start from 0 and increase continually.
 
