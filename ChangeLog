@@ -1,3 +1,7 @@
+
+2019-07-31 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: The check for is_resource is not sufficient, because a closed resource returns FALSE.
+
 2019-07-04 Franz Holzinger <franz@ttproducts.de>
     * ready for TYPO3 9.5
     * no any more support for TYPO3 7

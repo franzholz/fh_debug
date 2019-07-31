@@ -1139,7 +1139,7 @@ class DebugFunctions {
                             true
                         );
                         $value .= '</td>';
-                    } else if (is_resource($v1)) {
+                    } else if (is_resource($v1) || ($v1 !== null && !is_scalar($v1))) {
                         $value .= '<td class="el">';
                         $value .= 'Resource of type ' . get_resource_type($v1) . ':' . $v1;
                         $value .= '</td>';

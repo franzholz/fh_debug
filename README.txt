@@ -32,8 +32,12 @@ OOPS_AN_ERROR_OCCURRED = 1
 This will also add a detailed debug output to the debug file.
 
 
-To get the debug output for "Oops, an error occured" you must make this configuration in the Install Tool:
+To get the debug output for "Oops, an error occurred!" you must make this configuration in the Install Tool:
 
 [SYS][productionExceptionHandler] = JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler
+
+Remove this settings before you deinstall fh_debug. Otherwise you will get this PHP error entry:
+
+PHP Fatal error:  Uncaught Error: Class 'JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler' not found in /var/www/html/typo3_src-9.5.8/typo3/sysext/core/Classes/Utility/GeneralUtility.php:3667
 
 
