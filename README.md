@@ -1,3 +1,7 @@
+# TYPO3 extension fh_debug
+
+## What is does
+
 Use this extension to generate debug output files for the PHP code of TYPO3 and TYPO3 extensions in the Front End or Back End if they have PHP debug statements.
 Consider to also install **debug_mysql_db** if you want to debug the generated SQL queries or track down the PHP errors in the table **sys_log** or the Developer traces written to the TYPO3 function **devLog**.
 
@@ -6,7 +10,7 @@ Under TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/G
 The debug output is written into a HTML debug output file. All the configuration is done in the Extension Manager for fh_debug. You can design the output by the CSS file fhdebug.css.
 If you have a lot of debug output then you should put debugBegin and debugEnd commands around the PHP debug commands in order to have fewer debug output in the file. This will activate and deactivate the debug output.
 
-###### example:
+### example:
 
 ```
 debugBegin();
@@ -23,7 +27,7 @@ The Extension Manager configuration of fh_debug will be added to the IP address 
 IPADDRESS = 34.22.11.12
 Your current IP address is shown in the Extension Manager view of fh_debug below the field IPADDRESS.
 
-###### example:
+### example:
 
 > Enter your current IP address 11.12.13.14, if you want to debug this client's actions.
 
