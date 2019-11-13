@@ -66,6 +66,6 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
 \JambageCom\Fhdebug\Utility\DebugFunctions::debug($_EXTCONF, '$_EXTCONF');
 ```
 
-If you use the file ext_localconf.php, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
+If you use the file **ext_localconf.php** or some of the at first executed TYPO3 core files, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
 
 
