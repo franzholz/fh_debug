@@ -45,3 +45,27 @@ Remove this settings before you deinstall fh_debug. Otherwise you will get this 
 PHP Fatal error:  Uncaught Error: Class 'JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler' not found in /var/www/html/typo3_src-9.5.8/typo3/sysext/core/Classes/Utility/GeneralUtility.php:3667
 
 
+### example:
+```
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
+    require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
+    // some configuration:
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile(''); // this is necessary if you use the error_log file
+    // if you use the debug HTML file:
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
+    
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);       
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('12'); 
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12'); 
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('0'); 
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL'); 
+    \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE); 
+    \JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
+}
+
+\JambageCom\Fhdebug\Utility\DebugFunctions::debug($_EXTCONF, '$_EXTCONF');
+```
+
+If you use the file ext_localconf.php, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
+
+
