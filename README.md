@@ -47,7 +47,7 @@ PHP Fatal error:  Uncaught Error: Class 'JambageCom\FhDebug\Hooks\CoreProduction
 
 ### example:
 ```
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
     require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
     // some configuration:
     \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile(''); // this is necessary if you use the error_log file
