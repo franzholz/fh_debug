@@ -44,6 +44,8 @@ Remove this settings before you deinstall fh_debug. Otherwise you will get this 
 
 PHP Fatal error:  Uncaught Error: Class 'JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler' not found in /var/www/html/typo3_src-9.5.8/typo3/sysext/core/Classes/Utility/GeneralUtility.php:3667
 
+The default setting is:
+[SYS][productionExceptionHandler] = TYPO3\CMS\Core\Error\ProductionExceptionHandler
 
 ### example:
 ```
