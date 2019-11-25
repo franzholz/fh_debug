@@ -1,5 +1,6 @@
         
 2019-11-25 Franz Holzinger <franz@ttproducts.de>
+    * insert a call_user_func into ext_localconf.php
     * add new debug function debug paramter: $group = null
     * remove the outdated debug function debug parameters:
         $line = '*line*', $file = '*file*', $recursiveDepth = 3, $debugLevel = 'E_DEBUG'
