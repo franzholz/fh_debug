@@ -68,7 +68,7 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
 
 If you use the file **ext_localconf.php** or some of the at first executed TYPO3 core files, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
 
-## begin and end debug
+## debug begin and end
 
 There are 2 control commands available to begin and to end the generation of debug output:
 debugBegin and debugEnd
@@ -81,11 +81,11 @@ Since fh_debug 0.8.0 a workaround has been introduced because in TYPO3 9 these m
 ### example:
 ```
 debug('B'); // begin debugging
-debug($myVariable, 'my variabled');
+debug($myVariable, 'my variable');
 debug('E'); // end debugging
 ```
 
-### example < version 0.8.0:
+### example before version 0.8.0:
 ```
 debugBegin();
 debug($myVariable, 'my variabled');
