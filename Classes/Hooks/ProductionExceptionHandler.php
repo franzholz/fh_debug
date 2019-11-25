@@ -99,14 +99,4 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
 
         return $result;
     }
-
-    /**
-    * @param \Exception $exception
-    * @param string $errorMessage
-    * @param string $code
-    */
-    protected function logException(\Exception $exception, $errorMessage, $code)
-    {
-        $this->getLogger()->alert(sprintf($errorMessage, $code), array('exception' => $exception));
-    }
 }
