@@ -1,6 +1,12 @@
+        
+2019-11-25 Franz Holzinger <franz@ttproducts.de>
+    * add new debug function debug paramter: $group = null
+    * remove the outdated debug function debug parameters:
+        $line = '*line*', $file = '*file*', $recursiveDepth = 3, $debugLevel = 'E_DEBUG'
+    * use $title instead of $name because of TYPO0 9.5 GlobalDebugFunctions.php
 
 2019-07-31 Franz Holzinger <franz@ttproducts.de>
-    * bugfix: The check for is_resource is not sufficient, because a closed resource returns FALSE.
+    * bugfix: The check for is_resource is not sufficient, because a closed resource returns false.
 
 2019-07-04 Franz Holzinger <franz@ttproducts.de>
     * ready for TYPO3 9.5

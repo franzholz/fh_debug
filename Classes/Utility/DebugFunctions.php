@@ -1577,11 +1577,8 @@ class DebugFunctions {
 
     static public function debug (
         $variable = '',
-        $title = '*variable*',
-        $line = '*line*',
-        $file = '*file*',
-        $recursiveDepth = 3,
-        $debugLevel = 'E_DEBUG'
+        $title = null,
+        $group = null
     )
     {
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
