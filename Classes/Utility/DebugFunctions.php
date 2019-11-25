@@ -1395,7 +1395,7 @@ class DebugFunctions {
 
     static public function writeOut (
         $variable,
-        $name,
+        $title,
         $recursiveDepth,
         $html,
         $traceArray = array(),
@@ -1412,7 +1412,7 @@ class DebugFunctions {
         }
 
 //   error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-//   error_log('writeOut $name ' . $name . PHP_EOL, 3, static::getErrorLogFilename());
+//   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
 //   error_log('writeOut $recursiveDepth ' . $recursiveDepth . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
@@ -1438,7 +1438,7 @@ class DebugFunctions {
                         $recursiveDepth,
                         false
                     ) . PHP_EOL .
-                    '###' . $name . $type . '###' . PHP_EOL;
+                    '###' . $title . $type . '###' . PHP_EOL;
                 $out .= '|' . $backTrace . PHP_EOL .
                     '--------------------------------------------' . PHP_EOL;
 
@@ -1456,7 +1456,7 @@ class DebugFunctions {
                         $recursiveDepth,
                         true
                     ) . chr(13) .
-                    '<h3>' . $name . $type . '</h3>';
+                    '<h3>' . $title . $type . '</h3>';
                 $out .= '<br />' . $backTrace . chr(13) .
                     '<hr />' . chr(13);
             }
@@ -1577,7 +1577,7 @@ class DebugFunctions {
 
     static public function debug (
         $variable = '',
-        $name = '*variable*',
+        $title = '*variable*',
         $line = '*line*',
         $file = '*file*',
         $recursiveDepth = 3,
@@ -1585,10 +1585,10 @@ class DebugFunctions {
     )
     {
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log('### debug $name = ' . print_r($name, true) . PHP_EOL, 3, static::getErrorLogFilename());
+// error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
-            GeneralUtility::inList(static::getIgnore(), $name)
+            GeneralUtility::inList(static::getIgnore(), $title)
         ) {
             return;
         }
@@ -1605,7 +1605,7 @@ class DebugFunctions {
         }
         static::processUser();
 
-        if ($name == 'control:resetTemporaryFile') {
+        if ($title == 'control:resetTemporaryFile') {
             static::truncateFile();
             $isControlMode = true;
         }
@@ -1615,8 +1615,8 @@ class DebugFunctions {
 
         if (
             static::getSysLog() &&
-            isset($name) &&
-            strpos($name, 'sysLog from ' . FH_DEBUG_EXT) !== false
+            isset($title) &&
+            strpos($title, 'sysLog from ' . FH_DEBUG_EXT) !== false
         ) {
             $debugSysLog = true;
 
@@ -1738,7 +1738,7 @@ class DebugFunctions {
                 if ($isValidTrace) {
                     static::writeOut(
                         $variable,
-                        $name,
+                        $title,
                         $recursiveDepth,
                         static::getHtml(),
                         $traceArray,
