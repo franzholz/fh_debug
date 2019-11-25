@@ -1,6 +1,6 @@
   # cat=basic/enable; type=string; label=IP address of the client browser: Enter your current IP address ###IP###, if you want to debug this client's actions. (You see here only a marker if the required TYPO3 extension patchem has not been installed.) This will override the SYS devIPMask settings from the Install Tool. For localhost use ::1
 IPADDRESS = ::1
-  # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debugBegin and debugEnd. The first debugBegin will initialize the debug.
+  # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debug('B') and debug('E'). The first debug('B') will initialize the debug.
 DEBUGBEGIN = 0
   # cat=basic/enable; type=string; label= Typo3 Mode: FE, BE, ALL or OFF. Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging only enabled in this Mode. Use BE only with caution.
 TYPO3_MODE = FE
@@ -12,13 +12,13 @@ DEBUGFILE = fileadmin/debug.html
 ERROR_LOG =
   # cat=basic/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
 USE_ERROR_LOG = 0
-  # cat=basic/enable; type=string; label= disable variable: This comma separated list of strings will be ignored as variables, as keys in arrays and as member variables of objects
+  # cat=basic/enable; type=string; label= disable variable: This comma separated list of strings will be ignored in name comments for variables, in keys of arrays and in member variables of objects
 IGNORE =
-  # cat=basic/enable; type=string; label= start files: names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
+  # cat=basic/enable; type=string; label= start files: Required names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
 STARTFILES =
-  # cat=basic/enable; type=string; label= part files: required names of any of the PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the backtrace.
+  # cat=basic/enable; type=string; label= part files: Required names of any of the PHP files in the execution path. If set, then debug output will be generated only, if a file with one of these names is present in the backtrace.
 PARTFILES =
-  # cat=basic/enable; type=string; label= exclude files: excluded names of any of the PHP file in the execution path. If set then no debug output will be generated only if a file with one of these names is the backtrace.
+  # cat=basic/enable; type=string; label= exclude files: Excluded names of any of the PHP files in the execution path. If set then debug output will be generated only if no file with any of these names is the backtrace.
 EXCLUDEFILES =
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
 DEBUGFILEMODE = wb
@@ -40,7 +40,7 @@ CSSPATH = EXT:fh_debug
 CSSFILE = fhdebug.css
   # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems to the Developer Logfile.
 DEVLOG = 0
-  # cat=basic/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debugBegin has not been set.
+  # cat=basic/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debug('B') has not been set.
 SYSLOG = 0
   # cat=basic/conf; type=string; label= Exclude SysLog: Regular expressions of problems which are omitted from going to the System Logfile (sys_log).
 SYSLOG_EXCLUDE = no_cache

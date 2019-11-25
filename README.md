@@ -5,10 +5,8 @@
 Use this extension to generate debug output files for the PHP code of TYPO3 and TYPO3 extensions in the Front End or Back End if they have PHP debug statements.
 Consider to also install **debug_mysql_db** if you want to debug the generated SQL queries or track down the PHP errors in the table **sys_log** or the Developer traces written to the TYPO3 function **devLog**.
 
-Under TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file TYPO3-9.5/sysext/core/Resources/PHP/GlobalDebugFunctions.php under the Patches folder. 
-
 The debug output is written into a HTML debug output file. All the configuration is done in the Extension Manager for fh_debug. You can design the output by the CSS file fhdebug.css.
-If you have a lot of debug output then you should put debugBegin and debugEnd commands around the PHP debug commands in order to have fewer debug output in the file. This will activate and deactivate the debug output.
+If you have a lot of debug output then you should put debugBegin and debugEnd commands around the PHP debug commands in order to have fewer debug output lines in the file. These commands will activate and deactivate the debug output.
 
 ### example:
 
@@ -25,7 +23,7 @@ No debug output will be shown on the screen. Otherwise you must deactivate the d
 
 The Extension Manager configuration of fh_debug will be added to the IP address of the Install Tool.
 IPADDRESS = 34.22.11.12
-Your current IP address is shown in the Extension Manager view of fh_debug below the field IPADDRESS.
+Your current IP address is shown in the Extension Manager view of fh_debug below the field IPADDRESS. If your provides has an ip version 6 activated, then you must enter it in the IPv6 format.
 
 ### example:
 
@@ -70,4 +68,36 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
 
 If you use the file **ext_localconf.php** or some of the at first executed TYPO3 core files, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
 
+## begin and end debug
 
+There are 2 control commands available to begin and to end the generation of debug output:
+debugBegin and debugEnd
+
+Under TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file fh_debug/Patches/TYPO3-9.5/sysext/core/Resources/PHP/GlobalDebugFunctions.php, if you want to use the debugBegin and debugEnd methods.
+
+Workaround:
+Since fh_debug 0.8.0 a workaround has been introduced because in TYPO3 9 these most important global functions have been removed.
+
+### example:
+```
+debug('B'); // begin debugging
+debug($myVariable, 'my variabled');
+debug('E'); // end debugging
+```
+
+### example < version 0.8.0:
+```
+debugBegin();
+debug($myVariable, 'my variabled');
+debugEnd();
+```
+
+
+
+## Improvements
+
+Please make an entry directly on the TYPO3 Core bug tracker at
+[add a control function for debugging](https://forge.typo3.org/issues/23899)
+[enhanced debug methods](https://forge.typo3.org/issues/86220)
+
+Global functions can only be provided by the TYPO3 core.

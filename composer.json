@@ -2,7 +2,6 @@
   "name": "jambagecom/fh-debug",
   "type": "typo3-cms-extension",
   "description": "PHP debugger, sys_log and devLog Logger",
-  "license": "GPL-2.0+",
   "repositories": [
     {
       "type": "composer",
@@ -28,8 +27,11 @@
       "homepage": "https://ttproducts.de"
     }
   ],
+  "license": [
+    "GPL-2.0-or-later"
+  ],
   "replace": {
-    "fh_debug": "self.version",
+    "jambagecom/fh-debug": "self.version",
     "typo3-ter/fh-debug": "self.version"
   },
   "require": {

@@ -1585,6 +1585,35 @@ class DebugFunctions {
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
+            $title === null &&
+            $group === null &&
+            is_string($variable)
+        ) {
+            $isControlMode = false;
+            switch ($variable) {
+                case 'B':
+                    static::debugBegin();
+                    $isControlMode = true;
+                    break;
+                case 'E':
+                    static::debugEnd();
+                    $isControlMode = true;
+                    break;
+                case 'resetTemporaryFile':
+                    static::truncateFile();
+                    $isControlMode = true;
+                    break;
+                default:
+                    // nothing
+                    break;
+            }
+
+            if ($isControlMode) {
+                return ;
+            }
+        }
+
+        if (
             GeneralUtility::inList(static::getIgnore(), $title)
         ) {
             return;
@@ -1592,20 +1621,9 @@ class DebugFunctions {
 
         $storeIsActive = static::getActive();
         $isValidTrace = false;
-        $isControlMode = false;
         $charset = '';
 
-        if ($storeIsActive) {
-            if ($recursiveDepth == 3) {
-                $recursiveDepth = static::getRecursiveDepth();
-            }
-        }
         static::processUser();
-
-        if ($title == 'control:resetTemporaryFile') {
-            static::truncateFile();
-            $isControlMode = true;
-        }
 
         $debugSysLog = false;
         $excludeSysLog = false;
@@ -1640,7 +1658,6 @@ class DebugFunctions {
         }
 
         if (
-            !$isControlMode &&
             !$excludeSysLog &&
             (
                 $storeIsActive ||
@@ -1652,6 +1669,8 @@ class DebugFunctions {
             static::setActive(false);
 
             if (static::$isUserAllowed) {
+                $recursiveDepth = static::getRecursiveDepth();
+
                 if (static::$needsFileInit) {
                     static::initFile();
                     static::$needsFileInit = false;
@@ -1663,12 +1682,12 @@ class DebugFunctions {
 
                     $cssPath = '';
                     $extConf = static::getExtConf();
-                    if (($position = strpos($extConf['CSSPATH'], 'EXT:' . FH_DEBUG_EXT)) !== false) {
-//  error_log('$_SERVER = ' . print_r($_SERVER, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
+                    if (
+                        ($position = strpos($extConf['CSSPATH'], 'EXT:' . FH_DEBUG_EXT)) !== false
+                    ) {
                         $subdirectory = '';
                         if ($position > 0) {
                             $subdirectory = substr($extConf['CSSPATH'], 0, $position);
-//  error_log('Pos 1 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         } else {
                             $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
                             if (
