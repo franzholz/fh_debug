@@ -1,4 +1,8 @@
-        
+
+2019-12-21 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: after the </body> end tag also the </html> end tag shall follow automatically
+    * bugfix: <br /> tags are invalid inside of headers
+
 2019-11-25 Franz Holzinger <franz@ttproducts.de>
     * compatibility TYPO3 9: Workaround for debugBegin and debugEnd. Use debug('B') and debug('E') instead.
     * insert a call_user_func into ext_localconf.php

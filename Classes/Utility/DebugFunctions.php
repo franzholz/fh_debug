@@ -511,7 +511,7 @@ class DebugFunctions {
     static public function writeBodyEnd ()
     {
         $out =
-'</body>';
+'</body></html>';
 
 // error_log('writeBodyEnd ' . PHP_EOL, 3, static::getErrorLogFilename());
         $errorOut = '';
@@ -1457,7 +1457,7 @@ class DebugFunctions {
                         true
                     ) . chr(13) .
                     '<h3>' . $title . $type . '</h3>';
-                $out .= '<br />' . $backTrace . chr(13) .
+                $out .= chr(13) . $backTrace . chr(13) .
                     '<hr />' . chr(13);
             }
         }
@@ -1723,14 +1723,14 @@ class DebugFunctions {
                     switch (TYPO3_MODE) {
                         case 'FE':
                             if (static::getHtml()) {
-                                $head = 'Front End Debugging<br />' . $appendText;
+                                $head = 'Front End Debugging' . chr(13) . $appendText;
                             } else {
                                 $head = '#Front End Debugging' . $appendText . '#';
                             }
                             break;
                         case 'BE':
                             if (static::getHtml()) {
-                                $head = 'Back End Debugging<br />' . $appendText;
+                                $head = 'Back End Debugging' . chr(13) . $appendText;
                             } else {
                                 $head = '#Back End Debugging' . $appendText . '#';
                             }
