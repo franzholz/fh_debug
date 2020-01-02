@@ -1,9 +1,10 @@
 <?php
 defined('TYPO3_MODE') || die('Access denied.');
 
-define('FH_DEBUG_EXT', 'fh_debug');
-
 call_user_func(function () {
+
+    define('FH_DEBUG_EXT', 'fh_debug');
+
     $extensionConfiguration = array();
 
     if (

@@ -1,4 +1,7 @@
 
+2020-01-02 Franz Holzinger <franz@ttproducts.de>
+    * new feature: DEVLOG now means to activate any devLog, because I always have expected this. DEVLOGDEBUG is for the fh_debug internal devLog.
+
 2019-12-21 Franz Holzinger <franz@ttproducts.de>
     * bugfix: after the </body> end tag also the </html> end tag shall follow automatically
     * bugfix: <br /> tags are invalid inside of headers

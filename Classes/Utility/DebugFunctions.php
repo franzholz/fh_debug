@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2019 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2020 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -79,6 +79,7 @@ class DebugFunctions {
     static private $feUserNames = '';
     static private $debugFileMode = 'wb';
     static private $devLog = false;
+    static private $devLogDebug = false;
     static private $sysLog = false;
     static private $sysLogExclude = '';
     static private $proxyForward = false;
@@ -132,6 +133,7 @@ class DebugFunctions {
         static::setTraceFields($extConf['TRACEFIELDS']);
         static::setFeUserNames($extConf['FEUSERNAMES']);
         static::setDevLog($extConf['DEVLOG']);
+        static::setDevLogDebug($extConf['DEVLOGDEBUG']);
         static::setSysLog($extConf['SYSLOG']);
         static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
         static::setHtml($extConf['HTML']);
@@ -312,6 +314,18 @@ class DebugFunctions {
     static public function getDevLog ()
     {
         return static::$devLog;
+    }
+
+    static public function setDevLogDebug (
+        $value
+    )
+    {
+        static::$devLogDebug = (boolean) $value;
+    }
+
+    static public function getDevLogDebug ()
+    {
+        return static::$devLogDebug;
     }
 
     static public function setSysLog (
@@ -794,7 +808,7 @@ class DebugFunctions {
                             'start time, date and IP of debug session (mode "' . $openMode . '")'
                         );
                 } else if (
-                    static::getDevLog() &&
+                    static::getDevLogDebug() &&
                     !is_writable($filename)
                 ) {
                     GeneralUtility::devLog(
@@ -810,7 +824,7 @@ class DebugFunctions {
                     );
                 }
             } else {
-                if (static::getDevLog()) {
+                if (static::getDevLogDebug()) {
                     GeneralUtility::devLog(
                         'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "',
                         FH_DEBUG_EXT,
@@ -1589,27 +1603,26 @@ class DebugFunctions {
             $group === null &&
             is_string($variable)
         ) {
-            $isControlMode = false;
+            $isControlMode = true;
             switch ($variable) {
                 case 'B':
+                case 'b':
                     static::debugBegin();
-                    $isControlMode = true;
                     break;
                 case 'E':
+                case 'e':
                     static::debugEnd();
-                    $isControlMode = true;
                     break;
                 case 'resetTemporaryFile':
                     static::truncateFile();
-                    $isControlMode = true;
                     break;
                 default:
-                    // nothing
+                    $isControlMode = false;
                     break;
             }
 
             if ($isControlMode) {
-                return ;
+                return true;
             }
         }
 
@@ -1626,6 +1639,7 @@ class DebugFunctions {
         static::processUser();
 
         $debugSysLog = false;
+        $debugDevLog = false;
         $excludeSysLog = false;
 
         if (
@@ -1658,11 +1672,20 @@ class DebugFunctions {
         }
 
         if (
-            !$excludeSysLog &&
+            static::getDevLog() &&
+            isset($title) &&
+            strpos($title, 'devLog from ' . FH_DEBUG_EXT) !== false
+        ) {
+            $debugDevLog = true;
+        }
+
+        if (
             (
                 $storeIsActive ||
                 static::bIsInitialization() ||
-                $debugSysLog
+                !$excludeSysLog &&
+                $debugSysLog ||
+                $debugDevLog
             ) &&
             !self::getMaxFileSizeReached()
         ) {
