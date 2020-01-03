@@ -68,6 +68,28 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
 
 If you use the file **ext_localconf.php** or some of the at first executed TYPO3 core files, then the extension fh_debug has not been initialized yet. Therefore you must use the full namespace class to initialize and to call the class of fh_debug.
 
+
+
+Class 'JambageCom\Fhdebug\Utility\DebugFunctions' not found
+in /var/www/html/typo3_src/typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php line 15
+
+This means that your debug output shall be generated before the extension fh_debug has been initialized by TYPO3.
+You must do your own initialization by these commands:
+
+
+### example:
+```
+define('FH_DEBUG_EXT', 'fh_debug');
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
+\JambageCom\Fhdebug\Utility\DebugFunctions::init();
+\JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
+\JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
+
+debug ($tmp, 'variable before fh_debug has been started yet.');
+```
+
+
+
 ## debug begin and end
 
 There are 2 control commands available to begin and to end the generation of debug output:
