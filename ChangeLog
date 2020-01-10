@@ -1,4 +1,7 @@
 
+2020-01-10 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: remain backwards compatible to TYPO3 8.7
+
 2020-01-02 Franz Holzinger <franz@ttproducts.de>
     * new feature: DEVLOG now means to activate any devLog, because I always have expected this. DEVLOGDEBUG is for the fh_debug internal devLog.
 

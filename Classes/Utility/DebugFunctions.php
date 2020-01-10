@@ -1595,6 +1595,18 @@ class DebugFunctions {
         $group = null
     )
     {
+        if (
+            $title == '*variable*'
+        ) { // backwards compatibility to TYPO3 8.7 where the second parameter is the former default value for variable
+            $title = null;
+        }
+
+        if (
+            $group == '*line*'
+        ) { // backwards compatibility to TYPO3 8.7 where the third parameter is the former default value for __LINE__
+            $group = null;
+        }
+
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -1683,8 +1695,7 @@ class DebugFunctions {
             (
                 $storeIsActive ||
                 static::bIsInitialization() ||
-                !$excludeSysLog &&
-                $debugSysLog ||
+                $debugSysLog && !$excludeSysLog ||
                 $debugDevLog
             ) &&
             !self::getMaxFileSizeReached()
@@ -1761,6 +1772,7 @@ class DebugFunctions {
                     }
 //  error_log('debug $headerValue = ' . print_r($headerValue, true) . PHP_EOL, 3, static::getErrorLogFilename());
 //  error_log('debug $head = ' . $head . PHP_EOL, 3, static::getErrorLogFilename());
+
                     static::writeOut(
                         $headerValue,
                         $head,

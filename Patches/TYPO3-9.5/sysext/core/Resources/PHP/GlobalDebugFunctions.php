@@ -11,7 +11,10 @@ function debug($variable = '', $title = null, $group = null)
     ) {
         return;
     }
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
+    if (
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') /* &&
+        class_exists('\\JambageCom\\Fhdebug\\Utility\\DebugFunctions')*/
+    ) {
         \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title);
     } else {
         \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
