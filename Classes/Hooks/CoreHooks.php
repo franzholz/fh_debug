@@ -42,12 +42,12 @@ class CoreHooks {
             \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
             // if you use the debug HTML file:
             \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
-            \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(false);
             \JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('15');
             \JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12');
             \JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('10');
             \JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL');
-            \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE);
+            \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(true);
             \JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
         }
     }

@@ -1,3 +1,6 @@
+2020-02-11 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: do not use debugBegin and debugEnd for better support of TYPO3 9.5+
+    * better support vor backend debugging when fh_debug has not been included yet.
 
 2020-01-10 Franz Holzinger <franz@ttproducts.de>
     * bugfix: remain backwards compatible to TYPO3 8.7

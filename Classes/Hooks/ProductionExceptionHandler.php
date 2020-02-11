@@ -42,7 +42,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
     */
     public function handle(\Exception $exception, AbstractContentObject $contentObject = null, $contentObjectConfiguration = array())
     {
-        debugBegin();
+        debug('B');
         debug ($exception, 'fh_debug handle $exception'); // keep this
         if (!empty($this->configuration['ignoreCodes.'])) {
             if (
@@ -95,7 +95,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
 
         $this->logException($exception, $errorMessage, $code);
         debug ($result, 'fh_debug exception handler'); // keep this
-        debugEnd();
+        debug('E');
 
         return $result;
     }

@@ -1,7 +1,11 @@
 <?php
-// Short-hand debug function
-// If you wish to use the debug()-function, and it does not output something,
-// please edit the IP mask in TYPO3_CONF_VARS
+/* Use this file only for TYPO3 9.5!
+ * 
+ * Short-hand debug function
+ * If you wish to use the debug()-function, and it does not output something,
+ * please edit the IP mask in TYPO3_CONF_VARS
+ */
+
 function debug($variable = '', $title = null, $group = null)
 {
     if (!\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP(
@@ -11,10 +15,16 @@ function debug($variable = '', $title = null, $group = null)
     ) {
         return;
     }
-    if (
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') /* &&
-        class_exists('\\JambageCom\\Fhdebug\\Utility\\DebugFunctions')*/
+
+    if (is_object($GLOBALS['error']) && @is_callable([$GLOBALS['error'], 'debug'])) {
+        $GLOBALS['error']->debug($variable, $title, $group);
+    } else if (
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')
     ) {
+        // allow debugging even if no code of fh_debug has been initialized yet
+        if (!class_exists('\\JambageCom\\Fhdebug\\Utility\\DebugFunctions')) {
+            require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
+        }
         \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title);
     } else {
         \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);

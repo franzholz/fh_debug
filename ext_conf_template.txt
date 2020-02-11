@@ -22,7 +22,7 @@ PARTFILES =
 EXCLUDEFILES =
   # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
 DEBUGFILEMODE = wb
-  # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible fiel names: file, line, function, class, object, type, args
+  # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible field names: file, line, function, class, object, type, args
 TRACEFIELDS = file, line, function
   # cat=basic/conf; type=int; label= Depth of the trace: number of the functions to be included in the backtrace.
 TRACEDEPTH = 5

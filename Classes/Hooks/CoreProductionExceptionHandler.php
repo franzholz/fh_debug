@@ -52,12 +52,12 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
             $this->discloseExceptionInformation($exception) ? $exception->getCode() : 0
         );
 
-        debugBegin();
+        debug('B');
         debug ($traceArray, 'fh_debug exception handler exception trace'); // keep this
         debug ($exception->getFile(), 'fh_debug exception handler exception File'); // keep this
         debug ($exception->getLine(), 'fh_debug exception handler exception Line'); // keep this
         debug($content, 'CoreProductionExceptionHandler::echoExceptionWeb $content'); // keep this
-        debugEnd();
+        debug('E');
 
         echo $content;
     }

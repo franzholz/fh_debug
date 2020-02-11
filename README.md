@@ -6,15 +6,15 @@ Use this extension to generate debug output files for the PHP code of TYPO3 and 
 Consider to also install **debug_mysql_db** if you want to debug the generated SQL queries or track down the PHP errors in the table **sys_log** or the Developer traces written to the TYPO3 function **devLog**.
 
 The debug output is written into a HTML debug output file. All the configuration is done in the Extension Manager for fh_debug. You can design the output by the CSS file fhdebug.css.
-If you have a lot of debug output then you should put debugBegin and debugEnd commands around the PHP debug commands in order to have fewer debug output lines in the file. These commands will activate and deactivate the debug output.
+If you have a lot of debug output then you should put debug('B') (formerly debugBegin()) and debug('E') (formerly debugEnd) PHP commands around the PHP debug commands in order to have fewer debug output lines in the file. These commands will activate and deactivate the debug output.
 
 ### example:
 
 ```
-debugBegin();
+debug('B');
 $a = 'myString';
 debug ($a, '$a at position 1');
-debugEnd();
+debug('E');
 ```
 
 No debug output will be shown on the screen. Otherwise you must deactivate the debug output in the Install Tool. Just enter any invalid IP address:
@@ -93,12 +93,13 @@ debug ($tmp, 'variable before fh_debug has been started yet.');
 ## debug begin and end
 
 There are 2 control commands available to begin and to end the generation of debug output:
-debugBegin and debugEnd
+debug('B') and debug('E')
 
-Under TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file fh_debug/Patches/TYPO3-9.5/sysext/core/Resources/PHP/GlobalDebugFunctions.php, if you want to use the debugBegin and debugEnd methods.
+formerly (before TYPO3 9.5) debugBegin and debugEnd
+Under TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file fh_debug/Patches/TYPO3-9.5/sysext/core/Resources/PHP/GlobalDebugFunctions.php, if you want to use the former debugBegin and debugEnd method names and allow fh_debug to work at all.
 
-Workaround:
-Since fh_debug 0.8.0 a workaround has been introduced because in TYPO3 9 these most important global functions have been removed.
+Replacement for debugBegin and debugEnd:
+Since fh_debug 0.8.0 a workaround has been introduced because in TYPO3 9 these most important global functions have been removed. And in many cases it is not useful to apply the core patch.
 
 ### example:
 ```
