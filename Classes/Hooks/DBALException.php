@@ -15,8 +15,26 @@ namespace JambageCom\FhDebug\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 
- 
-use JambageCom\FhDebug\Utility\DebugFunctions;
+
+use Doctrine\DBAL\Driver\DriverException as DriverExceptionInterface;
+use Doctrine\DBAL\Driver\ExceptionConverterDriver;
+use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Exception;
+use Throwable;
+use function array_map;
+use function bin2hex;
+use function get_class;
+use function gettype;
+use function implode;
+use function is_object;
+use function is_resource;
+use function is_string;
+use function json_encode;
+use function preg_replace;
+use function spl_object_hash;
+use function sprintf;
 
  
 /**
