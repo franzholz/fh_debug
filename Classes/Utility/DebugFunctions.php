@@ -61,6 +61,7 @@ class DebugFunctions {
     static private $hndProcessfile = false;
     static private $processCount = 0;
     static private $recursiveDepth = 3;
+    static private $exceptionRecursiveDepth = 3;
     static private $traceDepth = 5;
     static private $appendDepth = 3;
     static private $html = true;
@@ -120,6 +121,7 @@ class DebugFunctions {
 //   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
 
         static::setRecursiveDepth($extConf['LEVEL']);
+        static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
         static::setTraceDepth($extConf['TRACEDEPTH']);
         static::setAppendDepth($extConf['APPENDDEPTH']);
         static::setStartFiles($extConf['STARTFILES']);
@@ -170,6 +172,18 @@ class DebugFunctions {
     static public function getRecursiveDepth ()
     {
         return static::$recursiveDepth;
+    }
+
+    static public function setExceptionRecursiveDepth (
+        $value
+    )
+    {
+        static::$exceptionRecursiveDepth = intval($value);
+    }
+
+    static public function getExceptionRecursiveDepth ()
+    {
+        return static::$exceptionRecursiveDepth;
     }
 
     static public function setTraceDepth (
@@ -1703,7 +1717,19 @@ class DebugFunctions {
             static::setActive(false);
 
             if (static::$isUserAllowed) {
-                $recursiveDepth = static::getRecursiveDepth();
+                $recursiveDepth = null;
+                if (is_object($variable)) {
+                    $classname = get_class($variable);
+                    $exceptionPos = strlen($classname) - strlen('Exception');
+                    $comparator = substr($classname, $exceptionPos);
+                    if ($comparator == 'Exception') {
+                        $recursiveDepth = static::getExceptionRecursiveDepth();
+                    }
+                }
+
+                if (!isset($recursiveDepth)) {
+                    $recursiveDepth = static::getRecursiveDepth();
+                }
 
                 if (static::$needsFileInit) {
                     static::initFile();

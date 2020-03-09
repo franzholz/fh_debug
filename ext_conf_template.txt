@@ -32,6 +32,8 @@ TRACEDEPTH_EXCEPTION = 12
 HTML = 1
   # cat=basic/conf; type=int; label=Level: maximum recursion level for debugging into arrays and objects
 LEVEL = 3
+  # cat=basic/conf; type=int; label=Exception Level: maximum recursion level for debugging into arrays and object of Exceptions
+LEVEL_EXCEPTION = 3
   # cat=basic/conf; type=int; label=Append: number of times that debug output will be appended before its gets cleared. Increase this number when you do not get any debug entries in the file.
 APPENDDEPTH = 3
   # cat=basic/conf; type=string; label= CSS path: This is the path to the CSS file. If set to EXT:fh_debug, then the path to the extension CSS folder is used: Resources/Public/Css
@@ -48,6 +50,8 @@ SYSLOG = 0
 SYSLOG_EXCLUDE = no_cache
   # cat=basic/conf; type=boolean; label= Oops an error occured: Debug the exception message of a TYPO3 error "Oops, an error occurred! Code:"
 OOPS_AN_ERROR_OCCURRED = 1
+  # cat=basic/conf; type=boolean; label= DBAL: Exception in Doctrine Database Abstraction Layer
+DBAL = 1
   # cat=basic/conf; type=boolean; label= proxy: Determine the clients ip by the HTTP_X_FORWARDED_FOR server variable which is set if a proxy forwarded the ip address.
 PROXY = 0
   # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel

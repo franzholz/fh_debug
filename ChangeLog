@@ -1,3 +1,7 @@
+
+2020-03-09 Franz Holzinger <franz@ttproducts.de>
+    * new feature: LEVEL_EXCEPTION
+
 2020-02-11 Franz Holzinger <franz@ttproducts.de>
     * bugfix: do not use debugBegin and debugEnd for better support of TYPO3 9.5+
     * better support vor backend debugging when fh_debug has not been included yet.
