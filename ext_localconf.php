@@ -89,6 +89,12 @@ call_user_func(function () {
                     );
                 }
 
+                if ($newExtConf['DBAL']) {
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\\DBALException'] = array(
+                        'className' => 'JambageCom\\FhDebug\\Hooks\\DBALException',
+                    );
+                }
+
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
 
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
