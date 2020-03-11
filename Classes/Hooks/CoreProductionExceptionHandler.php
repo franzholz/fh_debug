@@ -61,5 +61,23 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
 
         echo $content;
     }
+
+
+    /**
+     * Returns the message for the error message
+     *
+     * @param \Throwable $exception The throwable object.
+     * @return string
+     */
+    protected function getMessage(\Throwable $exception)
+    {
+        $result = $this->defaultMessage;
+        if ($this->discloseExceptionInformation($exception)) {
+            $errorContent = '* file: ' . $exception->getFile() . ' line: ' . $exception->getLine() .' * : ';
+            $result = $errorContent . $exception->getMessage();
+        }
+        return $result;
+    }
 }
+
 

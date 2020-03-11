@@ -1,4 +1,8 @@
 
+
+2020-03-11 Franz Holzinger <franz@ttproducts.de>
+    * new feature: Give the file name and the line number for the core ProductionExceptionHandler
+
 2020-03-09 Franz Holzinger <franz@ttproducts.de>
     * new feature: Debug DBALException exception
     * new feature: LEVEL_EXCEPTION
