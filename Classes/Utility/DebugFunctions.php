@@ -1822,24 +1822,26 @@ class DebugFunctions {
                         false
                     );
 
-                    $fileInformation = fstat(static::$hndFile);
+                    if (static::$hndFile) {
+                        $fileInformation = fstat(static::$hndFile);
 
-                    if (is_array($fileInformation)) {
-                        $size = round(($fileInformation['size'] / 1048576), 3);
-                        $maxSize = self::getMaxFileSize();
-                        if (
-                            $size > $maxSize &&
-                            $maxSize > 0
-                        ) {
-                            self::setMaxFileSizeReached(true);
-                            static::writeOut(
-                                $size . ' MByte',
-                                FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
-                                0,
-                                static::getHtml(),
-                                array(),
-                                false
-                            );
+                        if (is_array($fileInformation)) {
+                            $size = round(($fileInformation['size'] / 1048576), 3);
+                            $maxSize = self::getMaxFileSize();
+                            if (
+                                $size > $maxSize &&
+                                $maxSize > 0
+                            ) {
+                                self::setMaxFileSizeReached(true);
+                                static::writeOut(
+                                    $size . ' MByte',
+                                    FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
+                                    0,
+                                    static::getHtml(),
+                                    array(),
+                                    false
+                                );
+                            }
                         }
                     }
                 }
