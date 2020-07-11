@@ -116,6 +116,18 @@ debug($myVariable, 'my variabled');
 debugEnd();
 ```
 
+## Error
+
+If fh_debug does not work, then there is probably the case where fh_debug has not been activated yet.
+You can use PHP error logging as an alternativ.
+
+
+### example PHP error_log :
+```
+error_log('mymethod Position 2 $variableName: ' .  print_r($variableName, true) . PHP_EOL, 3, '/var/www/html/fileadmin/phpDebugErrorLog.txt');
+```
+
+Use you own path as the last parameter of the above method error_log
 
 ## Improvements
 
