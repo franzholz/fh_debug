@@ -53,7 +53,11 @@ call_user_func(function () {
             if (!($GLOBALS['error'] instanceof $class)) {
                 // New operator used on purpose: This class is required early during
                 // bootstrap before makeInstance() is properly set up
-                $myDebugObject = new \JambageCom\FhDebug\Utility\DebugFunctions($newExtConf);
+                $myDebugObject =
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                        \JambageCom\FhDebug\Utility\DebugFunctions::class,
+                        $newExtConf
+                    );
                 // The contructor contains important static initializations which are needed immediately.
             }
             $ipIsAllowed = false;
