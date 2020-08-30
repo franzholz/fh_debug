@@ -445,7 +445,12 @@ class DebugFunctions {
         } else {
             static::$debugFile = $debugFile;
         }
-        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . '/' . $debugFile;
+        $session = session_get_cookie_params();
+        $path = '';
+        if ($session['path'] != '') {
+            $path = '/' . $session['path'];
+        }
+        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . $session['path'] . '/' . $debugFile;
     }
 
     static public function getDebugFile ()
