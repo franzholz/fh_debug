@@ -116,7 +116,10 @@ class CoreHooks {
             !isset($params['initLog'])
         ) {
             $params['backTrace'] = $params['backTrace']['0'];
-            debug($params, 'sysLog from fh_debug: $params');
+            debug($params, 'sysLog from fh_debug: $params'); // keep this
+            $storeTraceDepth = $GLOBALS['error']->getTraceDepth();
+            $GLOBALS['error']->setTraceDepth($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_SYSLOG']);
+            $GLOBALS['error']->setTraceDepth($storeTraceDepth);
         }
     }
 }

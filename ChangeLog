@@ -1,3 +1,8 @@
+
+
+2020-08-30 Franz Holzinger <franz@ttproducts.de>
+    * new feature: TRACEDEPTH_SYSLOG for the trace depth of the debug of sys_log entries.
+
 2020-07-15 Franz Holzinger <franz@ttproducts.de>
     * compatibility: Do not use the new command, but \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance to create the $GLOBALS['error'] object.
 

@@ -28,6 +28,8 @@ TRACEFIELDS = file, line, function
 TRACEDEPTH = 5
   # cat=basic/conf; type=int; label= Depth of the trace for exceptions: number of the functions to be included in the backtrace for an exception.
 TRACEDEPTH_EXCEPTION = 12
+  # cat=basic/conf; type=int; label= Depth of the trace for SysLog: number of the functions to be included in the backtrace for a SysLog entry.
+TRACEDEPTH_SYSLOG = 12
   # cat=basic/conf; type=boolean; label= HTML: generate a HTML output file.
 HTML = 1
   # cat=basic/conf; type=int; label=Level: maximum recursion level for debugging into arrays and objects

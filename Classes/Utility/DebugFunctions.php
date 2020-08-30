@@ -445,7 +445,7 @@ class DebugFunctions {
         } else {
             static::$debugFile = $debugFile;
         }
-        static::$debugFilename = GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $debugFile);
+        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . '/' . $debugFile;
     }
 
     static public function getDebugFile ()
@@ -541,7 +541,6 @@ class DebugFunctions {
         $out =
 '</body></html>';
 
-// error_log('writeBodyEnd ' . PHP_EOL, 3, static::getErrorLogFilename());
         $errorOut = '';
 
         if (static::getUseErrorLog()) {
@@ -560,20 +559,16 @@ class DebugFunctions {
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-// error_log ('readIpAddress Pos 1 $ipAddress ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
         } else if (
             static::getProxyForward() &&
             !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
         ) {
             $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             $ipAddress = trim($ips[count($ips) - 1]);
-// error_log ('readIpAddress Pos 2 $ipAddress ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
         } else {
             $ipAddress = GeneralUtility::getIndpEnv('REMOTE_ADDR');
-// error_log ('readIpAddress Pos 3 $ipAddress ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
         }
 
-// error_log ('readIpAddress ENDE $ipAddress ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
         return $ipAddress;
     }
 
@@ -581,8 +576,6 @@ class DebugFunctions {
         $ipAddress
     )
     {
-// error_log ('verifyIpAddress $ipAddress ' . $ipAddress . PHP_EOL, 3, static::getErrorLogFilename());
-
         $debugIpAddress = static::getIpAddress();
         $result =
             (
@@ -592,7 +585,6 @@ class DebugFunctions {
                 )
             );
 
-// error_log ('verifyIpAddress $result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -671,9 +663,9 @@ class DebugFunctions {
         $ipAddress = ''
     )
     {
+//  error_log('init $ipAddress: ' . print_r($ipAddress, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $result = true;
         $startFiles = static::getStartFiles();
-//  error_log('init $startFiles: ' . print_r($startFiles, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $initialized = static::hasBeenInitialized();
 //  error_log('init $initialized: ' . print_r($initialized, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
@@ -724,7 +716,7 @@ class DebugFunctions {
 
         if (
             $result &&
-            GeneralUtility::cmpIP($ipAddress, '127.0.0.1')
+            GeneralUtility::cmpIP($ipAddress, '::1')
         ) {
             if (
                 !GeneralUtility::cmpIP(
@@ -757,7 +749,7 @@ class DebugFunctions {
 
         $extConf = static::getExtConf();
 
-//  error_log('initFile static::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('initFile statice::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (static::$isUserAllowed && static::getDebugFilename() != '') {
 
@@ -790,7 +782,6 @@ class DebugFunctions {
                 static::writeTemporaryFile($processCount);
             }
 
-            $extPath = PATH_typo3conf;
             $filename = static::getDebugFilename();
             $path_parts = pathinfo($filename);
 
@@ -1705,6 +1696,8 @@ class DebugFunctions {
             $debugDevLog = true;
         }
 
+// error_log('### debug $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
+
         if (
             (
                 $storeIsActive ||
@@ -1766,7 +1759,6 @@ class DebugFunctions {
 //  error_log('Pos 2 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         }
                         $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
-//  error_log('$cssPath = ' . $cssPath . PHP_EOL, 3, static::getErrorLogFilename());
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
@@ -1796,8 +1788,6 @@ class DebugFunctions {
                             }
                             break;
                     }
-//  error_log('debug $headerValue = ' . print_r($headerValue, true) . PHP_EOL, 3, static::getErrorLogFilename());
-//  error_log('debug $head = ' . $head . PHP_EOL, 3, static::getErrorLogFilename());
 
                     static::writeOut(
                         $headerValue,
