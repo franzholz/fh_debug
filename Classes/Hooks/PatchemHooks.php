@@ -36,7 +36,7 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  */
 class PatchemHooks
 {
-    public function buildConfigurationArray(&$params, $pObj)
+    public function buildConfigurationArray (&$params, $pObj)
     {
         if (
             isset($params) &&
