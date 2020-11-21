@@ -22,7 +22,18 @@ debug ($a, '$a at position 1');
 debug('E');
 ```
 
-No debug output will be shown on the screen. Otherwise you must deactivate the debug output in the Install Tool. Just enter any invalid IP address:
+No debug output will be shown on the screen. Otherwise you must deactivate the debug output in the Install Tool. 
+
+```
+$a = 'myString2';
+debug ($a, '$a at position 1', 'F');
+```
+
+The debug output will always be shown.
+
+
+## Configuration
+Just enter any invalid IP address:
 
 > [SYS][devIPmask] = 1.1.1.1
 
