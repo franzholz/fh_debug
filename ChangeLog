@@ -1,4 +1,9 @@
 
+2020-11-22 Franz Holzinger <franz@ttproducts.de>
+    * new feature: static method errorLog as a replacement of a call of error_log
+
+2020-11-07 Franz Holzinger <franz@ttproducts.de>
+    * new feature: third parameter value F which will always force to produce an output
 
 2020-08-30 Franz Holzinger <franz@ttproducts.de>
     * new feature: TRACEDEPTH_SYSLOG for the trace depth of the debug of sys_log entries.

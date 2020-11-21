@@ -1,7 +1,6 @@
 <?php
 
 namespace JambageCom\FhDebug\Utility;
-
 /***************************************************************
 *  Copyright notice
 *
@@ -35,11 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 */
 class DebugFunctions {
     static public $prefixFieldArray =
-        array(
+        [
             'file' => '',
             'line' => '#',
             'function' => '->'
-        );
+        ];
     static public $csConvObj;
     static public $errorLogFile = 'fileadmin/phpDebugErrorLog.txt';
     static public $debugFile = '';
@@ -52,11 +51,11 @@ class DebugFunctions {
 
     static private $username;
     static private $isUserAllowed = true;
-    static private $extConf = array();
+    static private $extConf = [];
     static private $hndFile = 0;
     static private $hasBeenInitialized = false;
     static private $needsFileInit = true;
-    static private $starttimeArray = array();
+    static private $starttimeArray = [];
     static private $createFile = false;
     static private $hndProcessfile = false;
     static private $processCount = 0;
@@ -117,8 +116,6 @@ class DebugFunctions {
         static::setDebugFileMode($extConf['DEBUGFILEMODE']);
 
 //  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
-
-//   error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct $extConf = '. print_r($extConf, true) . PHP_EOL,  3, static::getErrorLogFilename());
 
         static::setRecursiveDepth($extConf['LEVEL']);
         static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
@@ -436,6 +433,11 @@ class DebugFunctions {
         return static::$useErrorLog;
     }
 
+    static public function errorLog ($text, $comment) 
+    {
+        error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename());
+    }
+
     static public function setDebugFile (
         $debugFile = ''
     )
@@ -580,7 +582,7 @@ class DebugFunctions {
     static public function verifyIpAddress (
         $ipAddress
     )
-    {
+    { 
         $debugIpAddress = static::getIpAddress();
         $result =
             (
@@ -644,7 +646,6 @@ class DebugFunctions {
 
         if ($ipIsAllowed) {
             $devIPmask = $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'];
-//  error_log ('initIpAddress $devIPmask ' . $devIPmask . PHP_EOL, 3, static::getErrorLogFilename());
 
             if ($ipAdress == '*') {
                 $devIPmask = '*';
@@ -655,7 +656,6 @@ class DebugFunctions {
                     $devIPmask = $ipAdress;
                 }
             }
-//  error_log ('initIpAddress NEU $devIPmask ' . $devIPmask . PHP_EOL, 3, static::getErrorLogFilename());
 
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = $devIPmask;
         }
@@ -730,10 +730,10 @@ class DebugFunctions {
                 )
             ) {
                 static::$starttimeArray =
-                    array(
+                    [
                         'no debugging possible',
                         'Attention: The server variable REMOTE_ADDR is set to local.'
-                    );
+                    ];
                 static::setActive(false);
                 $result = false;
             }
@@ -813,10 +813,10 @@ class DebugFunctions {
 
                     $ipAddress = static::readIpAddress();
                     static::$starttimeArray =
-                        array(
+                        [
                             date(static::getDateTime()) . '  (' . $ipAddress . ')',
                             'start time, date and IP of debug session (mode "' . $openMode . '")'
-                        );
+                        ];
                 } else if (
                     static::getDevLogDebug() &&
                     !is_writable($filename)
@@ -992,7 +992,7 @@ class DebugFunctions {
 
         $theFilename = basename(__FILE__);
         $traceFieldArray = static::getTraceFieldArray();
-        $traceArray = array();
+        $traceArray = [];
         $j = 0;
 
         for ($i = $offset; $i <= $last ; ++$i) {
@@ -1052,7 +1052,7 @@ class DebugFunctions {
     )
     {
         $result = '';
-        $debugTrail = array();
+        $debugTrail = [];
 
         if (!empty($traceArray)) {
             if ($inverted) {
@@ -1119,7 +1119,7 @@ class DebugFunctions {
 
         if ($depth < $recursiveDepth) {
 
-            $debugArray = array();
+            $debugArray = [];
             if ($html) {
                 if ($header != '') {
                     $debugArray[] = '<tr><th>' . $header . '</th></tr>';
@@ -1217,7 +1217,7 @@ class DebugFunctions {
     static public function object2array ($instance)
     {
         $clone = (array) $instance;
-        $result = array();
+        $result = [];
         $sourceKeys = $clone;
 
         foreach ($clone as $key => $value) {
@@ -1259,7 +1259,7 @@ class DebugFunctions {
         $html
     ) {
         $result = '';
-        $debugArray = array();
+        $debugArray = [];
 
         if (is_array($variable)) {
             if (!$header) {
@@ -1422,7 +1422,7 @@ class DebugFunctions {
         $title,
         $recursiveDepth,
         $html,
-        $traceArray = array(),
+        $traceArray = [],
         $showHeader = false
     )
     {
@@ -1521,7 +1521,7 @@ class DebugFunctions {
             !$bWritten &&
             !static::hasError()
         ) {
-            $overwriteModeArray = array('x', 'x+', 'xb', 'x+b');
+            $overwriteModeArray = ['x', 'x+', 'xb', 'x+b'];
 
             if (
                 file_exists($debugFile) &&
@@ -1605,11 +1605,20 @@ class DebugFunctions {
         $group = null
     )
     {
+        $force = false;
         if (
             $title == '*variable*'
         ) { // backwards compatibility to TYPO3 8.7 where the second parameter is the former default value for variable
             $title = null;
         }
+
+        // neu Anfang
+        if (
+            $group == 'F'
+        ) { // backwards compatibility to TYPO3 8.7 where the third parameter is the former default value for __LINE__
+            $force = true;
+        }
+        // neu Ende
 
         if (
             $group == '*line*'
@@ -1649,6 +1658,7 @@ class DebugFunctions {
         }
 
         if (
+            !$force &&
             GeneralUtility::inList(static::getIgnore(), $title)
         ) {
             return;
@@ -1773,7 +1783,7 @@ class DebugFunctions {
                     if (count(static::$starttimeArray)) {
                         $headerPostFix = static::$starttimeArray['1'];
                         $headerValue = static::$starttimeArray['0'];
-                        static::$starttimeArray = array();
+                        static::$starttimeArray = [];
                     }
 
                     $appendText = ' - counter: ' . static::$processCount . ' ' . $headerPostFix;
@@ -1799,7 +1809,7 @@ class DebugFunctions {
                         $head,
                         $recursiveDepth,
                         static::getHtml(),
-                        array(),
+                        [],
                         true
                     );
                 }
@@ -1833,7 +1843,7 @@ class DebugFunctions {
                                     FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
                                     0,
                                     static::getHtml(),
-                                    array(),
+                                    [],
                                     false
                                 );
                             }
@@ -1880,7 +1890,7 @@ class DebugFunctions {
                 $head,
                 static::getRecursiveDepth(),
                 static::getHtml(),
-                array(),
+                [],
                 true
             );
 

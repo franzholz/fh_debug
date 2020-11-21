@@ -68,7 +68,7 @@ class CoreHooks {
     /**
     * Developer log
     *
-    * $devLogArray = array('msg'=>$msg, 'extKey'=>$extKey, 'severity'=>$severity, 'dataVar'=>$dataVar);
+    * $devLogArray = ['msg' => $msg, 'extKey' => $extKey, 'severity' => $severity, 'dataVar' => $dataVar];
     * msg		string		Message (in English).
     * extKey	string		Extension key (from which extension the devLog function has been executed)
     * severity	integer		Severity: 0 ... info
@@ -92,7 +92,7 @@ class CoreHooks {
     /**
     * System log
     *
-    * $params = array('msg' => $msg, 'extKey' => $extKey, 'backTrace' => debug_backtrace(), 'severity' => $severity);
+    * $params = ['msg' => $msg, 'extKey' => $extKey, 'backTrace' => debug_backtrace(), 'severity' => $severity];
     * msg       string      Message (in English).
     * extKey    string      Extension key (from which extension the devLog function has been executed)
     * backTrace  array      index 0 ... file, line, function, class, type, args

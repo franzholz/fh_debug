@@ -40,7 +40,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
     * @return string
     * @throws \Exception
     */
-    public function handle(\Exception $exception, AbstractContentObject $contentObject = null, $contentObjectConfiguration = array())
+    public function handle(\Exception $exception, AbstractContentObject $contentObject = null, $contentObjectConfiguration = [])
     {
         debug('B');
         debug ($exception, 'fh_debug handle $exception'); // keep this

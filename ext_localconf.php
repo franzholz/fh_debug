@@ -5,7 +5,7 @@ call_user_func(function () {
 
     define('FH_DEBUG_EXT', 'fh_debug');
 
-    $extensionConfiguration = array();
+    $extensionConfiguration = [];
 
     if (
         defined('TYPO3_version') &&
@@ -40,7 +40,7 @@ call_user_func(function () {
         isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
         is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
     ) {
-        $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
+        $class = \JambageCom\FhDebug\Utility\DebugFunctions::class;
         if (
             !isset($GLOBALS['error']) ||
             !is_object($GLOBALS['error']) ||
@@ -88,22 +88,22 @@ call_user_func(function () {
                 }
 
                 if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = array(
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = [
                         'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
-                    );
+                    ];
                 }
 
                 if ($newExtConf['DBAL']) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\\DBALException'] = array(
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\\DBALException'] = [
                         'className' => 'JambageCom\\FhDebug\\Hooks\\DBALException',
-                    );
+                    ];
                 }
 
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
 
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = array(
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = [
                     'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
-                );
+                ];
             }
 
             if (
@@ -112,6 +112,26 @@ call_user_func(function () {
             ) {
             // the error object must always be set in order to show the debug output or to disable it
                 $GLOBALS['error'] = $myDebugObject;
+            }
+
+            $logLevel = -1;
+            if (\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($newExtConf['LOGLEVEL'])) {
+                $logLevel = intval($newExtConf['LOGLEVEL']);
+            }
+
+            if (
+                $logLevel >= \TYPO3\CMS\Core\Log\LogLevel::EMERGENCY &&
+                $logLevel <= \TYPO3\CMS\Core\Log\LogLevel::DEBUG
+            ) {
+                $originalWriters = '';
+                // configuration for DEBUG severity, including all
+                // levels with higher severity (DEBUG, DEBUG, ERROR, CRITICAL, EMERGENCY)
+                if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration'][$logLevel])) {
+                    $GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration'][$logLevel] = [];
+                }
+
+                $GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration']
+                    [$logLevel][\JambageCom\FhDebug\Log\Writer\LogWriter::class] = [];
             }
 
     // 		if (TYPO3_MODE === 'BE') {

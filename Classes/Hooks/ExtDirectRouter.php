@@ -19,6 +19,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
+ * deprecated
+ * This class has been removed in TYPO3 9.0
+ *
  * Ext Direct Router
  */
 class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
@@ -42,7 +45,7 @@ class ExtDirectRouter extends \TYPO3\CMS\Core\ExtDirect\ExtDirectRouter
                 $GLOBALS['error']->getTypo3Mode() == 'ALL' ||
                 $GLOBALS['error']->getTypo3Mode() == 'BE'
             )
-            // Other comparisons like the IP address is not needed because this xclass would not have been activated in such a case.
+            // Other comparisons like the IP address are not needed because this xclass would not have been activated in such a case.
         ) {
             // do nothing
         } else {
