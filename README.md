@@ -8,6 +8,11 @@ Consider to also install **debug_mysql_db** if you want to debug the generated S
 The debug output is written into a HTML debug output file. All the configuration is done in the Extension Manager for fh_debug. You can design the output by the CSS file fhdebug.css.
 If you have a lot of debug output then you should put debug('B') (formerly debugBegin()) and debug('E') (formerly debugEnd) PHP commands around the PHP debug commands in order to have fewer debug output lines in the file. These commands will activate and deactivate the debug output.
 
+### force output
+
+Since version 0.8.3:
+If a debug('B') is required, but maybe not active, then you can use the third parameter (group) 'F' to force an output. This is a spacial case to produce the output no matter if debugBegin is set to be mandatory or not.
+
 ### example:
 
 ```
