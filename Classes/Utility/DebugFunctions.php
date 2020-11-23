@@ -413,7 +413,18 @@ class DebugFunctions {
         } else {
             static::$errorLogFile = $errorLogFile;
         }
-        static::$errorLogFilename = GeneralUtility::resolveBackPath(PATH_typo3conf . '../' . $errorLogFile);
+    
+        $path = null;
+        if (
+            defined('TYPO3_version') &&
+            version_compare(TYPO3_version, '9.0.0', '>=')
+        ) {
+            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath();
+        } else if (defined('PATH_typo3conf')) {
+            $path = GeneralUtility::resolveBackPath(PATH_typo3conf . '../');
+        }
+    
+        static::$errorLogFilename = $path . $errorLogFile;
     }
 
     static public function getErrorLogFilename ()
