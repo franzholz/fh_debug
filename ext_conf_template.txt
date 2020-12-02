@@ -2,7 +2,7 @@
 IPADDRESS = ::1
   # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debug('B') and debug('E'). The first debug('B') will initialize the debug.
 DEBUGBEGIN = 0
-  # cat=basic/enable; type=string; label= Typo3 Mode: FE, BE, ALL or OFF. Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging only enabled in this Mode. Use BE only with caution.
+  # cat=basic/enable; type=options[All=ALL,Front End=FE,Back End=BE,Off=OFF]; label=Typo3 Mode: Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging is only enabled in this Mode.
 TYPO3_MODE = FE
   # cat=basic/enable; type=string; label= Comma-sep. list of FE user names: empty for all fe_users (even without login). Else list FE user names where debug-output has to be generated.
 FEUSERNAMES =
