@@ -43,7 +43,7 @@ CSSPATH = EXT:fh_debug
   # cat=basic/conf; type=file[css]; label= CSS file: This CSS file will be included by the HTML debug output file.
 CSSFILE = fhdebug.css
   # cat=basic/conf; type=boolean; label= DevLog fh_debug: Allow to write informations about problems inside of fh_debug to the Developer Logfile.
-DEVLOGDEBUG = 0
+DEVLOGDEBUG = 1
   # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems outside of fh_debug to the Developer Logfile.
 DEVLOG = 0
   # cat=basic/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debug('B') has not been set.
