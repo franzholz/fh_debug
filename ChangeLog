@@ -1,3 +1,7 @@
+
+2020-12-11 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: make an early stop of execution if the debug file is not writable in method initFile. No exception is possible here because it must be possible that the debug extension is usable at an early time during the initialization of TYPO3.
+
 2020-11-23 Franz Holzinger <franz@ttproducts.de>
     * add support for TYPO3 10.4
 

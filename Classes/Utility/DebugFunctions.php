@@ -46,6 +46,7 @@ class DebugFunctions {
 
     static protected $active = false;	// inactive without initialization
     static protected $bInitialization = false;
+    static protected $internalError = false;
     static protected $bErrorWritten = false;
     static protected $useErrorLog = false;
 
@@ -759,19 +760,14 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function initFile ()
+    static public function initFile (&$errorText)
     {
-// error_log ('initFile START ============= ' . PHP_EOL, 3, static::getErrorLogFilename());
-
+        $result = true;
         $extConf = static::getExtConf();
-
-//  error_log('initFile statice::$isUserAllowed: ' . static::$isUserAllowed . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (static::$isUserAllowed && static::getDebugFilename() != '') {
 
             $processFilename = static::getProcessFilename();
-// 	 error_log ('initFile $processFilename = ' . $processFilename . PHP_EOL, 3, static::getErrorLogFilename());
-
             $readBytes = 0;
             if (!is_writable($processFilename)) {
                 static::$hndProcessfile = fopen($processFilename, 'w+b');
@@ -806,8 +802,6 @@ class DebugFunctions {
                 is_writable($path_parts['dirname'])
             ) {
                 static::$headerWritten = static::getHtml();
-//  	error_log ('initFile write static::$headerWritten = ' . static::$headerWritten . PHP_EOL, 3, static::getErrorLogFilename());
-
                 if (static::getAppendDepth() > 1) {
                     if (static::getCreateFile()) {
                         $openMode = 'w+b';
@@ -829,25 +823,26 @@ class DebugFunctions {
                             'start time, date and IP of debug session (mode "' . $openMode . '")'
                         ];
                 } else if (
-                    static::getDevLogDebug() &&
                     !is_writable($filename)
                 ) {
+                    $result = false;
+                    $errorText = 'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"';
+                }
+            } else {
+                $result = false;
+                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "';
+            }
+
+            if ($result == false) {
+                if (static::getDevLogDebug()) {
                     GeneralUtility::devLog(
-                        'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
+                        $errorText,
                         FH_DEBUG_EXT,
                         0
                     );
 
                     GeneralUtility::sysLog(
-                        'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"',
-                        FH_DEBUG_EXT,
-                        0
-                    );
-                }
-            } else {
-                if (static::getDevLogDebug()) {
-                    GeneralUtility::devLog(
-                        'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "',
+                        $errorText,
                         FH_DEBUG_EXT,
                         0
                     );
@@ -855,6 +850,7 @@ class DebugFunctions {
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
+        return $result;
     }
 
     static public function getProcessFilename ()
@@ -1670,7 +1666,8 @@ class DebugFunctions {
 
         if (
             !$force &&
-            GeneralUtility::inList(static::getIgnore(), $title)
+            GeneralUtility::inList(static::getIgnore(), $title) ||
+            static::$internalError
         ) {
             return;
         }
@@ -1751,8 +1748,16 @@ class DebugFunctions {
                 }
 
                 if (static::$needsFileInit) {
-                    static::initFile();
-                    static::$needsFileInit = false;
+                    $errorText = '';
+                    $resultInit = static::initFile($errorText);
+                    if ($resultInit) {
+                        static::$needsFileInit = false;
+                    } else {
+                        static::$internalError = true;
+                        echo $errorText;
+                        error_log(FH_DEBUG_EXT . ': ' . $errorText, 0); // It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
+                        return false;
+                    }
                 }
 
                 if (static::$headerWritten) {
