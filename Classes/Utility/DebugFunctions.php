@@ -461,17 +461,28 @@ class DebugFunctions {
         } else {
             static::$debugFile = $debugFile;
         }
-        $session = session_get_cookie_params();
-        $path = '';
-        if (trim($session['path']) != '') {
-            $path = rtrim($session['path'], '/') . '/';
+        $path = '/';
+
+        if (isset($_SERVER['REDIRECT_CWD'])) {
+            $path = $_SERVER['REDIRECT_CWD'];
+        } else {
+            $session = session_get_cookie_params();
+
+            if ($session['path'] != '/') {
+                $path = rtrim($session['path'], '/') . '/';
+            }
         }
-        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . $path .  $debugFile;
+        static::setDebugFilename($_SERVER['DOCUMENT_ROOT'] . $path .  $debugFile);
     }
 
     static public function getDebugFile ()
     {
         return static::$debugFile;
+    }
+
+    static public function setDebugFilename ($debugFilename)
+    {
+        static::$debugFilename = $debugFilename;
     }
 
     static public function getDebugFilename ()
@@ -1804,7 +1815,16 @@ class DebugFunctions {
                             }
 //  error_log('Pos 2 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
                         }
-                        $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT) . 'Resources/Public/Css/';
+
+                        if (version_compare(TYPO3_version, '9.0.0', '>=')) {
+                            $relPath =                  
+                                \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
+                                    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(FH_DEBUG_EXT)
+                                );
+                        } else {
+                            $relPath =  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT);
+                        }                        
+                        $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
