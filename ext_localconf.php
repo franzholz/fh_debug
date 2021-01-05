@@ -73,17 +73,31 @@ call_user_func(function () {
                     TYPO3_MODE == 'FE' && $newExtConf['FEUSERNAMES']
                 )
             ) {
+                $GLOBALS['TYPO3_CONF_VARS']['LOG']['JambageCom']['FhDebug']['writerConfiguration'] = [
+                    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
+                            \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                            'logFileInfix' => 'debug'
+                        ]
+                    ]
+                ];
+
                 if ($GLOBALS['error'] instanceof $class) {
                     $GLOBALS['error']->init($ipAdress);
                 } else {
                     $initResult = \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
                 }
 
-                if ($newExtConf['DEVLOG']) {
+                if (
+                    version_compare(TYPO3_version, '10.0.0', '<') &&
+                    $newExtConf['DEVLOG']
+                ) {
                     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
                 }
 
-                if ($newExtConf['SYSLOG']) {
+                if (
+                    version_compare(TYPO3_version, '10.0.0', '<') &&
+                    $newExtConf['SYSLOG']
+                ) {
                     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
                 }
 

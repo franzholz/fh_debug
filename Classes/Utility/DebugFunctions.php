@@ -24,7 +24,9 @@ namespace JambageCom\FhDebug\Utility;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
 * Debug extension.
@@ -834,18 +836,24 @@ class DebugFunctions {
             }
 
             if ($result == false) {
-                if (static::getDevLogDebug()) {
-                    GeneralUtility::devLog(
-                        $errorText,
-                        FH_DEBUG_EXT,
-                        0
-                    );
-
-                    GeneralUtility::sysLog(
-                        $errorText,
-                        FH_DEBUG_EXT,
-                        0
-                    );
+                if (
+                    version_compare(TYPO3_version, '10.0.0', '<')
+                ) {
+                    if (static::getDevLogDebug()) {
+                        GeneralUtility::devLog(
+                            $errorText,
+                            FH_DEBUG_EXT,
+                            0
+                        );
+                        GeneralUtility::sysLog(
+                            $errorText,
+                            FH_DEBUG_EXT,
+                            0
+                        );
+                    }
+                } else {
+                    error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL);
+                    error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
                 }
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
@@ -1928,7 +1936,6 @@ class DebugFunctions {
 
     public function __destruct ()
     {
-
         static::close();
     }
 }

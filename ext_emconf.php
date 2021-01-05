@@ -5,10 +5,10 @@
 ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Debug generator and Devlog',
-    'description' => 'This generates a PHP debug output file. And this is a sys_log and devLog data logger',
+    'title' => 'Debug generator and Log Writer',
+    'description' => 'This generates a PHP debug output file. And this is a sys_log and LogLevel::DEBUG writer',
     'category' => 'misc',
-    'version' => '0.8.3',
+    'version' => '0.9.0',
     'state' => 'stable',
     'uploadfolder' => '',
     'createDirs' => '',
