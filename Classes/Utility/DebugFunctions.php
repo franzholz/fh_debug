@@ -832,7 +832,7 @@ class DebugFunctions {
                 }
             } else {
                 $result = false;
-                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable for file "' . $filename . '. "';
+                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable for file "' . $filename . '" .';
             }
 
             if ($result == false) {
