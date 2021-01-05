@@ -463,10 +463,10 @@ class DebugFunctions {
         }
         $session = session_get_cookie_params();
         $path = '';
-        if ($session['path'] != '') {
-            $path = '/' . $session['path'];
+        if (trim($session['path']) != '') {
+            $path = rtrim($session['path'], '/') . '/';
         }
-        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . $session['path'] . '/' . $debugFile;
+        static::$debugFilename = $_SERVER['DOCUMENT_ROOT'] . $path .  $debugFile;
     }
 
     static public function getDebugFile ()
@@ -832,7 +832,7 @@ class DebugFunctions {
                 }
             } else {
                 $result = false;
-                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable. "';
+                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable for file "' . $filename . '. "';
             }
 
             if ($result == false) {
@@ -863,7 +863,14 @@ class DebugFunctions {
 
     static public function getProcessFilename ()
     {
-        $result = PATH_site . 'typo3temp/fh_debug.txt';
+        $path = '';
+        if (version_compare(TYPO3_version, '9.2.0', '>=')) {
+            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        } else {
+            $path = PATH_site;
+        }
+        $result = $path . 'typo3temp/fh_debug.txt';
+
         return $result;
     }
 
