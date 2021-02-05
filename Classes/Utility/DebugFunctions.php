@@ -461,18 +461,18 @@ class DebugFunctions {
         } else {
             static::$debugFile = $debugFile;
         }
-        $path = '/';
 
-        if (isset($_SERVER['REDIRECT_CWD'])) {
-            $path = $_SERVER['REDIRECT_CWD'];
-        } else {
-            $session = session_get_cookie_params();
-
-            if ($session['path'] != '/') {
-                $path = rtrim($session['path'], '/') . '/';
-            }
+        $path = null;
+        if (
+            defined('TYPO3_version') &&
+            version_compare(TYPO3_version, '9.0.0', '>=')
+        ) {
+            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        } else if (defined('PATH_typo3conf')) {
+            $path = GeneralUtility::resolveBackPath(PATH_typo3conf . '../');
         }
-        static::setDebugFilename($_SERVER['DOCUMENT_ROOT'] . $path .  $debugFile);
+
+        static::setDebugFilename($path . $debugFile);
     }
 
     static public function getDebugFile ()

@@ -1,3 +1,5 @@
+2021-02-05 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: The debug file must be written sometimes inside of a subdirectory below Apache root.
 
 2021-01-05 Franz Holzinger <franz@ttproducts.de>
     * deprecation no. 52694 in TYPO3 10.4: replace deleted method TYPO3\CMS\Core\Utility\GeneralUtility::devLog by a file writer.
