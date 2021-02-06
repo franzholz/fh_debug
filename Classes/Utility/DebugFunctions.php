@@ -1155,7 +1155,7 @@ class DebugFunctions {
             $debugArray = [];
             if ($html) {
                 if ($header != '') {
-                    $debugArray[] = '<tr><th>' . $header . '</th></tr>';
+                    $debugArray[] = '<tr><th>' . $header . '</th><th></th></tr>';
                 }
 
                 foreach ($variable as $k => $v1) {

@@ -1,3 +1,6 @@
+2021-02-06 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: The HTML table header tag th for an array variable must have 2 columns. The first column is the header title, the second is empty and stands for the variable content.
+
 2021-02-05 Franz Holzinger <franz@ttproducts.de>
     * bugfix: The debug file must be written sometimes inside of a subdirectory below Apache root.
 
