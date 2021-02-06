@@ -545,6 +545,7 @@ class DebugFunctions {
         ) {
             $title .= ' id=' . $GLOBALS['TSFE']->id;
         }
+        $host = static::getHost() . $_SERVER['CWD'];
 
         $out = '
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -552,14 +553,15 @@ class DebugFunctions {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>' . $title . '</title>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<link rel="stylesheet" href="' . $cssFilename . '" />
+<meta http-equiv="Content-Security-Policy" 
+    content="default-src *; style-src \'self\' ' . $host . ';"/>
+<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+<link href="' . $cssFilename . '" rel="stylesheet" media="screen" type="text/css"/>
 </head>
 
 <body>
 ';
 
-// error_log('writeHeader $cssFilename: ' . $cssFilename . PHP_EOL, 3, static::getErrorLogFilename());
         $errorOut = '';
 
         if (static::getUseErrorLog()) {
@@ -1632,6 +1634,31 @@ class DebugFunctions {
         return $result;
     }
 
+    static public function getSubdirectory () {
+        $result = '';
+        $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
+        if (
+            is_array($slashArray) &&
+            count($slashArray) > 1
+        ) {
+            array_pop($slashArray);
+            $result = implode('/', $slashArray);
+            $result .= '/';
+        }
+        if (TYPO3_MODE == 'BE') {
+            $position = strpos($result, 'typo3/');
+                // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
+            $result = substr($result, 0, $position);
+        }
+        return $result;
+    }
+
+    static public function getHost () {
+        $result = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+
+        return $result;
+    }
+
     static public function debug (
         $variable = '',
         $title = null,
@@ -1799,23 +1826,9 @@ class DebugFunctions {
                         if ($position > 0) {
                             $subdirectory = substr($extConf['CSSPATH'], 0, $position);
                         } else {
-                            $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
-                            if (
-                                is_array($slashArray) &&
-                                count($slashArray) > 1
-                            ) {
-                                array_pop($slashArray);
-                                $subdirectory = implode('/', $slashArray);
-                                $subdirectory .= '/';
-                            }
-                            if (TYPO3_MODE == 'BE') {
-                                $position = strpos($subdirectory, 'typo3/');
-                                    // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
-                                $subdirectory = substr($subdirectory, 0, $position);
-                            }
-//  error_log('Pos 2 $subdirectory = ' . print_r($subdirectory, TRUE) . PHP_EOL, 3, static::getErrorLogFilename());
+                            $subdirectory = static::getSubdirectory();
                         }
-
+            
                         if (version_compare(TYPO3_version, '9.0.0', '>=')) {
                             $relPath =                  
                                 \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
@@ -1824,11 +1837,11 @@ class DebugFunctions {
                         } else {
                             $relPath =  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT);
                         }                        
-                        $cssPath = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
+                        $cssPath = static::getHost() . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
                     } else {
                         $cssPath = $extConf['CSSPATH'];
                     }
-                    static::writeHeader($cssPath . $extConf['CSSFILE']);
+                    static::writeHeader($cssPath . trim($extConf['CSSFILE']));
                     static::$headerWritten = false;
 
                     if (count(static::$starttimeArray)) {
