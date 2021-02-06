@@ -1173,7 +1173,7 @@ class DebugFunctions {
                     $value .=  nl2br(htmlspecialchars($k));
                     $value .= '</td>';
                     if (is_array($v1)) {
-                        $value .= '<td class="ela"">';
+                        $value .= '<td class="ela">';
                         $value .= static::printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, true);
                         $value .= '</td>';
                     } else if (is_object($v1)) {
