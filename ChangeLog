@@ -2,7 +2,7 @@
 
 
 2021-02-09 Franz Holzinger <franz@ttproducts.de>
-    * remove feature: The Content-Security-Policy in this file cannot supersede the .htacess files. So it makes no sense to add it here.
+    * remove feature: The Content-Security-Policy in this file cannot supersede the .htaccess files. So it makes no sense to add it here.
 
 2021-02-06 Franz Holzinger <franz@ttproducts.de>
     * bugfix: The HTML table header tag th for an array variable must have 2 columns. The first column is the header title, the second is empty and stands for the variable content.
