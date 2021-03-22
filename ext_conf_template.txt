@@ -1,67 +1,67 @@
+  # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel
+TITLE = Debug for my website
   # cat=basic/enable; type=string; label=IP addresses of the client browser: Enter a comma separated list of possible IP v4 or v6 addresses ###IP###. If the current IP fits to one of them, then the client's actions are written to the debug output. (You see here only a marker for the IP address if the required TYPO3 extension patchem has not been installed.) This will override the SYS devIPMask settings from the Install Tool. For localhost use ::1
 IPADDRESS = ::1
   # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debug('B') and debug('E'). The first debug('B') will initialize the debug.
 DEBUGBEGIN = 0
-  # cat=basic/enable; type=options[All=ALL,Front End=FE,Back End=BE,Off=OFF]; label=Typo3 Mode: Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging is only enabled in this Mode.
-TYPO3_MODE = FE
-  # cat=basic/enable; type=string; label= Comma-sep. list of FE user names: empty for all fe_users (even without login). Else list FE user names where debug-output has to be generated.
-FEUSERNAMES =
   # cat=basic/enable; type=string; label= debug file: relative path of the debug file. Direct output to the screen if no debug file is given. Attention: The file will be overwritten, if the debug file mode DEBUGFILEMODE allows it.
 DEBUGFILE = fileadmin/debug.html
-  # cat=basic/enable; type=string; label= error_log file: relative path of the error_log file.
-ERROR_LOG =
-  # cat=basic/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
-USE_ERROR_LOG = 0
-  # cat=basic/enable; type=string; label= disable variable: This comma separated list of strings will be ignored in name comments for variables, in keys of arrays and in member variables of objects
-IGNORE =
-  # cat=basic/enable; type=string; label= start files: Required names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
-STARTFILES =
-  # cat=basic/enable; type=string; label= part files: Required names of any of the PHP files in the execution path. If set, then debug output will be generated only, if a file with one of these names is present in the backtrace.
-PARTFILES =
-  # cat=basic/enable; type=string; label= exclude files: Excluded names of any of the PHP files in the execution path. If set then debug output will be generated only if no file with any of these names is the backtrace.
-EXCLUDEFILES =
-  # cat=basic/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
-DEBUGFILEMODE = wb
-  # cat=basic/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible field names: file, line, function, class, object, type, args
-TRACEFIELDS = file, line, function
-  # cat=basic/conf; type=int; label= Depth of the trace: number of the functions to be included in the backtrace.
-TRACEDEPTH = 5
-  # cat=basic/conf; type=int; label= Depth of the trace for exceptions: number of the functions to be included in the backtrace for an exception.
-TRACEDEPTH_EXCEPTION = 12
-  # cat=basic/conf; type=int; label= Depth of the trace for SysLog: number of the functions to be included in the backtrace for a SysLog entry.
-TRACEDEPTH_SYSLOG = 12
-  # cat=basic/conf; type=boolean; label= HTML: generate a HTML output file.
-HTML = 1
-  # cat=basic/conf; type=int; label=Level: maximum recursion level for debugging into arrays and objects
-LEVEL = 3
-  # cat=basic/conf; type=int; label=Exception Level: maximum recursion level for debugging into arrays and object of Exceptions
-LEVEL_EXCEPTION = 3
-  # cat=basic/conf; type=int; label=Append: number of times that debug output will be appended before its gets cleared. Increase this number when you do not get any debug entries in the file.
-APPENDDEPTH = 3
-  # cat=basic/conf; type=string; label= CSS path: This is the path to the CSS file. If set to EXT:fh_debug, then the path to the extension CSS folder is used: Resources/Public/Css
-CSSPATH = EXT:fh_debug
-  # cat=basic/conf; type=file[css]; label= CSS file: This CSS file will be included by the HTML debug output file.
-CSSFILE = fhdebug.css
-  # cat=basic/conf; type=boolean; label= DevLog fh_debug: Allow to write informations about problems inside of fh_debug to the Developer Logfile.
-DEVLOGDEBUG = 1
-  # cat=basic/conf; type=boolean; label= DevLog: Allow to write informations about problems outside of fh_debug to the Developer Logfile.
-DEVLOG = 0
-  # cat=basic/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debug('B') has not been set.
-SYSLOG = 0
-  # cat=basic/conf; type=string; label= Exclude SysLog: Regular expressions of problems which are omitted from going to the System Logfile (sys_log).
-SYSLOG_EXCLUDE = no_cache
-  # cat=basic/conf; type=boolean; label= Oops an error occured: Debug the exception message of a TYPO3 error "Oops, an error occurred! Code:"
-OOPS_AN_ERROR_OCCURRED = 1
-  # cat=basic/conf; type=boolean; label= DBAL: Exception in Doctrine Database Abstraction Layer
-DBAL = 1
-  # cat=basic/conf; type=boolean; label= proxy: Determine the clients ip by the HTTP_X_FORWARDED_FOR server variable which is set if a proxy forwarded the ip address.
-PROXY = 0
-  # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel
-TITLE = Debug for my website
   # cat=basic/conf; type=int; label=Maximum file size MB: maximum size in MByte of the debug output HTML file.
 MAXFILESIZE = 3
-  # cat=basic/conf; type=string; label=Date Time format: see the PHP date function for the format, e.g. H:i:s  d.m.Y
+  # cat=basic/enable; type=options[All=ALL,Front End=FE,Back End=BE,Off=OFF]; label=Typo3 Mode: Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging is only enabled in this Mode.
+TYPO3_MODE = FE
+  # cat=basic/conf; type=int; label=Level: maximum recursion level for debugging into arrays and objects
+LEVEL = 3
+  # cat=basic/conf; type=int; label= Depth of the trace: number of the functions to be included in the backtrace.
+TRACEDEPTH = 5
+  # cat=enhanced/conf; type=int; label=Append: number of times that debug output will be appended before its gets cleared. Increase this number when you do not get any debug entries in the file.
+APPENDDEPTH = 3
+  # cat=enhanced/enable; type=string; label= Comma-sep. list of FE user names: empty for all fe_users (even without login). Else list FE user names where debug-output has to be generated.
+FEUSERNAMES =
+  # cat=enhanced/enable; type=string; label= error_log file: relative path of the error_log file.
+ERROR_LOG =
+  # cat=enhanced/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
+USE_ERROR_LOG = 0
+  # cat=enhanced/enable; type=string; label= disable variable: This comma separated list of strings will be ignored in name comments for variables, in keys of arrays and in member variables of objects
+IGNORE =
+  # cat=enhanced/enable; type=string; label= start files: Required names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
+STARTFILES =
+  # cat=enhanced/enable; type=string; label= part files: Required names of any of the PHP files in the execution path. If set, then debug output will be generated only, if a file with one of these names is present in the backtrace.
+PARTFILES =
+  # cat=enhanced/enable; type=string; label= exclude files: Excluded names of any of the PHP files in the execution path. If set then debug output will be generated only if no file with any of these names is the backtrace.
+EXCLUDEFILES =
+  # cat=enhanced/enable; type=string; label= write mode of debug file: 'w' ... overwrite the debug file. See php function fopen for more values. This is only used if APPENDDEPTH <= 1.
+DEBUGFILEMODE = wb
+  # cat=enhanced/conf; type=string; label= Comma-sep. list of TRACE fields: see the PHP function debug_backtrace for the possible field names: file, line, function, class, object, type, args
+TRACEFIELDS = file, line, function
+  # cat=enhanced/conf; type=int; label= Depth of the trace for exceptions: number of the functions to be included in the backtrace for an exception.
+TRACEDEPTH_EXCEPTION = 12
+  # cat=enhanced/conf; type=int; label= Depth of the trace for SysLog: number of the functions to be included in the backtrace for a SysLog entry.
+TRACEDEPTH_SYSLOG = 12
+  # cat=enhanced/conf; type=boolean; label= HTML: generate a HTML output file.
+HTML = 1
+  # cat=enhanced/conf; type=int; label=Exception Level: maximum recursion level for debugging into arrays and object of Exceptions
+LEVEL_EXCEPTION = 3
+  # cat=enhanced/conf; type=string; label= CSS path: This is the path to the CSS file. If set to EXT:fh_debug, then the path to the extension CSS folder is used: Resources/Public/Css
+CSSPATH = EXT:fh_debug
+  # cat=enhanced/conf; type=file[css]; label= CSS file: This CSS file will be included by the HTML debug output file.
+CSSFILE = fhdebug.css
+  # cat=enhanced/conf; type=boolean; label= DevLog fh_debug: Allow to write informations about problems inside of fh_debug to the Developer Logfile.
+DEVLOGDEBUG = 1
+  # cat=enhanced/conf; type=boolean; label= DevLog: Allow to write informations about problems outside of fh_debug to the Developer Logfile.
+DEVLOG = 0
+  # cat=enhanced/conf; type=boolean; label= SysLog: Allow to write informations about problems which go to the System Logfile (sys_log) even if debug('B') has not been set.
+SYSLOG = 0
+  # cat=enhanced/conf; type=string; label= Exclude SysLog: Regular expressions of problems which are omitted from going to the System Logfile (sys_log).
+SYSLOG_EXCLUDE = no_cache
+  # cat=enhanced/conf; type=boolean; label= Oops an error occured: Debug the exception message of a TYPO3 error "Oops, an error occurred! Code:"
+OOPS_AN_ERROR_OCCURRED = 1
+  # cat=enhanced/conf; type=boolean; label= DBAL: Exception in Doctrine Database Abstraction Layer
+DBAL = 1
+  # cat=enhanced/conf; type=boolean; label= proxy: Determine the clients ip by the HTTP_X_FORWARDED_FOR server variable which is set if a proxy forwarded the ip address.
+PROXY = 0
+  # cat=enhanced/conf; type=string; label=Date Time format: see the PHP date function for the format, e.g. H:i:s  d.m.Y
 DATETIME = H:i:s  d.m.Y
-# cat=basic/enable; type=options[DISABLED=-1,EMERGENCY=0,ALERT=1,CRITICAL=2,ERROR=3,WARNING=4,NOTICE=5,INFO=6,DEBUG=7]; label=LogWriter Level
+# cat=enhanced/enable; type=options[DISABLED=-1,EMERGENCY=0,ALERT=1,CRITICAL=2,ERROR=3,WARNING=4,NOTICE=5,INFO=6,DEBUG=7]; label=LogWriter Level
 LOGLEVEL = -1
 
