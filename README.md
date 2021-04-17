@@ -145,6 +145,11 @@ error_log('mymethod Position 2 $variableName: ' .  print_r($variableName, true) 
 
 Use you own path as the last parameter of the above method error_log
 
+## Trouble shooting
+
+If you do not get anything shown in the browser url https://example.com/fileadmin/debug.html, then make sure that this file debug.html really exists on the file system. If not, then create an empty file debug.html in the folder fileadmin and give Apache write access to it.
+
+
 ## Improvements
 
 Please make an entry directly on the TYPO3 Core bug tracker at <br>
