@@ -149,6 +149,9 @@ Use you own path as the last parameter of the above method error_log
 
 If you do not get anything shown in the browser url https://example.com/fileadmin/debug.html, then make sure that this file debug.html really exists on the file system. If not, then create an empty file debug.html in the folder fileadmin and give Apache write access to it.
 
+Check the configuration in the extension manager.
+ IP addresses of the client browser 
+Put in an asterisk * . Then every client IP address will produce a debug output.
 
 ## Improvements
 
