@@ -160,3 +160,10 @@ Please make an entry directly on the TYPO3 Core bug tracker at <br>
 [enhanced debug methods](https://forge.typo3.org/issues/86220)
 
 Global functions can only be implemented in the TYPO3 core.
+
+## ToDO
+
+Use cweagans/composer-patches .
+
+
+
