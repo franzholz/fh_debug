@@ -85,7 +85,7 @@ class CoreHooks {
         $class = '\\JambageCom\\FhDebug\\Utility\\DebugFunctions';
 
         if ($GLOBALS['error'] instanceof $class) {
-            debug($devLogArray, 'devLog from fh_debug: $devLogArray');
+            debug ($devLogArray, 'devLog from fh_debug: $devLogArray', 'F'); // keep this
         }
     }
 
@@ -116,7 +116,7 @@ class CoreHooks {
             !isset($params['initLog'])
         ) {
             $params['backTrace'] = $params['backTrace']['0'];
-            debug($params, 'sysLog from fh_debug: $params'); // keep this
+            debug ($params, 'sysLog from fh_debug: $params', 'F'); // keep this
             $storeTraceDepth = $GLOBALS['error']->getTraceDepth();
             $GLOBALS['error']->setTraceDepth($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_SYSLOG']);
             $GLOBALS['error']->setTraceDepth($storeTraceDepth);

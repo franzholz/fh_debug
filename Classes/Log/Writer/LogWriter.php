@@ -33,7 +33,7 @@ class LogWriter extends \TYPO3\CMS\Core\Log\Writer\AbstractWriter
     public function writeLog (LogRecord $record)
     {
         unset($record['data']['trace']);
-        debug($record, 'debug Log'); // keep this
+        debug ($record, 'debug Log', 'F'); // keep this
     }
 }
 

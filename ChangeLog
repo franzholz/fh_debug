@@ -1,5 +1,6 @@
 
-
+2021-06-12 Franz Holzinger <franz@ttproducts.de>
+    * Add a 3rd parameter 'F' to force the debug output for internal debug calls.
 
 2021-02-09 Franz Holzinger <franz@ttproducts.de>
     * remove feature: The Content-Security-Policy in this file cannot supersede the .htaccess files. So it makes no sense to add it here.

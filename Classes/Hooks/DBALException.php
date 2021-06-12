@@ -57,12 +57,10 @@ class DBALException extends \Doctrine\DBAL\DBALException
                 0
             );
 
-        debug('B');
-        debug($title, 'DBALException::debug $title'); // keep this
-        debug ($traceArray, 'fh_debug DBAL exception handler exception trace'); // keep this
-        debug ($exception->getFile(), 'fh_debug exception handler exception File'); // keep this
-        debug ($exception->getLine(), 'fh_debug exception handler exception Line'); // keep this
-        debug('E');
+        debug ($title, 'DBALException::debug $title', 'F'); // keep this
+        debug ($traceArray, 'fh_debug DBAL exception handler exception trace', 'F'); // keep this
+        debug ($exception->getFile(), 'fh_debug exception handler exception File', 'F'); // keep this
+        debug ($exception->getLine(), 'fh_debug exception handler exception Line', 'F'); // keep this
     }
 
     /**

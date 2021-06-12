@@ -426,7 +426,7 @@ class DebugFunctions {
         } else if (defined('PATH_typo3conf')) {
             $path = GeneralUtility::resolveBackPath(PATH_typo3conf . '../');
         }
-    
+
         static::$errorLogFilename = $path . $errorLogFile;
     }
 
@@ -1669,18 +1669,16 @@ class DebugFunctions {
             $title = null;
         }
 
-        // neu Anfang
-        if (
-            $group == 'F'
-        ) { // backwards compatibility to TYPO3 8.7 where the third parameter is the former default value for __LINE__
-            $force = true;
-        }
-        // neu Ende
-
         if (
             $group == '*line*'
         ) { // backwards compatibility to TYPO3 8.7 where the third parameter is the former default value for __LINE__
             $group = null;
+        }
+
+        if (
+            $group == 'F'
+        ) { // force a debug output
+            $force = true;
         }
 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
