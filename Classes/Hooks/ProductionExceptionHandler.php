@@ -56,7 +56,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
                 debug ($exception->getCode(), 'fh_debug handle: Ignore exception with this code.', 'F'); // keep this
                 throw $exception;
             }
-        }´
+        }
         debug ($exception, 'fh_debug handle $exception', 'F'); // keep this
         $errorMessage = isset($this->configuration['errorMessage']) ? $this->configuration['errorMessage'] : 'Oops, an error occurred! Code: %s';
         $code = date('YmdHis', $_SERVER['REQUEST_TIME']);
