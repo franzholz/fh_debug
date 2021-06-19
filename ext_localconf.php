@@ -51,6 +51,13 @@ call_user_func(function () {
             $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
 
             if (!($GLOBALS['error'] instanceof $class)) {
+                $config = $newExtConf;
+                $config['default'] = 1;
+                $myConfiguratinVariant =
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+                        \JambageCom\FhDebug\Configuration\Variant::class,
+                        $config
+                    );
                 // New operator used on purpose: This class is required early during
                 // bootstrap before makeInstance() is properly set up
                 $myDebugObject =
@@ -103,13 +110,13 @@ call_user_func(function () {
 
                 if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
                     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = [
-                        'className' => 'JambageCom\\FhDebug\\Hooks\\ProductionExceptionHandler',
+                        'className' => \JambageCom\FhDebug\Hooks\ProductionExceptionHandler::class
                     ];
                 }
 
                 if ($newExtConf['DBAL']) {
                     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\\DBALException'] = [
-                        'className' => 'JambageCom\\FhDebug\\Hooks\\DBALException',
+                        'className' => \JambageCom\FhDebug\Hooks\DBALException::class
                     ];
                 }
 

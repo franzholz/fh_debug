@@ -1,10 +1,11 @@
 <?php
 
 namespace JambageCom\FhDebug\Utility;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2020 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2021 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,6 +36,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 *
 */
 class DebugFunctions {
+    const BEGIN = 'B';
+    const END = 'E';
+    const RESET = 'RESET';
+    const CONFIG = 'CONFIG';
+
     static public $prefixFieldArray =
         [
             'file' => '',
@@ -90,6 +96,7 @@ class DebugFunctions {
     static private $maxFileSize = 3.0;
     static private $maxFileSizeReached = false;
     static private $dateTime = 'l jS \of F Y h:i:s A';
+    static private $config = [];
 
     public function __construct (
         $extConf
@@ -118,7 +125,7 @@ class DebugFunctions {
         static::setDebugFile($debugFile);
         static::setDebugFileMode($extConf['DEBUGFILEMODE']);
 
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct : ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct Pos 1: ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
 
         static::setRecursiveDepth($extConf['LEVEL']);
         static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
@@ -149,6 +156,7 @@ class DebugFunctions {
         $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
         static::setTypo3Mode($typo3Mode);
     }
+
 
     static public function setTypo3Mode
     (
@@ -696,7 +704,6 @@ class DebugFunctions {
         $result = true;
         $startFiles = static::getStartFiles();
         $initialized = static::hasBeenInitialized();
-//  error_log('init $initialized: ' . print_r($initialized, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             $initialized &&
@@ -762,7 +769,7 @@ class DebugFunctions {
                 $result = false;
             }
         }
-
+        
         if ($result) {
             static::setHasBeenInitialized(true);
         } else {
@@ -892,6 +899,7 @@ class DebugFunctions {
     static public function setActive ($v)
     {
         static::$active = $v;
+//  error_log ('setActive: $v = ' . $v . PHP_EOL, 3, static::getErrorLogFilename());
     }
 
     static public function setIsInitialization (
@@ -1690,16 +1698,26 @@ class DebugFunctions {
             is_string($variable)
         ) {
             $isControlMode = true;
+            $variable = strtoupper($variable);
+            $parts = explode(':', $variable);
+            $variable = $parts['0'];
             switch ($variable) {
-                case 'B':
-                case 'b':
+                case static::BEGIN:
                     static::debugBegin();
                     break;
-                case 'E':
-                case 'e':
+                case static::CONFIG:
+                    // TODO: $parts['1'] enthält den Index auf die 
+//                     $config[$variant]
+// Die gesamte Konfiguration muss in einem Array gespeichert werden..
+// setConfigVariant und getConfigVariant. Damit muss außerdem ein
+// Konfigurations-Array von Basis-Elementen (nicht alles erforderlich)
+// und sein Index ausgefüllt werden. Index 0 ist der Default-Wert aus den 
+// Extension Manager Einstellungen
+                    break;
+                case static::END:
                     static::debugEnd();
                     break;
-                case 'resetTemporaryFile':
+                case static::RESET:
                     static::truncateFile();
                     break;
                 default:
@@ -1778,6 +1796,7 @@ class DebugFunctions {
             ) &&
             !self::getMaxFileSizeReached()
         ) {
+//  error_log('debug POSTIIVE IF Case ' . PHP_EOL, 3, static::getErrorLogFilename());
             static::setActive(false);
 
             if (static::$isUserAllowed) {
