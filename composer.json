@@ -36,7 +36,7 @@
   },
   "require": {
     "php": "^7.2",
-    "typo3/cms-core": "^8,7 || ^9.5 || ^10.4"
+    "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
   },
   "autoload": {
     "psr-4": {
@@ -46,6 +46,9 @@
   "extra": {
     "typo3/cms": {
       "extension-key": "fh_debug"
+    },
+    "branch-alias": {
+        "dev-master": "0.9.x-dev"
     }
   }
 }
