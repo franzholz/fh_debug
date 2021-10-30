@@ -1,3 +1,5 @@
+2021-10-28 Franz Holzinger <franz@ttproducts.de>
+    * compatibility with TYPO3 11.5
 
 2021-06-12 Franz Holzinger <franz@ttproducts.de>
     * Add a 3rd parameter 'F' to force the debug output for internal debug calls.

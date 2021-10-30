@@ -1,5 +1,5 @@
 <?php
-/* Use this file only for TYPO3 9.5!
+/* You must use this file since TYPO3 9.5!
  * 
  * Short-hand debug function
  * If you wish to use the debug()-function, and it does not output something,

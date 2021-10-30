@@ -112,11 +112,11 @@ There are 2 control commands available to begin and to end the generation of deb
 debug('B') and debug('E'), formerly (before TYPO3 9.5) debugBegin and debugEnd .
 
 
-### TYPO3 9.5, 10.4:
+### TYPO3 9.5, 10.4, 11.5:
 Since TYPO3 9 you must overwrite the TYPO3 Core file sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php. They will provide the former debugBegin and debugEnd method names and allow fh_debug to work at all. And it contains the necessary PHP code to call fh_debug if it is activated in the Extension Manager.
 
 Replacement for debugBegin and debugEnd:
-Since fh_debug 0.8.0 a workaround has been introduced because in TYPO3 9 these most important global functions have been removed. If you do not use the extension fh_debug, then it is not useful to apply the core patch.
+Since fh_debug 0.8.0 a workaround has been introduced because since TYPO3 9 needed global functions have been removed.
 
 ### example:
 ```
