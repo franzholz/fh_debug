@@ -1,7 +1,7 @@
   # cat=basic/conf; type=string; label= Debug file title: This will be the title tag for the generated debug HTML fiel
 TITLE = Debug for my website
   # cat=basic/enable; type=string; label=IP addresses of the client browser: Enter a comma separated list of possible IP v4 or v6 addresses ###IP###. If the current IP fits to one of them, then the client's actions are written to the debug output. (You see here only a marker for the IP address if the required TYPO3 extension patchem has not been installed.) This will override the SYS devIPMask settings from the Install Tool. For localhost use ::1
-IPADDRESS = ::1
+IPADDRESS = 127.0.0.1
   # cat=basic/enable; type=int; label=Append: number of times that debug output will be appended before its gets cleared. This is necessary if a page reload is executed. Increase this number when you do not get any debug entries in the file.
 APPENDDEPTH = 3
   # cat=basic/enable; type=boolean; label=debugBegin required: Set this if you only want to have a debug output between the debug('B') and debug('E'). The first debug('B') will initialize the debug.
