@@ -1046,7 +1046,7 @@ class DebugFunctions {
                 $theTrail['file'] == '' ||
                 $theTrail['line'] == '' ||
                 isset($theTrail['class']) &&
-                strpos($theTrail['class'], '\\FhDebug\\') !== false
+                str_contains($theTrail['class'], '\\FhDebug\\')
             ) {
                 continue;
             }
@@ -1284,7 +1284,7 @@ class DebugFunctions {
 
 // error_log ('printObjectVariable $variableArray = ' . print_r($variableArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
-        $classname = @get_class($variable);
+        $classname = @$variable::class;
         $header .= $classname;
         $result = static::printArrayVariable($header, $variableArray, $depth, $recursiveDepth, $html);
 
@@ -1344,7 +1344,7 @@ class DebugFunctions {
                     );
                     $result .= '</td>';
                 } else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
-                    $result = '<p>unloaded object of class "' . get_class($variable) . '"</p>';
+                    $result = '<p>unloaded object of class "' . $variable::class . '"</p>';
                 } else if (is_resource($variable)) {
                     $result = '<p>*RESOURCE*</p>';
                 } else {
@@ -1387,18 +1387,12 @@ class DebugFunctions {
 
     static public function getTypeView ($variable)
     {
-        $result = '';
         $type = gettype($variable);
-        switch ($type) {
-            case 'array':
-                $result = ' (' . $type . ' of ' . count($variable) . ' items )';
-            break;
-            case 'object':
-                $result = ' (' . $type . ' of class ' . get_class($variable) . ')';
-            break;
-            default:
-                $result = ' (' . $type . ')';
-        }
+        $result = match ($type) {
+									'array' => ' (' . $type . ' of ' . count($variable) . ' items )',
+									'object' => ' (' . $type . ' of class ' . $variable::class . ')',
+									default => ' (' . $type . ')',
+								};
         return $result;
     }
 
@@ -1751,7 +1745,7 @@ class DebugFunctions {
         if (
             static::getSysLog() &&
             isset($title) &&
-            strpos($title, 'sysLog from ' . FH_DEBUG_EXT) !== false
+            str_contains($title, 'sysLog from ' . FH_DEBUG_EXT)
         ) {
             $debugSysLog = true;
 
@@ -1780,7 +1774,7 @@ class DebugFunctions {
         if (
             static::getDevLog() &&
             isset($title) &&
-            strpos($title, 'devLog from ' . FH_DEBUG_EXT) !== false
+            str_contains($title, 'devLog from ' . FH_DEBUG_EXT)
         ) {
             $debugDevLog = true;
         }
@@ -1802,7 +1796,7 @@ class DebugFunctions {
             if (static::$isUserAllowed) {
                 $recursiveDepth = null;
                 if (is_object($variable)) {
-                    $classname = get_class($variable);
+                    $classname = $variable::class;
                     $exceptionPos = strlen($classname) - strlen('Exception');
                     $comparator = substr($classname, $exceptionPos);
                     if ($comparator == 'Exception') {

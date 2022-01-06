@@ -50,7 +50,7 @@ class PatchemHooks
 
             if (
                 isset($configurationOption['label']) &&
-                strpos($configurationOption['label'], '###') !== false
+                str_contains($configurationOption['label'], '###')
             ) {
                 $configurationOption['label'] = str_replace('###IP###', DebugFunctions::readIpAddress(), $configurationOption['label']);
             }

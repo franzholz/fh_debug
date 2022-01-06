@@ -3,7 +3,9 @@ defined('TYPO3_MODE') || die('Access denied.');
 
 call_user_func(function () {
 
-    define('FH_DEBUG_EXT', 'fh_debug');
+    if (!defined('FH_DEBUG_EXT')) {
+        define('FH_DEBUG_EXT', 'fh_debug');
+    }
 
     $extensionConfiguration = [];
 
@@ -50,7 +52,10 @@ call_user_func(function () {
             $myDebugObject = null;
             $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
 
-            if (!($GLOBALS['error'] instanceof $class)) {
+            if (
+                isset($GLOBALS['error']) &&
+                !($GLOBALS['error'] instanceof $class)
+            ) {
                 $config = $newExtConf;
                 $config['default'] = 1;
                 $myConfiguratinVariant =

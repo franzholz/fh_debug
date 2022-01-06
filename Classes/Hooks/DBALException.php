@@ -93,7 +93,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             $title = sprintf(
                 "Option 'platform' must be a subtype of '%s', instance of '%s' given",
                 AbstractPlatform::class,
-                get_class($invalidPlatform)
+                $invalidPlatform::class
             );
         } else {
             $title = sprintf(
@@ -362,7 +362,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
 
     public static function typeNotRegistered(Type $type) : self
     {
-        $title = sprintf('Type of the class %s@%s is not registered.', get_class($type), spl_object_hash($type));
+        $title = sprintf('Type of the class %s@%s is not registered.', $type::class, spl_object_hash($type));
         $result = new self($title);
         $this->debug($result, $title);
         return $result; 
@@ -370,7 +370,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
 
     public static function typeAlreadyRegistered(Type $type) : self
     {
-        $title = sprintf('Type of the class %s@%s is already registered.', get_class($type), spl_object_hash($type));
+        $title = sprintf('Type of the class %s@%s is already registered.', $type::class, spl_object_hash($type));
         $result = new self($title);
         $this->debug($result, $title);
         return $result;
