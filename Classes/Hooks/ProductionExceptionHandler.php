@@ -35,7 +35,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
      * return a nice error message for production context.
      *
      * @param \Exception $exception
-     * @param AbstractContentObject $contentObject
+     * @param AbstractContentObject|null $contentObject
      * @param array $contentObjectConfiguration
      * @return string
      * @throws \Exception
