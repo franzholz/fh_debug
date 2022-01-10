@@ -126,10 +126,6 @@ call_user_func(function () {
                 }
 
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
-
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\Core\\ExtDirect\\ExtDirectRouter'] = [
-                    'className' => 'JambageCom\\FhDebug\\Hooks\\ExtDirectRouter'
-                ];
             }
 
             if (
