@@ -7,18 +7,9 @@ call_user_func(function () {
         define('FH_DEBUG_EXT', 'fh_debug');
     }
 
-    $extensionConfiguration = [];
-
-    if (
-        defined('TYPO3_version') &&
-        version_compare(TYPO3_version, '9.0.0', '>=')
-    ) {
-        $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
-        )->get(FH_DEBUG_EXT);
-    } else {
-        $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][FH_DEBUG_EXT]);
-    }
+    $extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+    )->get(FH_DEBUG_EXT);
 
     if (
         isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
@@ -37,8 +28,6 @@ call_user_func(function () {
     }
 
     if (
-        defined('TYPO3_version') &&
-        version_compare(TYPO3_version, '8.7.0', '>=') &&
         isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
         is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
     ) {
@@ -97,20 +86,6 @@ call_user_func(function () {
                     $GLOBALS['error']->init($ipAdress);
                 } else {
                     $initResult = \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
-                }
-
-                if (
-                    version_compare(TYPO3_version, '10.0.0', '<') &&
-                    $newExtConf['DEVLOG']
-                ) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->devLog';
-                }
-
-                if (
-                    version_compare(TYPO3_version, '10.0.0', '<') &&
-                    $newExtConf['SYSLOG']
-                ) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['systemLog'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\CoreHooks->sysLog';
                 }
 
                 if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {

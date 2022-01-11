@@ -1,4 +1,7 @@
 
+2022-01-11 Franz Holzinger <franz@ttproducts.de>
+    * It should still work with TYPO3 10.4 and PHP 7.4 as well.
+    * Remove outdated code like the class CoreHooks.
 
 2022-01-10 Franz Holzinger <franz@ttproducts.de>
     * remove ExtDirectRouter

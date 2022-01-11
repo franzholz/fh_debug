@@ -425,15 +425,7 @@ class DebugFunctions {
             static::$errorLogFile = $errorLogFile;
         }
     
-        $path = null;
-        if (
-            defined('TYPO3_version') &&
-            version_compare(TYPO3_version, '9.0.0', '>=')
-        ) {
-            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
-        } else if (defined('PATH_typo3conf')) {
-            $path = GeneralUtility::resolveBackPath(PATH_typo3conf . '../');
-        }
+        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
 
         static::$errorLogFilename = $path . $errorLogFile;
     }
@@ -470,15 +462,7 @@ class DebugFunctions {
             static::$debugFile = $debugFile;
         }
 
-        $path = null;
-        if (
-            defined('TYPO3_version') &&
-            version_compare(TYPO3_version, '9.0.0', '>=')
-        ) {
-            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
-        } else if (defined('PATH_typo3conf')) {
-            $path = GeneralUtility::resolveBackPath(PATH_typo3conf . '../');
-        }
+        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
 
         static::setDebugFilename($path . $debugFile);
     }
@@ -853,25 +837,8 @@ class DebugFunctions {
             }
 
             if ($result == false) {
-                if (
-                    version_compare(TYPO3_version, '10.0.0', '<')
-                ) {
-                    if (static::getDevLogDebug()) {
-                        GeneralUtility::devLog(
-                            $errorText,
-                            FH_DEBUG_EXT,
-                            0
-                        );
-                        GeneralUtility::sysLog(
-                            $errorText,
-                            FH_DEBUG_EXT,
-                            0
-                        );
-                    }
-                } else {
-                    error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL);
-                    error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
-                }
+                error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL);
+                error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
@@ -880,12 +847,7 @@ class DebugFunctions {
 
     static public function getProcessFilename ()
     {
-        $path = '';
-        if (version_compare(TYPO3_version, '9.2.0', '>=')) {
-            $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
-        } else {
-            $path = PATH_site;
-        }
+        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
         $result = $path . 'typo3temp/fh_debug.txt';
 
         return $result;
@@ -1665,17 +1627,6 @@ class DebugFunctions {
     )
     {
         $force = false;
-        if (
-            $title == '*variable*'
-        ) { // backwards compatibility to TYPO3 8.7 where the second parameter is the former default value for variable
-            $title = null;
-        }
-
-        if (
-            $group == '*line*'
-        ) { // backwards compatibility to TYPO3 8.7 where the third parameter is the former default value for __LINE__
-            $group = null;
-        }
 
         if (
             $group == 'F'
@@ -1837,14 +1788,10 @@ class DebugFunctions {
                             $subdirectory = static::getSubdirectory();
                         }
             
-                        if (version_compare(TYPO3_version, '9.0.0', '>=')) {
-                            $relPath =                  
-                                \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
-                                    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(FH_DEBUG_EXT)
-                                );
-                        } else {
-                            $relPath =  \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::siteRelPath(FH_DEBUG_EXT);
-                        }                        
+                        $relPath =                  
+                            \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
+                                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(FH_DEBUG_EXT)
+                            );
                         $cssPath = static::getHost() . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
                     } else {
                         $cssPath = $extConf['CSSPATH'];
