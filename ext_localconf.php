@@ -42,7 +42,7 @@ call_user_func(function () {
             $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
 
             if (
-                isset($GLOBALS['error']) &&
+                !isset($GLOBALS['error']) ||
                 !($GLOBALS['error'] instanceof $class)
             ) {
                 $config = $newExtConf;
@@ -82,14 +82,17 @@ call_user_func(function () {
                     ]
                 ];
 
-                if ($GLOBALS['error'] instanceof $class) {
+                if (
+                    isset($GLOBALS['error']) &&
+                    $GLOBALS['error'] instanceof $class
+                ) {
                     $GLOBALS['error']->init($ipAdress);
                 } else {
                     $initResult = \JambageCom\FhDebug\Utility\DebugFunctions::init($ipAdress);
                 }
 
                 if ($newExtConf['OOPS_AN_ERROR_OCCURRED']) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\ContentObject\\Exception\\ProductionExceptionHandler'] = [
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][TYPO3\CMS\Frontend\ContentObject\Exception\ProductionExceptionHandler::class] = [
                         'className' => \JambageCom\FhDebug\Hooks\ProductionExceptionHandler::class
                     ];
                 }
@@ -100,12 +103,15 @@ call_user_func(function () {
                     ];
                 }
 
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = 'JambageCom\\FhDebug\\Hooks\\PatchemHooks';
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = \JambageCom\FhDebug\Hooks\PatchemHooks::class;
             }
 
             if (
                 is_object($myDebugObject) &&
-                !($GLOBALS['error'] instanceof $class)
+                (
+                    !isset($GLOBALS['error']) ||
+                    !($GLOBALS['error'] instanceof $class)
+                )
             ) {
             // the error object must always be set in order to show the debug output or to disable it
                 $GLOBALS['error'] = $myDebugObject;
@@ -130,18 +136,6 @@ call_user_func(function () {
                 $GLOBALS['TYPO3_CONF_VARS']['LOG']['writerConfiguration']
                     [$logLevel][\JambageCom\FhDebug\Log\Writer\LogWriter::class] = [];
             }
-
-    // 		if (TYPO3_MODE === 'BE') {
-    // 			$signalSlotDispatcher =
-    // 				\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
-    // 			$signalSlotDispatcher->connect(
-    // 				'TYPO3\\CMS\\Extensionmanager\\Service\\ExtensionManagementService',
-    // 				'hasInstalledExtensions',
-    // 				'JambageCom\\FhDebug\\Hooks\\EmListener',
-    // 				'executeOnSignal'
-    // 			);
-    // 		}
-
         }
     }
 });

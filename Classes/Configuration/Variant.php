@@ -22,7 +22,10 @@ class Variant
     protected $debugFileMode;
 
     public function __construct(...$params) {
-        if ($params['default'] == 1) {
+        if (
+            isset($params['default']) &&
+            $params['default'] == 1
+        ) {
             static::$default = $params;
             $this->config = $params;
         } else {
@@ -30,7 +33,9 @@ class Variant
         }
 
         $conf = $this->config;
-        static::setDebugFileMode($conf['DEBUGFILEMODE']);
+        if (isset($conf['DEBUGFILEMODE'])) {
+            static::setDebugFileMode($conf['DEBUGFILEMODE']);
+        }
     }
     
     public function setDebugFileMode (

@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2021 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2022 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -1061,18 +1061,19 @@ class DebugFunctions {
                 $traceArray = array_reverse($traceArray);
             }
             foreach ($traceArray as $i => $trace) {
+                $debugTrail[$i] = '';
                 if ($html) {
                     $debugTrail[$i] .= '<tr>';
                     foreach ($trace as $field => $v) {
                         $debugTrail[$i] .= '<td>'; //  bgcolor="#E79F9F"
-                        $debugTrail[$i] .=  static::$prefixFieldArray[$traceField] . $v;
+                        $debugTrail[$i] .=  static::$prefixFieldArray[$field] . $v;
                         $debugTrail[$i] .= '</td>';
                     }
                     $debugTrail[$i] .= '</tr>';
                 } else {
                     $debugTrail[$i] .= '|';
                     foreach ($trace as $field => $v) {
-                        $debugTrail[$i] .=  static::$prefixFieldArray[$traceField] . $v;
+                        $debugTrail[$i] .=  static::$prefixFieldArray[$field] . $v;
                         $debugTrail[$i] .= '|';
                     }
                     $debugTrail[$i] .= chr(13);
@@ -1466,7 +1467,6 @@ class DebugFunctions {
                     $errorOut = $out;
                 }
             }
-// error_log('writeOut $out ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
 
             if ($html) {
                 $out =
@@ -1479,6 +1479,7 @@ class DebugFunctions {
                     '<h3>' . $title . $type . '</h3>';
                 $out .= chr(13) . $backTrace . chr(13) .
                     '<hr />' . chr(13);
+// error_log('writeOut $out ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
             }
         }
 
@@ -1487,31 +1488,31 @@ class DebugFunctions {
             is_callable('mb_detect_encoding')
         ) {
             $charset = mb_detect_encoding($out, 'UTF-8,ASCII,ISO-8859-1,ISO-8859-15', true);
-        }
 
-        if (
-            $charset != '' &&
-            $charset != 'UTF-8' &&
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['t3lib_cs_convMethod'] != ''
-        ) {
-            $out =
-                static::$csConvObj->conv(
-                    $out,
-                    $charset,
-                    'UTF-8'
-                );
-            if (static::getUseErrorLog()) {
-                $errorOut =
+            if (
+                $charset != '' &&
+                $charset != 'UTF-8' &&
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['t3lib_cs_convMethod'] != ''
+            ) {
+                $out =
                     static::$csConvObj->conv(
-                        $errorOut,
+                        $out,
                         $charset,
                         'UTF-8'
                     );
+                if (static::getUseErrorLog()) {
+                    $errorOut =
+                        static::$csConvObj->conv(
+                            $errorOut,
+                            $charset,
+                            'UTF-8'
+                        );
+                }
             }
         }
 
         $bWritten = static::write($out, $errorOut, ($debugFile == ''));
-//   error_log('debug nach write $bWritten = ' . $bWritten . PHP_EOL, 3, static::getErrorLogFilename());
+//   error_log('writeOut nach write $bWritten = ' . $bWritten . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             !$bWritten &&
@@ -1528,7 +1529,7 @@ class DebugFunctions {
                 echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
             }
             static::$bErrorWritten = true;
-//  error_log('debug static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
+//  error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
         }
 
         return $bWritten;
@@ -1539,8 +1540,6 @@ class DebugFunctions {
         $partFiles = static::getPartFiles();
         $excludeFiles = static::getExcludeFiles();
         $partFileCheck = true;
-
-//  error_log('checkTrace $traceArray: ' . print_r($traceArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             (
@@ -1591,7 +1590,6 @@ class DebugFunctions {
             }
         }
 
-//  error_log('checkTrace $result: ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -1615,7 +1613,7 @@ class DebugFunctions {
     }
 
     static public function getHost () {
-        $result = 'http' . ($_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
+        $result = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
 
         return $result;
     }
@@ -1636,6 +1634,7 @@ class DebugFunctions {
 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
+// error_log('### debug $group = ' . print_r($group, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             $title === null &&
@@ -1767,7 +1766,7 @@ class DebugFunctions {
                     } else {
                         static::$internalError = true;
                         echo $errorText;
-                        error_log(FH_DEBUG_EXT . ': ' . $errorText, 0); // It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
+                        error_log(FH_DEBUG_EXT . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
                         return false;
                     }
                 }
@@ -1834,7 +1833,6 @@ class DebugFunctions {
                 }
                 $traceArray = static::readBackTrace();
                 $isValidTrace = static::checkTrace($traceArray);
-//  error_log('debug $isValidTrace = ' . $isValidTrace . PHP_EOL, 3, static::getErrorLogFilename());
 
                 if ($isValidTrace) {
                     static::writeOut(

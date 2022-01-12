@@ -45,12 +45,25 @@ Your current IP address is shown in the Extension Manager view of fh_debug below
 
 > Enter your current IP address 11.12.13.14, if you want to debug this client's actions.
 
+
+### LocalConfiguration.php:
+
+Use the fh_debug error handler in order to get debug messages of all exceptions.
+Add these lines into your file `LocalConfiguration.php` under typo3conf.
+
+```
+'SYS' => array(
+   'displayErrors' => '2',
+    'errorHandler' => 'JambageCom\\FhDebug\\Hooks\\ErrorHandler',
+),
+```
+
 You can show more debug info and a backtrace with the TYPO3 error message "Oops, an error occurred!". This is activated by default:
 OOPS_AN_ERROR_OCCURRED = 1
 This will also add a detailed debug output to the debug file.
 
 
-To get the debug output for "Oops, an error occurred!" you must make this configuration in the Install Tool:
+To get the debug output for "Oops, an error occurred!" you must make this configuration in the Install Tool or `LocalConfiguration.php`:
 
 [SYS][productionExceptionHandler] = JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler
 
