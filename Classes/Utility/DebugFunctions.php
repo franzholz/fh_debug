@@ -1005,7 +1005,9 @@ class DebugFunctions {
  
             if (
                 !is_array($theTrail) ||
+                isset($theTrail['file']) &&
                 $theTrail['file'] == '' ||
+                isset($theTrail['line']) &&
                 $theTrail['line'] == '' ||
                 isset($theTrail['class']) &&
                 str_contains($theTrail['class'], '\\FhDebug\\')

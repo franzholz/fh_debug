@@ -31,7 +31,7 @@
     "GPL-2.0-or-later"
   ],
   "replace": {
-    "jambagecom/fh-debug": "self.version"
+    "typo3-ter/fh-debug": "self.version"
   },
   "require": {
     "php": "^7.4 || ^8.0",
