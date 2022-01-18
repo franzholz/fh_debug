@@ -1016,28 +1016,30 @@ class DebugFunctions {
             }
 
             foreach ($traceFieldArray as $traceField) {
-                $traceValue = $theTrail[$traceField];
-                if (
-                    $traceField == 'file'
-                ) {
-                    $value = basename($traceValue);
-
+                if (isset($theTrail[$traceField])) {
+                    $traceValue = $theTrail[$traceField];
                     if (
-                        (
-                            !$offset &&
-                            stripos($value, 'debug') !== false
-                        )
+                        $traceField == 'file'
                     ) {
-                        if (isset($traceArray[$j])) {
-                            unset($traceArray[$j]);
+                        $value = basename($traceValue);
+
+                        if (
+                            (
+                                !$offset &&
+                                stripos($value, 'debug') !== false
+                            )
+                        ) {
+                            if (isset($traceArray[$j])) {
+                                unset($traceArray[$j]);
+                            }
+                            break;
                         }
-                        break;
+
+                        $traceValue = $value;
                     }
 
-                    $traceValue = $value;
+                    $traceArray[$j][$traceField] = $traceValue;
                 }
-
-                $traceArray[$j][$traceField] = $traceValue;
             }
 
             $j++;
