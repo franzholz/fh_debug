@@ -1,3 +1,6 @@
+2022-01-19 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: The file GlobalDebugFunctions.php must not check if fh_debug has been installed. The Extension Manager is not yet initialized in the beginning.
+
 2022-01-18 Franz Holzinger <franz@ttproducts.de>
     * bugfix: PHP 8
 

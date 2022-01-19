@@ -17,16 +17,15 @@ function debug($variable = '', $title = null, $group = null)
     }
     
     try {
-        if (is_object($GLOBALS['error']) && @is_callable([$GLOBALS['error'], 'debug'])) {
+        if (
+            isset($GLOBALS['error']) &&
+            is_object($GLOBALS['error']) &&
+            @is_callable([$GLOBALS['error'], 'debug'])
+        ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } else if (
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') 
+            class_exists(\JambageCom\Fhdebug\Utility\DebugFunctions::class)
         ) {
-            // allow debugging even if no code of fh_debug has been initialized yet
-            if (!class_exists('\\JambageCom\\Fhdebug\\Utility\\DebugFunctions')) {
-                $fhDebugFile = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php';
-                require_once($fhDebugFile);
-            }
             \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title, $group);
         } else {
             \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
