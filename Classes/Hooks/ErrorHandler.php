@@ -37,9 +37,10 @@ class ErrorHandler extends \TYPO3\CMS\Core\Error\ErrorHandler
      */
     public function handleError($errorLevel, $errorMessage, $errorFile, $errorLine)
     {
-        debug($errorMessage, 'handleError $errorMessage');
-        debug($errorFile, 'handleError $errorFile');
-        debug($errorLine, 'handleError $errorLine');
+        debug($errorLevel, 'handleError $errorLevel'); // keep this
+        debug($errorMessage, 'handleError $errorMessage'); // keep this
+        debug($errorFile, 'handleError $errorFile'); // keep this
+        debug($errorLine, 'handleError $errorLine'); // keep this
         parent::handleError($errorLevel, $errorMessage, $errorFile, $errorLine);
         return true;
     }
