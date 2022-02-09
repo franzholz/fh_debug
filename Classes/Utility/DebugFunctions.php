@@ -81,7 +81,6 @@ class DebugFunctions {
     static private $startFiles = '';
     static private $partFiles = '';
     static private $excludeFiles = '';
-    static private $ignore = '';
     static private $ipAddress = '127.0.0.1';
     static private $debugBegin = false;
     static private $traceFields = 'file,line,function';
@@ -97,6 +96,7 @@ class DebugFunctions {
     static private $maxFileSizeReached = false;
     static private $dateTime = 'l jS \of F Y h:i:s A';
     static private $config = [];
+    static private $api;
 
     public function __construct (
         $extConf
@@ -135,8 +135,6 @@ class DebugFunctions {
         static::setPartFiles($extConf['PARTFILES']);
         static::setExcludeFiles($extConf['EXCLUDEFILES']);
 
-        static::setIgnore($extConf['IGNORE']);
-
         static::setIpAddress($extConf['IPADDRESS']);
         static::setDebugBegin($extConf['DEBUGBEGIN']);
         static::setTraceFields($extConf['TRACEFIELDS']);
@@ -155,8 +153,21 @@ class DebugFunctions {
 
         $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
         static::setTypo3Mode($typo3Mode);
-    }
 
+        if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
+            static::$api = 
+                GeneralUtility::makeInstance(
+                    \JambageCom\FhDebug\Api\DebugApi::class,
+                    $extConf
+                );
+        } else {
+            static::$api =
+                GeneralUtility::makeInstance(
+                    \JambageCom\FhDebug\Api\OldDebugApi::class,
+                    $extConf
+                );
+        }
+    }
 
     static public function setTypo3Mode
     (
@@ -252,18 +263,6 @@ class DebugFunctions {
     static public function getExcludeFiles ()
     {
         return static::$excludeFiles;
-    }
-
-    static public function setIgnore (
-        $value
-    )
-    {
-        static::$ignore = trim($value);
-    }
-
-    static public function getIgnore ()
-    {
-        return static::$ignore;
     }
 
     static public function setIpAddress (
@@ -1094,238 +1093,6 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function printTypeVariable (
-        $header,
-        $variable,
-        $html
-    )
-    {
-        $result = '';
-        if ($html) {
-            $result .= '<table>';
-            $result .= '<tr><th>' . $header . '</th></tr>';
-            $result .= '<tr><td>' . $variable . '</td></tr>';
-            $result .= '</table>';
-        }
-        return $result;
-    }
-
-    static public function printArrayVariable (
-        $header,
-        $variable,
-        $depth,
-        $recursiveDepth,
-        $html
-    )
-    {
-        $result = '';
-
-// error_log ('printArrayVariable $header = ' . $header . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log ('$variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log ('$depth = ' . $depth . PHP_EOL, 3, static::getErrorLogFilename());
-
-        if ($depth < $recursiveDepth) {
-
-            $debugArray = [];
-            if ($html) {
-                if ($header != '') {
-                    $debugArray[] = '<tr><th>' . $header . '</th><th></th></tr>';
-                }
-
-                foreach ($variable as $k => $v1) {
-                    if (
-                        $k != '' &&
-                        GeneralUtility::inList(static::getIgnore(), $k)
-                    ) {
-                        continue;
-                    }
-
-                    $value = '';
-                    $value .= '<tr>';
-                    $td = '<td>';
-                    $value .= $td;
-                    $value .=  nl2br(htmlspecialchars($k));
-                    $value .= '</td>';
-                    if (is_array($v1)) {
-                        $value .= '<td class="ela">';
-                        $value .= static::printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, true);
-                        $value .= '</td>';
-                    } else if (is_object($v1)) {
-                        $value .= '<td class="elo">';
-                        $value .= static::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, true);
-                        $value .= '</td>';
-                    } else if (is_bool($v1)) {
-                        $value .= '<td class="el">';
-                        $value .= static::printTypeVariable(
-                            'Boolean',
-                            ($v1 ? 'true' : 'false'),
-                            true
-                        );
-                        $value .= '</td>';
-                    } else if (is_long($v1) || is_double($v1)) {
-                        $value .= '<td class="el">';
-                        $value .= static::printTypeVariable(
-                            ucfirst(gettype($v1)),
-                            $v1,
-                            true
-                        );
-                        $value .= '</td>';
-                    } else if (is_resource($v1) || ($v1 !== null && !is_scalar($v1))) {
-                        $value .= '<td class="el">';
-                        $value .= 'Resource of type ' . get_resource_type($v1) . ':' . $v1;
-                        $value .= '</td>';
-                    } else {
-                        $value .= '<td class="el">';
-                        $value .= nl2br(htmlspecialchars($v1));
-                        $value .= '</td>';
-                    }
-                    $value .= '</tr>' . chr(13);
-
-                    $debugArray[] = $value;
-                }
-            } else {
-                if ($header != '') {
-                    $debugArray[] = '"' . $header . '"';
-                }
-                foreach ($variable as $k => $v1) {
-                    if (
-                        GeneralUtility::inList(static::getIgnore(), $k)
-                    ) {
-                        continue;
-                    }
-
-                    $value = '';
-                    $value .=  $k;
-                    $value .= '|';
-                    if (is_array($v1)) {
-                        $value .= static::printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, $html);
-                    } else if (is_object($v1)) {
-                        $value .= static::printObjectVariable('', $v1, $depth + 1, $recursiveDepth, $html);
-                    } else {
-                        $value .=  $v1;
-                    }
-                    $value .= '|' . PHP_EOL;
-                    $debugArray[] = $value;
-                }
-            }
-
-            $result = implode('', $debugArray);
-
-            if ($html) {
-                $result = '<table>' . $result . '</table>' . chr(13);
-            }
-        } else {
-            $result = '->...';
-        }
-// error_log ('printArrayVariable ENDE $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
-        return $result;
-    }
-
-    static public function object2array ($instance)
-    {
-        $clone = (array) $instance;
-        $result = [];
-        $sourceKeys = $clone;
-
-        foreach ($clone as $key => $value) {
-            $aux = explode("\0", $key);
-            $newkey = $aux[count($aux) - 1];
-            $result[$newkey] = $sourceKeys[$key];
-        }
-
-        return $result;
-    }
-
-    static public function printObjectVariable (
-        $header,
-        $variable,
-        $depth,
-        $recursiveDepth,
-        $html
-    )
-    { // TODO: show private member variables
-        //Instantiate the reflection object
-// error_log ('printObjectVariable $header = ' . print_r($header, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
-        $variableArray = static::object2array($variable);
-
-// error_log ('printObjectVariable $variableArray = ' . print_r($variableArray, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
-        $classname = @$variable::class;
-        $header .= $classname;
-        $result = static::printArrayVariable($header, $variableArray, $depth, $recursiveDepth, $html);
-
-// error_log ('printObjectVariable $result = ' . print_r($result, true) . PHP_EOL, 3, static::getErrorLogFilename());
-        return $result;
-    }
-
-    static public function printVariable (
-        $header,
-        $variable,
-        $recursiveDepth,
-        $html
-    ) {
-        $result = '';
-        $debugArray = [];
-
-        if (is_array($variable)) {
-            if (!$header) {
-                $header = 'Array';
-            }
-            $result =
-                static::printArrayVariable(
-                    $header,
-                    $variable,
-                    0,
-                    $recursiveDepth,
-                    $html
-                );
-        } else if (is_object($variable)) {
-            if ($header == '') {
-                $header = 'Object ';
-            }
-            $result =
-                static::printObjectVariable(
-                    $header,
-                    $variable,
-                    0,
-                    $recursiveDepth,
-                    $html
-                );
-        } else {
-            if ($html) {
-                if (is_bool($variable)) {
-                    $result = '<td class="el">';
-                    $result .= static::printTypeVariable(
-                        'Boolean',
-                        ($variable ? 'true' : 'false') ,
-                        true
-                    );
-                    $result .= '</td>';
-                } else if (is_long($variable) || is_double($variable)) {
-                    $result = '<td class="el">';
-                    $result .= static::printTypeVariable(
-                        ($header == '' ? ucfirst(gettype($variable)) : ''),
-                        $variable,
-                        true
-                    );
-                    $result .= '</td>';
-                } else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
-                    $result = '<p>unloaded object of class "' . $variable::class . '"</p>';
-                } else if (is_resource($variable)) {
-                    $result = '<p>*RESOURCE*</p>';
-                } else {
-                    $result = '<p>' . nl2br(htmlspecialchars((string) $variable)) . '</p>';
-                }
-            } else {
-                $result = $variable;
-            }
-        }
-
-// 	error_log ('printVariable Ende $result = ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
-        return $result;
-    }
-
     static public function processUser ()
     {
         if (
@@ -1350,17 +1117,6 @@ class DebugFunctions {
                 }
             }
         }
-    }
-
-    static public function getTypeView ($variable)
-    {
-        $type = gettype($variable);
-        $result = match ($type) {
-									'array' => ' (' . $type . ' of ' . count($variable) . ' items )',
-									'object' => ' (' . $type . ' of class ' . $variable::class . ')',
-									default => ' (' . $type . ')',
-								};
-        return $result;
     }
 
     static public function writeTemporaryFile ($processCount)
@@ -1433,7 +1189,7 @@ class DebugFunctions {
         $backTrace = '';
 
         if ($showHeader) {
-            $type = static::getTypeView($variable);
+            $type = static::$api->getTypeView($variable);
         }
 
 //   error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
@@ -1457,7 +1213,7 @@ class DebugFunctions {
                 static::getUseErrorLog()
             ) {
                 $out =
-                    static::printVariable(
+                    static::$api->printVariable(
                         '',
                         $variable,
                         $recursiveDepth,
@@ -1474,7 +1230,7 @@ class DebugFunctions {
 
             if ($html) {
                 $out =
-                    static::printVariable(
+                    static::$api->printVariable(
                         '',
                         $variable,
                         $recursiveDepth,
@@ -1680,7 +1436,7 @@ class DebugFunctions {
 
         if (
             !$force &&
-            GeneralUtility::inList(static::getIgnore(), $title) ||
+            GeneralUtility::inList(static::$api->getIgnore(), $title) ||
             static::$internalError
         ) {
             return;
@@ -1750,7 +1506,7 @@ class DebugFunctions {
             if (static::$isUserAllowed) {
                 $recursiveDepth = null;
                 if (is_object($variable)) {
-                    $classname = $variable::class;
+                    $classname = static::$api->getClass($variable);
                     $exceptionPos = strlen($classname) - strlen('Exception');
                     $comparator = substr($classname, $exceptionPos);
                     if ($comparator == 'Exception') {
