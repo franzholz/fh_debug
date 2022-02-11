@@ -1,3 +1,6 @@
+2022-02-11 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: PHP 7.4 exception must contain the variable name
+
 2022-02-09 Franz Holzinger <franz@ttproducts.de>
     * bugfix: PHP 8 and PHP 7.4
 

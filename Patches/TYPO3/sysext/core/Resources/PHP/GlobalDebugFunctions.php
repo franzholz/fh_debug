@@ -31,7 +31,7 @@ function debug($variable = '', $title = null, $group = null)
             \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
         }
     }
-    catch (\Exception) {
+    catch (\Exception $e) {
         // continue if an exception has been thrown
     }
 }
