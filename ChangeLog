@@ -1,3 +1,6 @@
+2022-02-24 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: PHP 8: Remove all htmlspecialchars around an empty string! This leads to unexpected results.
+
 2022-02-11 Franz Holzinger <franz@ttproducts.de>
     * bugfix: PHP 7.4 exception must contain the variable name
 

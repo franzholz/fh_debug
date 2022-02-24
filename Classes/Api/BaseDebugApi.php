@@ -101,12 +101,13 @@ class BaseDebugApi
                     ) {
                         continue;
                     }
-
                     $value = '';
                     $value .= '<tr>';
                     $td = '<td>';
                     $value .= $td;
-                    $value .=  nl2br(htmlspecialchars($k));
+                    if ($k != '') {
+                        $value .=  nl2br(htmlspecialchars($k));
+                    }
                     $value .= '</td>';
                     if (is_array($v1)) {
                         $value .= '<td class="ela">';
@@ -138,11 +139,12 @@ class BaseDebugApi
                         $value .= '</td>';
                     } else {
                         $value .= '<td class="el">';
-                        $value .= nl2br(htmlspecialchars($v1));
+                        if ($v1 != '') {
+                            $value .= nl2br(htmlspecialchars($v1));
+                        }
                         $value .= '</td>';
                     }
                     $value .= '</tr>' . chr(13);
-
                     $debugArray[] = $value;
                 }
             } else {
@@ -179,7 +181,7 @@ class BaseDebugApi
         } else {
             $result = '->...';
         }
+
         return $result;
     }
 }
-

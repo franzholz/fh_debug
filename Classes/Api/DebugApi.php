@@ -112,7 +112,7 @@ class DebugApi extends BaseDebugApi
                 } else if (is_resource($variable)) {
                     $result = '<p>*RESOURCE*</p>';
                 } else {
-                    $result = '<p>' . nl2br(htmlspecialchars((string) $variable)) . '</p>';
+                    $result = '<p>' . ($variable != '' ? nl2br(htmlspecialchars((string) $variable)) : '') . '</p>';
                 }
             } else {
                 $result = $variable;

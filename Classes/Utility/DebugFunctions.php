@@ -1192,12 +1192,10 @@ class DebugFunctions {
             $type = static::$api->getTypeView($variable);
         }
 
-//   error_log('writeOut $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+//   error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 //   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
-//   error_log('writeOut $recursiveDepth ' . $recursiveDepth . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
-//  error_log('writeOut $debugFile ' . $debugFile . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             static::$hndFile ||
@@ -1272,7 +1270,6 @@ class DebugFunctions {
         }
 
         $bWritten = static::write($out, $errorOut, ($debugFile == ''));
-//   error_log('writeOut nach write $bWritten = ' . $bWritten . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             !$bWritten &&
@@ -1394,7 +1391,6 @@ class DebugFunctions {
 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log('### debug $group = ' . print_r($group, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             $title === null &&
@@ -1527,6 +1523,7 @@ class DebugFunctions {
                         static::$internalError = true;
                         echo $errorText;
                         error_log(FH_DEBUG_EXT . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
+
                         return false;
                     }
                 }
@@ -1628,8 +1625,12 @@ class DebugFunctions {
                     }
                 }
             }
+// error_log('### debug ENDE $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
-            if (!$isValidTrace || !self::getMaxFileSizeReached()) {
+            if (!
+                $isValidTrace || 
+                !self::getMaxFileSizeReached()
+            ) {
                 static::setActive($storeIsActive);
             }
         }
