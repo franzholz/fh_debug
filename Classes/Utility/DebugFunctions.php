@@ -1490,6 +1490,7 @@ class DebugFunctions {
         if (
             (
                 $storeIsActive ||
+                $force ||
                 static::bIsInitialization() ||
                 $debugSysLog && !$excludeSysLog ||
                 $debugDevLog

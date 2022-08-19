@@ -1,3 +1,6 @@
+2022-08-19 Franz Holzinger <franz@ttproducts.de>
+    * bugfix: Feature force with group must always give a debug output.
+
 2022-02-24 Franz Holzinger <franz@ttproducts.de>
     * bugfix: PHP 8: Remove all htmlspecialchars around an empty string! This leads to unexpected results.
 
