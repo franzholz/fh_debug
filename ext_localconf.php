@@ -98,12 +98,12 @@ call_user_func(function () {
                 }
 
                 if ($newExtConf['DBAL']) {
-                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\\DBALException'] = [
+                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['Doctrine\\DBAL\\DBALException'] = [
                         'className' => \JambageCom\FhDebug\Hooks\DBALException::class
                     ];
                 }
 
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['patchem']['configurationItemLabel'][FH_DEBUG_EXT] = \JambageCom\FhDebug\Hooks\PatchemHooks::class;
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tsparser']['configurationParser'][FH_DEBUG_EXT] = \JambageCom\FhDebug\Hooks\TsparserHooks::class;
             }
 
             if (

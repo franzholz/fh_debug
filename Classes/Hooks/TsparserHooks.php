@@ -29,12 +29,12 @@ namespace JambageCom\FhDebug\Hooks;
 use JambageCom\FhDebug\Utility\DebugFunctions;
 
 /**
- * Hooks for the TYPO3 extension patchem used by the debug extension.
+ * Hooks for the TYPO3 extension tsparser used by the debug extension.
  *
  * @author	Franz Holzinger <franz@ttproducts.de>
  *
  */
-class PatchemHooks
+class TsparserHooks
 {
     public function buildConfigurationArray (&$params, $pObj)
     {

@@ -1,3 +1,6 @@
+2022-10-06 Franz Holzinger <franz@ttproducts.de>
+    * rename: PatchemHooks.php -> TsparserHooks.php
+
 2022-08-19 Franz Holzinger <franz@ttproducts.de>
     * bugfix: Feature force with group must always give a debug output.
 
