@@ -35,7 +35,10 @@
   },
   "require": {
     "php": "^7.4 || ^8.0",
-    "typo3/cms-core": "^10.4 || ^11.5"
+    "typo3/cms-core": "^10.4 || ^11.5 || ^12.0"
+  },
+  "suggest": {
+    "jambagecom/tsparser": "^0.9"
   },
   "autoload": {
     "psr-4": {
