@@ -2,12 +2,6 @@
   "name": "jambagecom/fh-debug",
   "type": "typo3-cms-extension",
   "description": "PHP debugger, sys_log and devLog Logger",
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.typo3.org"
-    }
-  ],
   "keywords": [
     "TYPO3 CMS",
     "debug",
