@@ -10,7 +10,7 @@ DEBUGBEGIN = 0
 DEBUGFILE = fileadmin/debug.html
   # cat=basic/conf; type=int+; label=Maximum file size MB: maximum size in MByte of the debug output HTML file.
 MAXFILESIZE = 3
-  # cat=basic/enable; type=options[All=ALL,Front End=FE,Back End=BE,Off=OFF]; label=Typo3 Mode: Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging is only enabled in this Mode.
+  # cat=basic/enable; type=options[All=ALL,Front End=FE,Back End=BE,Off=OFF]; label=Typo3 FE or BE: Normaly set to FE to enable all FE-Plugins to generate debug output! Debugging is only enabled in the Front End.
 TYPO3_MODE = FE
   # cat=basic/enable; type=int+; label=Level: maximum recursion level for debugging into arrays and objects
 LEVEL = 3
