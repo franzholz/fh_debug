@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Debug generator and Log Writer',
     'description' => 'This generates a PHP debug output file. FileWriter into debug',
     'category' => 'misc',
-    'version' => '0.12.1',
+    'version' => '0.13.0',
     'state' => 'stable',
     'clearcacheonload' => 1,
     'author' => 'Franz Holzinger',
@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'php' => '7.4.0-8.1.99',
-            'typo3' => '10.4.0-12.1.99',
+            'typo3' => '10.4.0-12.3.99',
         ],
         'conflicts' => [
         ],

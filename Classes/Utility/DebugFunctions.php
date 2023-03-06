@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2022 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2023 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,7 +25,10 @@ namespace JambageCom\FhDebug\Utility;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Psr\Http\Message\ServerRequestInterface;
 
+
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -78,6 +81,7 @@ class DebugFunctions {
     static private $errorLogFilename = '';
     static private $debugFilename = '';
     static private $typo3Mode = 'ALL';
+    static private $currentTypo3Mode = 'FE';
     static private $startFiles = '';
     static private $partFiles = '';
     static private $excludeFiles = '';
@@ -99,9 +103,11 @@ class DebugFunctions {
     static private $api;
 
     public function __construct (
-        $extConf
+        $extConf,
+        $currentTypo3Mode = 'FE'
     )
     {
+        static::$currentTypo3Mode = $currentTypo3Mode;
         static::$extConf = $extConf;
 
         $errorLogFile = static::getErrorLogFile();
@@ -531,7 +537,7 @@ class DebugFunctions {
         $title = static::getTitle();
 
         if (
-            TYPO3_MODE == 'FE' &&
+            static::$currentTypo3Mode == 'FE' &&
             !static::getAppendDepth()
         ) {
             $title .= ' id=' . $GLOBALS['TSFE']->id;
@@ -618,7 +624,7 @@ class DebugFunctions {
         $feUserNames = static::getFeUserNames();
 
         if (
-            TYPO3_MODE == 'FE' &&
+            static::$currentTypo3Mode == 'FE' &&
             $feUserNames != ''
         ) {
             $tmpArray = GeneralUtility::trimExplode(',', $feUserNames);
@@ -912,7 +918,7 @@ class DebugFunctions {
     static public function createInfoText () {
         $ipAddress = static::readIpAddress();
         $result = date(static::getDateTime()) . ', ' . $ipAddress;
-        if (TYPO3_MODE == 'FE') {
+        if (static::$currentTypo3Mode == 'FE') {
             $result .= ', id=' . $GLOBALS['TSFE']->id;
         }
         return $result;
@@ -1096,7 +1102,7 @@ class DebugFunctions {
     static public function processUser ()
     {
         if (
-            TYPO3_MODE == 'FE' &&
+            static::$currentTypo3Mode == 'FE' &&
             static::getFeUserNames() != '' &&
             isset($GLOBALS['TSFE']) &&
             is_object($GLOBALS['TSFE'])
@@ -1361,7 +1367,7 @@ class DebugFunctions {
             $result = implode('/', $slashArray);
             $result .= '/';
         }
-        if (TYPO3_MODE == 'BE') {
+        if (static::$currentTypo3Mode == 'BE') {
             $position = strpos($result, 'typo3/');
                 // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
             $result = substr($result, 0, $position);
@@ -1563,7 +1569,7 @@ class DebugFunctions {
                     }
 
                     $appendText = ' - counter: ' . static::$processCount . ' ' . $headerPostFix;
-                    switch (TYPO3_MODE) {
+                    switch (static::$currentTypo3Mode) {
                         case 'FE':
                             if (static::getHtml()) {
                                 $head = 'Front End Debugging' . chr(13) . $appendText;
