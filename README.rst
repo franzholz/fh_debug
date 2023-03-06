@@ -8,7 +8,7 @@ TYPO3 extension fh_debug
 Installation Requirement
 ------------------------
 
-Since TYPO3 9 you must overwrite the TYPO3 Core file
+You must overwrite the TYPO3 Core file
 sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file
 fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php.
 This will bring you back the former methods debugBegin and debugEnd.
