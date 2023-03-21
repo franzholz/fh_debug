@@ -11,7 +11,7 @@ Installation Requirement
 You must overwrite the TYPO3 Core file
 sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file
 fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php.
-Alternatively you can use "post-autoload-dump" and a file copy method in your composer.json.
+Alternatively you can use "post-install-cmd" or "post-autoload-dump" and a file copy method in your composer.json.
 See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
 
 This will bring you back the former methods debugBegin and debugEnd.
