@@ -12,7 +12,7 @@ You must overwrite the TYPO3 Core file
 sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file
 fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php.
 Alternatively you can use "post-autoload-dump" and a file copy method in your composer.json.
-See `t3o <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
+See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
 
 This will bring you back the former methods debugBegin and debugEnd.
 And it contains the necessary PHP code to call fh_debug if it is activated
