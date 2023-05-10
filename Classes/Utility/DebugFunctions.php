@@ -772,6 +772,7 @@ class DebugFunctions {
     {
         $result = true;
         $extConf = static::getExtConf();
+        $extensionKey = 'fh_debug';
 
         if (static::$isUserAllowed && static::getDebugFilename() != '') {
 
@@ -842,8 +843,8 @@ class DebugFunctions {
             }
 
             if ($result == false) {
-                error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL);
-                error_log(FH_DEBUG_EXT . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
+                error_log($extensionKey . ': ' . $errorText . PHP_EOL);
+                error_log($extensionKey . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
@@ -1453,11 +1454,12 @@ class DebugFunctions {
         $debugSysLog = false;
         $debugDevLog = false;
         $excludeSysLog = false;
+        $extensionKey = 'fh_debug';
 
         if (
             static::getSysLog() &&
             isset($title) &&
-            str_contains($title, 'sysLog from ' . FH_DEBUG_EXT)
+            str_contains($title, 'sysLog from ' . $extensionKey)
         ) {
             $debugSysLog = true;
 
@@ -1486,7 +1488,7 @@ class DebugFunctions {
         if (
             static::getDevLog() &&
             isset($title) &&
-            str_contains($title, 'devLog from ' . FH_DEBUG_EXT)
+            str_contains($title, 'devLog from ' . $extensionKey)
         ) {
             $debugDevLog = true;
         }
@@ -1503,7 +1505,6 @@ class DebugFunctions {
             ) &&
             !self::getMaxFileSizeReached()
         ) {
-//  error_log('debug POSTIIVE IF Case ' . PHP_EOL, 3, static::getErrorLogFilename());
             static::setActive(false);
 
             if (static::$isUserAllowed) {
@@ -1529,7 +1530,7 @@ class DebugFunctions {
                     } else {
                         static::$internalError = true;
                         echo $errorText;
-                        error_log(FH_DEBUG_EXT . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
+                        error_log($extensionKey . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
 
                         return false;
                     }
@@ -1542,7 +1543,7 @@ class DebugFunctions {
                     $cssPath = '';
                     $extConf = static::getExtConf();
                     if (
-                        ($position = strpos($extConf['CSSPATH'], 'EXT:' . FH_DEBUG_EXT)) !== false
+                        ($position = strpos($extConf['CSSPATH'], 'EXT:' . $extensionKey)) !== false
                     ) {
                         $subdirectory = '';
                         if ($position > 0) {
@@ -1553,7 +1554,7 @@ class DebugFunctions {
             
                         $relPath =                  
                             \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
-                                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(FH_DEBUG_EXT)
+                                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extensionKey)
                             );
                         $cssPath = static::getHost() . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
                     } else {
@@ -1621,7 +1622,7 @@ class DebugFunctions {
                                 self::setMaxFileSizeReached(true);
                                 static::writeOut(
                                     $size . ' MByte',
-                                    FH_DEBUG_EXT . ': Maximum filesize reached for the debug output file.',
+                                    $extensionKey . ': Maximum filesize reached for the debug output file.',
                                     0,
                                     static::getHtml(),
                                     [],
@@ -1652,12 +1653,13 @@ class DebugFunctions {
     {
         $errorLogFilename = '';
         $debugFilename = static::getDebugFilename();
+        $extensionKey = 'fh_debug';
 
         if (static::getUseErrorLog()) {
             $errorLogFilename = static::getErrorLogFilename();
-            $result = FH_DEBUG_EXT . ': Debug messages have been written to the files "' . $debugFilename . '" and "' . $errorLogFilename . '"';
+            $result = $extensionKey . ': Debug messages have been written to the files "' . $debugFilename . '" and "' . $errorLogFilename . '"';
         } else {
-            $result = FH_DEBUG_EXT . ': Debug messages have been written to the file "' . $debugFilename . '"';
+            $result = $extensionKey . ': Debug messages have been written to the file "' . $debugFilename . '"';
         }
 
         return $result;

@@ -1,3 +1,7 @@
+2023-05-10 Franz Holzinger  <franz@ttproducts.de>
+    * new feature: add global methods fhdebug, fhdebugBegin and fhdebugEnd
+    * compatibility TYPO3 12.4
+
 2022-12-01 Franz Holzinger  <franz@ttproducts.de>
     * compatibility: Migrate extension icon to Resources/Public/Icons/Extension.gif
 

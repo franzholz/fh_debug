@@ -28,7 +28,6 @@
     "typo3-ter/fh-debug": "self.version"
   },
   "require": {
-    "php": "^7.4 || ^8.0",
     "typo3/cms-core": "^11.5 || ^12.0"
   },
   "suggest": {
@@ -37,7 +36,10 @@
   "autoload": {
     "psr-4": {
       "JambageCom\\FhDebug\\": "Classes/"
-    }
+    },
+    "files": [
+        "src/functions.php"
+    ]
   },
   "extra": {
     "typo3/cms": {
