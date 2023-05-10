@@ -843,8 +843,8 @@ class DebugFunctions {
             }
 
             if ($result == false) {
-                error_log($extensionKey . ': ' . $errorText . PHP_EOL);
-                error_log($extensionKey . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename());
+                error_log($extensionKey . ': ' . $errorText . PHP_EOL); // keep this
+                error_log($extensionKey . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
