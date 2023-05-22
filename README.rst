@@ -154,7 +154,7 @@ executed TYPO3 core files, then the extension fh_debug has not been
 initialized yet. Therefore you must use the full namespace class to
 initialize and to call the class of fh_debug.
 
-   Class ‘JambageCom\Fhdebug\Utility\DebugFunctions’ not found in
+   Class ‘JambageCom\\Fhdebug\\Utility\\DebugFunctions’ not found in
    /var/www/html/typo3_src/typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php
    line 15
 
