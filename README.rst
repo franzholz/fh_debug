@@ -109,19 +109,20 @@ the debug file.
 To get the debug output for “Oops, an error occurred!” you must make
 this configuration in the Install Tool or ``LocalConfiguration.php``:
 
-`[SYS][productionExceptionHandler] =
-JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler`
+   [SYS][productionExceptionHandler] = 
+      JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler
 
 Remove this settings before you deinstall fh_debug. Otherwise you will
 get this PHP error entry:
 
-PHP Fatal error: Uncaught Error: Class
-‘JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler’
-not found in
-/var/www/html/typo3_src-9.5.8/typo3/sysext/core/Classes/Utility/GeneralUtility.php:3667
+   PHP Fatal error: Uncaught Error: Class
+   ‘JambageCom\FhDebug\Hooks\CoreProductionExceptionHandler’
+   not found in
+   /var/www/html/typo3_src-9.5.8/typo3/sysext/core/Classes/Utility/GeneralUtility.php:3667
 
-The default setting is: [SYS][productionExceptionHandler] =
-TYPO3\CMS\Core\Error\ProductionExceptionHandler`
+The default setting is:
+
+   [SYS][productionExceptionHandler] = TYPO3\CMS\Core\Error\ProductionExceptionHandler
 
 .. _example-2:
 
@@ -153,11 +154,9 @@ executed TYPO3 core files, then the extension fh_debug has not been
 initialized yet. Therefore you must use the full namespace class to
 initialize and to call the class of fh_debug.
 
-Class
-‘JambageCom\Fhdebug\Utility\DebugFunctions’
-not found in
-/var/www/html/typo3_src/typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php
-line 15
+   Class ‘JambageCom\Fhdebug\Utility\DebugFunctions’ not found in
+   /var/www/html/typo3_src/typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php
+   line 15
 
 This means that your debug output shall be generated before the
 extension fh_debug has been initialized by TYPO3. You must do your own
