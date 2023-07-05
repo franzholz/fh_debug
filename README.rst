@@ -66,6 +66,12 @@ deactivate the debug output in the Install Tool.
 
 The debug output will always be shown.
 
+News
+----
+
+Since version 0.15.0 the global error object is initialized automatically if it is not existent. This allows to insert debug calls almost everywhere in the TYPO3 backend even before the Middleware is dispatched.
+
+
 Configuration
 -------------
 
@@ -252,4 +258,4 @@ Global functions can only be implemented in the TYPO3 core.
 ToDO
 ----
 
-Use cweagans/composer-patches .
+Program a TYPO3 patch extension which overwrites TYPO3 core files.

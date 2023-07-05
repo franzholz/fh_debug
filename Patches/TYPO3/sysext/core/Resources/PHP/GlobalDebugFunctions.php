@@ -1,11 +1,13 @@
 <?php
 
 
-/* You must use this file since TYPO3 9.5!
+/* Replace the file typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php by this file!
+ * Otherwise this debug extension will not work, because it is the only way to define a 
+ * global function with a short name. 
  * 
  * Short-hand debug function
  * If you wish to use the debug()-function, and it does not output something,
- * please edit the IP mask in TYPO3_CONF_VARS
+ * please edit the dev IP mask in TYPO3_CONF_VARS
  */
 
 function debug($variable = '', $title = null, $group = null)
