@@ -1,3 +1,7 @@
+
+2023-07-05 Franz Holzinger  <franz@ttproducts.de>
+    * new feature: >uto initialization of the global error object when the debug function is called even before the middleware is executed.
+
 2023-05-10 Franz Holzinger  <franz@ttproducts.de>
     * new feature: add global methods fhdebug, fhdebugBegin and fhdebugEnd
     * compatibility TYPO3 12.4
