@@ -1,4 +1,6 @@
 <?php
+
+
 /* You must use this file since TYPO3 9.5!
  * 
  * Short-hand debug function
@@ -15,7 +17,7 @@ function debug($variable = '', $title = null, $group = null)
     ) {
         return;
     }
-    
+
     try {
         if (
             isset($GLOBALS['error']) &&
@@ -27,6 +29,19 @@ function debug($variable = '', $title = null, $group = null)
             class_exists(\JambageCom\Fhdebug\Utility\DebugFunctions::class)
         ) {
             \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title, $group);
+        } else if (
+            file_exists(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')
+        ) {
+            $request = getRequest();
+            $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
+            $api->init($request);
+            if (
+                isset($GLOBALS['error']) &&
+                is_object($GLOBALS['error'])
+            ) {
+                $GLOBALS['error']->debug($variable, $title, $group);
+            }
         } else {
             \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
         }
@@ -36,15 +51,23 @@ function debug($variable = '', $title = null, $group = null)
     }
 }
 
-function debugBegin (...$parameters) {
+function debugBegin (...$parameters)
+{
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
         \JambageCom\Fhdebug\Utility\DebugFunctions::debugBegin($parameters);
     }
 }
 
-function debugEnd (...$parameters) {
+function debugEnd (...$parameters)
+{
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
         \JambageCom\Fhdebug\Utility\DebugFunctions::debugEnd($parameters);
     }
+}
+    
+// use Psr\Http\Message\ServerRequestInterface;
+function getRequest(): \Psr\Http\Message\ServerRequestInterface
+{
+    return $GLOBALS['TYPO3_REQUEST'];
 }
 
