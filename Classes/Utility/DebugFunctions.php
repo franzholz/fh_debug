@@ -30,6 +30,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Core\Environment;
 
 
 /**
@@ -110,13 +112,13 @@ class DebugFunctions {
         static::$currentTypo3Mode = $currentTypo3Mode;
         static::$extConf = $extConf;
 
-        $errorLogFile = static::getErrorLogFile();
         $debugFile = static::getDebugFile();
 
         static::$instanceCount++;
-        static::$csConvObj =  GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+        static::$csConvObj =  GeneralUtility::makeInstance(CharsetConverter::class);
         if ($extConf['ERROR_LOG'] != '') {
             $errorLogFile = $extConf['ERROR_LOG'];
+            static::setErrorLogFile($errorLogFile);
         }
 
         if ($extConf['USE_ERROR_LOG'] == '1') {
@@ -127,12 +129,8 @@ class DebugFunctions {
             $debugFile = $extConf['DEBUGFILE'];
         }
 
-        static::setErrorLogFile($errorLogFile);
         static::setDebugFile($debugFile);
         static::setDebugFileMode($extConf['DEBUGFILEMODE']);
-
-//  error_log('JambageCom\FhDebug\Utility\DebugFunctions::__construct Pos 1: ' .  static::$debugFilename . PHP_EOL, 3, static::getErrorLogFilename());
-
         static::setRecursiveDepth($extConf['LEVEL']);
         static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
         static::setTraceDepth($extConf['TRACEDEPTH']);
@@ -430,7 +428,7 @@ class DebugFunctions {
             static::$errorLogFile = $errorLogFile;
         }
     
-        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        $path = Environment::getPublicPath() . '/';
 
         static::$errorLogFilename = $path . $errorLogFile;
     }
@@ -467,7 +465,7 @@ class DebugFunctions {
             static::$debugFile = $debugFile;
         }
 
-        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        $path = Environment::getPublicPath() . '/';
 
         static::setDebugFilename($path . $debugFile);
     }
@@ -853,7 +851,7 @@ class DebugFunctions {
 
     static public function getProcessFilename ()
     {
-        $path = \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/';
+        $path = Environment::getPublicPath() . '/';
         $result = $path . 'typo3temp/fh_debug.txt';
 
         return $result;
@@ -1398,7 +1396,7 @@ class DebugFunctions {
 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
-
+// 
         if (
             $title === null &&
             $group === null &&
