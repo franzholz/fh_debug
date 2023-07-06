@@ -28,21 +28,15 @@ function debug($variable = '', $title = null, $group = null)
         ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } else if (
-            class_exists(\JambageCom\Fhdebug\Utility\DebugFunctions::class)
-        ) {
-            \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title, $group);
-        } else if (
             file_exists(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') &&
+            $group != 'init'
         ) {
             $request = getRequest();
             $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
             $api->init($request);
-            if (
-                isset($GLOBALS['error']) &&
-                is_object($GLOBALS['error'])
-            ) {
-                $GLOBALS['error']->debug($variable, $title, $group);
+            if (isset($GLOBALS['error'])) {
+                debug($variable, $title, 'init'); // use 'init' to prevent an endless loop
             }
         } else {
             \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);

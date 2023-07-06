@@ -105,7 +105,7 @@ class DebugFunctions {
     static private $api;
 
     public function __construct (
-        $extConf,
+        array $extConf,
         $currentTypo3Mode = 'FE'
     )
     {
@@ -118,8 +118,9 @@ class DebugFunctions {
         static::$csConvObj =  GeneralUtility::makeInstance(CharsetConverter::class);
         if ($extConf['ERROR_LOG'] != '') {
             $errorLogFile = $extConf['ERROR_LOG'];
-            static::setErrorLogFile($errorLogFile);
         }
+        $errorLogFile = $errorLogFile ?? static::$errorLogFile;
+        static::setErrorLogFile($errorLogFile);
 
         if ($extConf['USE_ERROR_LOG'] == '1') {
             static::setUseErrorLog(true);
@@ -452,7 +453,7 @@ class DebugFunctions {
 
     static public function errorLog ($text, $comment) 
     {
-        error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename());
+        \error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
     }
 
     static public function setDebugFile (
@@ -1396,7 +1397,7 @@ class DebugFunctions {
 
 // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
 // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// 
+ 
         if (
             $title === null &&
             $group === null &&

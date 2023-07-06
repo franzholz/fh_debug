@@ -53,12 +53,7 @@ class BootstrapApi
             ExtensionConfiguration::class
         )->get(FH_DEBUG_EXT);
 
-        if (
-            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
-            is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
-        ) {
-            $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
-        }
+        $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] ?? null;
 
         if (is_array($extensionConfiguration)) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = $extensionConfiguration;

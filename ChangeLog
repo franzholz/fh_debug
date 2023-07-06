@@ -1,6 +1,10 @@
+2023-07-06 Franz Holzinger  <franz@ttproducts.de>
+    * bugfix: remove wrong error_log statement
+    * bugfix: Always use the PHP error log file 'fileadmin/phpDebugErrorLog.txt' if nothing has been set.
+    * bugfix: Do not call \JambageCom\Fhdebug\Utility\DebugFunctions::debug without the error object any more, because it is now automatically initialized.
 
 2023-07-05 Franz Holzinger  <franz@ttproducts.de>
-    * new feature: >uto initialization of the global error object when the debug function is called even before the middleware is executed.
+    * new feature: auto initialization of the global error object when the debug function is called even before the middleware is executed.
 
 2023-05-10 Franz Holzinger  <franz@ttproducts.de>
     * new feature: add global methods fhdebug, fhdebugBegin and fhdebugEnd

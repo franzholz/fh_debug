@@ -18,7 +18,7 @@ LEVEL = 3
 TRACEDEPTH = 5
   # cat=enhanced/enable; type=string; label= Comma-sep. list of FE user names: empty for all fe_users (even without login). Else list FE user names where debug-output has to be generated.
 FEUSERNAMES =
-  # cat=enhanced/enable; type=string; label= error_log file: relative path of the error_log file.
+  # cat=enhanced/enable; type=string; label= error_log file: relative path of the error_log file. If empty, then it this file is used: fileadmin/phpDebugErrorLog.txt
 ERROR_LOG =
   # cat=enhanced/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
 USE_ERROR_LOG = 0
