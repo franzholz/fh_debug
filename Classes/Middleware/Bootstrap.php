@@ -40,8 +40,6 @@ class Bootstrap implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
- error_log('JambageCom\FhDebug\Middleware\Bootstrap::process Pos 1: ' .  static::print_r($request, true) . PHP_EOL, 3, '/var/www/html/fileadmin/phpDebugErrorLog.txt');
-
         $api = GeneralUtility::makeInstance(BootstrapApi::class);
         $api->init($request);
 
