@@ -47,7 +47,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = null
     )
     {
-        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_EXCEPTION'];
+        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fh_debug']['TRACEDEPTH_EXCEPTION'];
         $trail = $exception->getTrace();
 
         $traceArray =

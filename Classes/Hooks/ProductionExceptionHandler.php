@@ -72,7 +72,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
         $result .= CRLF . $exception->getMessage() . CRLF . ' exception code:' . $exception->getCode() . ' file:' . substr($exception->getFile(), $typo3Position) . ' line:' . $exception->getLine() . CRLF;
         $trail = $exception->getTrace();
         $result .= 'fh_debug trace:' . CRLF;
-        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]['TRACEDEPTH_EXCEPTION'];
+        $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fh_debug']['TRACEDEPTH_EXCEPTION'];
 
         $traceArray =
             DebugFunctions::getTraceArray(

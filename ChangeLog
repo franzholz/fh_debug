@@ -1,3 +1,7 @@
+2023-07-21 Franz Holzinger  <franz@ttproducts.de>
+    * bugfix: enable backend debugging. Check if the mode has changed from frontend to backend.
+    * remove constant FH_DEBUG_EXT
+
 2023-07-06 Franz Holzinger  <franz@ttproducts.de>
     * bugfix: remove wrong error_log statement
     * bugfix: Always use the PHP error log file 'fileadmin/phpDebugErrorLog.txt' if nothing has been set.

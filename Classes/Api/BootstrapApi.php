@@ -45,37 +45,37 @@ class BootstrapApi
      */
     public function init (ServerRequestInterface $request)
     {
-        if (!defined('FH_DEBUG_EXT')) {
-            define('FH_DEBUG_EXT', 'fh_debug');
-        }
+        $extensionKey = 'fh_debug';
 
         $extensionConfiguration = GeneralUtility::makeInstance(
             ExtensionConfiguration::class
-        )->get(FH_DEBUG_EXT);
+        )->get($extensionKey);
 
-        $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] ?? null;
+        $tmpArray = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey] ?? null;
 
         if (is_array($extensionConfiguration)) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = $extensionConfiguration;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey] = $extensionConfiguration;
             if (isset($tmpArray) && is_array($tmpArray)) {
-                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT], $tmpArray);
+                $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey] = array_merge($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey], $tmpArray);
             }
         }
 
         if (
-            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT]) &&
-            is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT])
+            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey]) &&
+            is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey])
         ) {
             $class = DebugFunctions::class;
+            $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+
             if (
                 !isset($GLOBALS['error']) ||
                 !is_object($GLOBALS['error']) ||
                 !($GLOBALS['error'] instanceof $class) ||
-                !$GLOBALS['error']->hasBeenInitialized()
+                !$GLOBALS['error']->hasBeenInitialized() ||
+                $currentTypo3Mode != $GLOBALS['error']->getTypo3Mode()
             ) {
                 $myDebugObject = null;
-                $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][FH_DEBUG_EXT];
-                $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+                $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey];
 
                 if (
                     !isset($GLOBALS['error']) ||
@@ -101,6 +101,7 @@ class BootstrapApi
                 $ipIsAllowed = false;
                 $ipAdress = DebugFunctions::initIpAddress($ipIsAllowed);
                 $modeIsAllowed = DebugFunctions::verifyTypo3Mode($currentTypo3Mode);
+                $modeIsAllowed = true; // ++++ TEST FHO
                 $initResult = false;
 
                 if (
@@ -140,7 +141,7 @@ class BootstrapApi
                         ];
                     }
 
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tsparser']['configurationParser'][FH_DEBUG_EXT] = TsparserHooks::class;
+                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tsparser']['configurationParser'][$extensionKey] = TsparserHooks::class;
                 }
 
                 if (

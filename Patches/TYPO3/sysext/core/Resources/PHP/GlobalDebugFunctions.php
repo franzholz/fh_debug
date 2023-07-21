@@ -20,11 +20,17 @@ function debug($variable = '', $title = null, $group = null)
         return;
     }
 
+    $request = getRequest();
+
     try {
+        $currentTypo3Mode = (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+
         if (
             isset($GLOBALS['error']) &&
             is_object($GLOBALS['error']) &&
-            @is_callable([$GLOBALS['error'], 'debug'])
+            @is_callable([$GLOBALS['error'], 'debug']) &&
+            @is_callable([$GLOBALS['error'], 'getTypo3Mode']) &&
+            $currentTypo3Mode == $GLOBALS['error']->getTypo3Mode()
         ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } else if (
@@ -32,7 +38,6 @@ function debug($variable = '', $title = null, $group = null)
             \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') &&
             $group != 'init'
         ) {
-            $request = getRequest();
             $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
             $api->init($request);
             if (isset($GLOBALS['error'])) {
