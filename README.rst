@@ -1,7 +1,3 @@
-.. role:: raw-latex(raw)
-   :format: latex
-..
-
 TYPO3 extension fh_debug
 ========================
 
