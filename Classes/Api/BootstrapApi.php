@@ -40,10 +40,10 @@ class BootstrapApi
     /**
      * initialize the global debug object
      * @param ServerRequestInterface $request
-     * @param RequestHandlerInterface $handler
+     * @param it $requestEmpty
      * @return ResponseInterface
      */
-    public function init (ServerRequestInterface $request)
+    public function init (ServerRequestInterface $request, $requestEmpty = false)
     {
         $extensionKey = 'fh_debug';
 
@@ -72,7 +72,8 @@ class BootstrapApi
                 !is_object($GLOBALS['error']) ||
                 !($GLOBALS['error'] instanceof $class) ||
                 !$GLOBALS['error']->hasBeenInitialized() ||
-                $currentTypo3Mode != $GLOBALS['error']->getTypo3Mode()
+                $currentTypo3Mode != $GLOBALS['error']->getTypo3Mode() ||
+                $requestEmpty
             ) {
                 $myDebugObject = null;
                 $newExtConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey];

@@ -539,7 +539,14 @@ class DebugFunctions {
             static::$currentTypo3Mode == 'FE' &&
             !static::getAppendDepth()
         ) {
-            $title .= ' id=' . $GLOBALS['TSFE']->id;
+            if (
+                isset($GLOBALS['TSFE']) &&
+                is_object($GLOBALS['TSFE'])
+            ) {
+                $title .= ' id=' . $GLOBALS['TSFE']->id;
+            } else {
+                $title .= ' id: unknown';
+            }
         }
 
         $out = '
@@ -919,7 +926,14 @@ class DebugFunctions {
         $ipAddress = static::readIpAddress();
         $result = date(static::getDateTime()) . ', ' . $ipAddress;
         if (static::$currentTypo3Mode == 'FE') {
-            $result .= ', id=' . $GLOBALS['TSFE']->id;
+            if (
+                isset($GLOBALS['TSFE']) &&
+                is_object($GLOBALS['TSFE'])
+            ) {
+                $result .= ' id=' . $GLOBALS['TSFE']->id;
+            } else {
+                $result .= ' id: unknown';
+            }
         }
         return $result;
     }

@@ -20,7 +20,8 @@ function debug($variable = '', $title = null, $group = null)
         return;
     }
 
-    $request = getRequest();
+    $requestEmpty = true;
+    $request = getRequest($requestEmpty);
 
     try {
         $currentTypo3Mode = (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
@@ -30,18 +31,20 @@ function debug($variable = '', $title = null, $group = null)
             is_object($GLOBALS['error']) &&
             @is_callable([$GLOBALS['error'], 'debug']) &&
             @is_callable([$GLOBALS['error'], 'getTypo3Mode']) &&
-            $currentTypo3Mode == $GLOBALS['error']->getTypo3Mode()
+            (
+                $currentTypo3Mode == $GLOBALS['error']->getTypo3Mode() &&
+                !$requestEmpty
+            )
         ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } else if (
             file_exists(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug') &&
-            $group != 'init'
+            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')
         ) {
             $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
-            $api->init($request);
+            $api->init($request, $requestEmpty);
             if (isset($GLOBALS['error'])) {
-                debug($variable, $title, 'init'); // use 'init' to prevent an endless loop
+                $GLOBALS['error']->debug($variable, $title, $group);
             }
         } else {
             \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
@@ -67,8 +70,15 @@ function debugEnd (...$parameters)
 }
     
 // use Psr\Http\Message\ServerRequestInterface;
-function getRequest(): \Psr\Http\Message\ServerRequestInterface
+function getRequest(&$empty): \Psr\Http\Message\ServerRequestInterface
 {
-    return $GLOBALS['TYPO3_REQUEST'];
+    $empty = true;
+    if (isset($GLOBALS['TYPO3_REQUEST'])) {
+        $result = $GLOBALS['TYPO3_REQUEST'];
+        $empty = false;
+    } else {
+        $result = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\ServerRequest::class);
+    }
+    return $result;
 }
 
