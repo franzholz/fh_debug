@@ -171,7 +171,6 @@ example:
 
 ::
 
-   define('FH_DEBUG_EXT', 'fh_debug');
    require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
    \JambageCom\Fhdebug\Utility\DebugFunctions::init();
    \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile('');
