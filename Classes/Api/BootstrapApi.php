@@ -102,7 +102,6 @@ class BootstrapApi
                 $ipIsAllowed = false;
                 $ipAdress = DebugFunctions::initIpAddress($ipIsAllowed);
                 $modeIsAllowed = DebugFunctions::verifyTypo3Mode($currentTypo3Mode);
-                $modeIsAllowed = true; // ++++ TEST FHO
                 $initResult = false;
 
                 if (
