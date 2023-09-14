@@ -65,7 +65,14 @@ class BootstrapApi
             is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$extensionKey])
         ) {
             $class = DebugFunctions::class;
-            $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+            $currentTypo3Mode = 'BE';
+
+            if (
+                $request instanceof ServerRequestInterface &&
+                $request->getAttribute('applicationType')
+            ) {
+                $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+            }
 
             if (
                 !isset($GLOBALS['error']) ||

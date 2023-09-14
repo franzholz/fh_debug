@@ -24,7 +24,14 @@ function debug($variable = '', $title = null, $group = null)
     $request = getRequest($requestEmpty);
 
     try {
-        $currentTypo3Mode = (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+        $currentTypo3Mode = 'BE';
+        if (
+            !$requestEmpty &&
+            $request instanceof ServerRequestInterface &&
+            $request->getAttribute('applicationType')
+        ) {
+            $currentTypo3Mode = (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+        }
 
         if (
             isset($GLOBALS['error']) &&
@@ -43,6 +50,7 @@ function debug($variable = '', $title = null, $group = null)
         ) {
             $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
             $api->init($request, $requestEmpty);
+
             if (isset($GLOBALS['error'])) {
                 $GLOBALS['error']->debug($variable, $title, $group);
             }
@@ -51,6 +59,8 @@ function debug($variable = '', $title = null, $group = null)
         }
     }
     catch (\Exception $e) {
+        // error_log('debug Exception: ' .  $e->getMessage() . PHP_EOL, 3, 'mypath/fileadmin/phpDebugErrorLog.txt');
+
         // continue if an exception has been thrown
     }
 }

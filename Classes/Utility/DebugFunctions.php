@@ -28,7 +28,6 @@ namespace JambageCom\FhDebug\Utility;
 use Psr\Http\Message\ServerRequestInterface;
 
 
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
@@ -1405,7 +1404,7 @@ class DebugFunctions {
 
         if (
             $group == 'F'
-        ) { // force a debug output
+        ) { // force a debug output no matter which other options are active
             $force = true;
         }
 
@@ -1420,13 +1419,13 @@ class DebugFunctions {
             $isControlMode = true;
             $variable = strtoupper($variable);
             $parts = explode(':', $variable);
-            $variable = $parts['0'];
+            $variable = $parts[0];
             switch ($variable) {
                 case static::BEGIN:
                     static::debugBegin();
                     break;
                 case static::CONFIG:
-                    // TODO: $parts['1'] enthält den Index auf die 
+                    // TODO: $parts[1] enthält den Index auf die 
 //                     $config[$variant]
 // Die gesamte Konfiguration muss in einem Array gespeichert werden..
 // setConfigVariant und getConfigVariant. Damit muss außerdem ein
