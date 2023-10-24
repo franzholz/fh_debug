@@ -5,8 +5,8 @@ Installation Requirement
 ------------------------
 
 You must overwrite the TYPO3 Core file
-sysext/core/Resources/PHP/GlobalDebugFunctions.php by the file
-fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php.
+file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php` by the file
+file:`fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php`.
 Alternatively you can use "post-install-cmd" or "post-autoload-dump" and a file copy method in your composer.json.
 See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
 
@@ -234,7 +234,7 @@ Trouble shooting
 If you do not get anything shown in the browser url
 https://example.com/fileadmin/debug.html, then make sure that this file
 debug.html really exists on the file system. If not, then create an
-empty file debug.html in the folder fileadmin and give Apache write
+empty file file:`debug.html` in the folder fileadmin and give Apache write
 access to it.
 
 Check the configuration in the extension manager. IP addresses of the
