@@ -929,7 +929,7 @@ class DebugFunctions {
                 isset($GLOBALS['TSFE']) &&
                 is_object($GLOBALS['TSFE'])
             ) {
-                $result .= ' id=' . $GLOBALS['TSFE']->id;
+                $result .= ' id=' . $GLOBALS['TSFE']->determineId();
             } else {
                 $result .= ' id: unknown';
             }

@@ -1,3 +1,6 @@
+2023-10-24 Franz Holzinger  <franz@ttproducts.de>
+    * bugfix: use method TypoScriptFrontendController::determineId to determine the current page id of the frontend in all cases
+
 2023-07-21 Franz Holzinger  <franz@ttproducts.de>
     * bugfix: enable backend debugging. Check if the mode has changed from frontend to backend.
     * remove constant FH_DEBUG_EXT
