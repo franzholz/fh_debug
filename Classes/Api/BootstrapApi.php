@@ -116,7 +116,7 @@ class BootstrapApi
                     (
                         $ipIsAllowed ||
                         GeneralUtility::cmpIP($ipAdress, '127.0.0.1') ||
-                        $typo3Mode == 'FE' && $newExtConf['FEUSERNAMES']
+                        $currentTypo3Mode == 'FE' && $newExtConf['FEUSERNAMES']
                     )
                 ) {
                     $GLOBALS['TYPO3_CONF_VARS']['LOG']['JambageCom']['FhDebug']['writerConfiguration'] = [
