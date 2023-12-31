@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Debug generator and Log Writer',
     'description' => 'This generates a PHP debug output file. FileWriter into debug',
     'category' => 'misc',
-    'version' => '0.16.1',
+    'version' => '0.17.0',
     'state' => 'stable',
     'clearcacheonload' => 1,
     'author' => 'Franz Holzinger',
@@ -25,4 +25,3 @@ $EM_CONF[$_EXTKEY] = [
         ],
     ],
 ];
-
