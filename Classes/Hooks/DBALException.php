@@ -71,7 +71,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = sprintf("Operation '%s' is not supported by platform.", $method);
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -79,7 +79,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = "Invalid 'platform' option specified, need to give an instance of " . AbstractPlatform::class . '.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -102,7 +102,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             );
         }
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -123,7 +123,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             $expectedFormat
         );
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -137,7 +137,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'instance of PDO was given.'
         );
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -160,7 +160,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'instance is given to DriverManager::getConnection().';
         }
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -177,7 +177,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'Doctrine currently supports only the following drivers: ' . implode(', ', $knownDrivers);
 
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -220,7 +220,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         } else {
             $result = new self($msg, 0, $driverEx);
         }
-        $this->debug($result, $msg);
+        static::debug($result, $msg);
         return $result;
     }
 
@@ -260,7 +260,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = "The given 'wrapperClass' " . $wrapperClass . ' has to be a ' .
             'subtype of \Doctrine\DBAL\Connection.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -273,7 +273,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = "The given 'driverClass' " . $driverClass . ' has to implement the ' . Driver::class . ' interface.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -286,7 +286,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = 'Invalid table name specified: ' . $tableName;
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -299,7 +299,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = 'No columns specified for table ' . $tableName;
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -310,7 +310,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = 'Invalid Offset in Limit Query, it has to be larger than or equal to 0.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -323,7 +323,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = 'Type ' . $name . ' already exists.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -342,7 +342,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'Type#getMappedDatabaseTypes(). If the type name is empty you might ' .
             'have a problem with the cache or forgot some mapping information.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -355,7 +355,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = 'Type to be overwritten ' . $name . ' does not exist.';
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -363,7 +363,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = sprintf('Type of the class %s@%s is not registered.', $type::class, spl_object_hash($type));
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 
@@ -371,7 +371,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         $title = sprintf('Type of the class %s@%s is already registered.', $type::class, spl_object_hash($type));
         $result = new self($title);
-        $this->debug($result, $title);
+        static::debug($result, $title);
         return $result;
     }
 }

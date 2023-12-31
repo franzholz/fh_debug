@@ -58,7 +58,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
             }
         }
         debug($exception, 'fh_debug handle $exception', 'F'); // keep this
-        $errorMessage = isset($this->configuration['errorMessage']) ? $this->configuration['errorMessage'] : 'Oops, an error occurred! Code: %s';
+        $errorMessage = $this->configuration['errorMessage'] ?? 'Oops, an error occurred! Code: %s';
         $code = date('YmdHis', $_SERVER['REQUEST_TIME']);
         $randomHex = '';
 
