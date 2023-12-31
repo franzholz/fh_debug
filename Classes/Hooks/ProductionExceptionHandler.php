@@ -14,7 +14,7 @@ namespace JambageCom\FhDebug\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Core\Crypto\Random;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -62,7 +62,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
         $code = date('YmdHis', $_SERVER['REQUEST_TIME']);
         $randomHex = '';
 
-        $randomHex = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Crypto\Random::class)->generateRandomHexString(8);
+        $randomHex = GeneralUtility::makeInstance(Random::class)->generateRandomHexString(8);
         $code .= $randomHex;
 
         $result = sprintf($errorMessage, $code);

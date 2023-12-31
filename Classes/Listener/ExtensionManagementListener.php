@@ -2,6 +2,7 @@
 
 namespace JambageCom\FhDebug\Listener;
 
+use JambageCom\FhDebug\DebugFunctions;
 /***************************************************************
 *  Copyright notice
 *
@@ -27,7 +28,6 @@ namespace JambageCom\FhDebug\Listener;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
 /**
  * Core signal listener used by the debug extension.
  *
@@ -40,7 +40,7 @@ class ExtensionManagementListener
     {
         if ($extensionKey == 'fh_debug') {
 
-            \JambageCom\FhDebug\DebugFunctions::truncateFile();
+            DebugFunctions::truncateFile();
         }
     }
 }

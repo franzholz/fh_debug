@@ -14,13 +14,13 @@ namespace JambageCom\FhDebug\Log\Writer;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Core\Log\Writer\AbstractWriter;
 use TYPO3\CMS\Core\Log\LogRecord;
 
 /**
  * Log writer that writes the log records into the debug file.
  */
-class LogWriter extends \TYPO3\CMS\Core\Log\Writer\AbstractWriter
+class LogWriter extends AbstractWriter
 {
     /**
      * Writes the log record

@@ -1,9 +1,13 @@
 <?php
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use JambageCom\Fhdebug\Utility\DebugFunctions;
+use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 function fhdebug($variable = '', $title = null, $group = null)
 {
-    if (!\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP(
-        \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR'),
+    if (!GeneralUtility::cmpIP(
+        GeneralUtility::getIndpEnv('REMOTE_ADDR'),
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']
     )
     ) {
@@ -18,11 +22,11 @@ function fhdebug($variable = '', $title = null, $group = null)
         ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } elseif (
-            class_exists(\JambageCom\Fhdebug\Utility\DebugFunctions::class)
+            class_exists(DebugFunctions::class)
         ) {
-            \JambageCom\Fhdebug\Utility\DebugFunctions::debug($variable, $title, $group);
+            DebugFunctions::debug($variable, $title, $group);
         } else {
-            \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
+            DebugUtility::debug($variable, $title, $group);
         }
     } catch (\Exception $e) {
         // continue if an exception has been thrown
@@ -31,14 +35,14 @@ function fhdebug($variable = '', $title = null, $group = null)
 
 function fhdebugBegin(...$parameters)
 {
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
-        \JambageCom\Fhdebug\Utility\DebugFunctions::debugBegin($parameters);
+    if (ExtensionManagementUtility::isLoaded('fh_debug')) {
+        DebugFunctions::debugBegin($parameters);
     }
 }
 
 function fhdebugEnd(...$parameters)
 {
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
-        \JambageCom\Fhdebug\Utility\DebugFunctions::debugEnd($parameters);
+    if (ExtensionManagementUtility::isLoaded('fh_debug')) {
+        DebugFunctions::debugEnd($parameters);
     }
 }

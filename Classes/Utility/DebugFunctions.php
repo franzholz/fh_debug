@@ -24,7 +24,10 @@ namespace JambageCom\FhDebug\Utility;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
+use JambageCom\FhDebug\Api\DebugApi;
+use JambageCom\FhDebug\Api\OldDebugApi;
+use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Psr\Http\Message\ServerRequestInterface;
 
 
@@ -155,19 +158,19 @@ class DebugFunctions
             static::setDateTime($extConf['DATETIME']);
         }
 
-        $typo3Mode = ($extConf['TYPO3_MODE'] ? $extConf['TYPO3_MODE'] : 'OFF');
+        $typo3Mode = ($extConf['TYPO3_MODE'] ?: 'OFF');
         static::setTypo3Mode($typo3Mode);
 
         if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
             static::$api =
                 GeneralUtility::makeInstance(
-                    \JambageCom\FhDebug\Api\DebugApi::class,
+                    DebugApi::class,
                     $extConf
                 );
         } else {
             static::$api =
                 GeneralUtility::makeInstance(
-                    \JambageCom\FhDebug\Api\OldDebugApi::class,
+                    OldDebugApi::class,
                     $extConf
                 );
         }
@@ -1528,8 +1531,8 @@ class DebugFunctions
                         }
 
                         $relPath =
-                            \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
-                                \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(static::$extensionKey)
+                            PathUtility::stripPathSitePrefix(
+                                ExtensionManagementUtility::extPath(static::$extensionKey)
                             );
                         $cssPath = static::getHost() . '/' . $subdirectory . $relPath . 'Resources/Public/Css/';
                     } else {

@@ -14,7 +14,7 @@ namespace JambageCom\FhDebug\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
+use TYPO3\CMS\Core\Error\ProductionExceptionHandler;
 use TYPO3\CMS\Core\Controller\ErrorPageController;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,7 +24,7 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
 /**
  * Exception handler class for content object rendering
  */
-class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExceptionHandler
+class CoreProductionExceptionHandler extends ProductionExceptionHandler
 {
     /**
      * Echoes an exception for the web.

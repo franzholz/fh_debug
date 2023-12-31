@@ -1,6 +1,13 @@
 <?php
 
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use JambageCom\FhDebug\Api\BootstrapApi;
+use TYPO3\CMS\Core\Utility\DebugUtility;
+use JambageCom\Fhdebug\Utility\DebugFunctions;
+use TYPO3\CMS\Core\Http\ServerRequest;
 /* Replace the file typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php by this file!
  * Otherwise this debug extension will not work, because it is the only way to define a
  * global function with a short name.
@@ -12,8 +19,8 @@
 
 function debug($variable = '', $title = null, $group = null)
 {
-    if (!\TYPO3\CMS\Core\Utility\GeneralUtility::cmpIP(
-        \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REMOTE_ADDR'),
+    if (!GeneralUtility::cmpIP(
+        GeneralUtility::getIndpEnv('REMOTE_ADDR'),
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']
     )
     ) {
@@ -30,7 +37,7 @@ function debug($variable = '', $title = null, $group = null)
             $request instanceof ServerRequestInterface &&
             $request->getAttribute('applicationType')
         ) {
-            $currentTypo3Mode = (\TYPO3\CMS\Core\Http\ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
+            $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
         }
 
         if (
@@ -45,17 +52,17 @@ function debug($variable = '', $title = null, $group = null)
         ) {
             $GLOBALS['error']->debug($variable, $title, $group);
         } elseif (
-            file_exists(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')
+            file_exists(ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
+            ExtensionManagementUtility::isLoaded('fh_debug')
         ) {
-            $api = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
+            $api = GeneralUtility::makeInstance(BootstrapApi::class);
             $api->init($request, $requestEmpty);
 
             if (isset($GLOBALS['error'])) {
                 $GLOBALS['error']->debug($variable, $title, $group);
             }
         } else {
-            \TYPO3\CMS\Core\Utility\DebugUtility::debug($variable, $title, $group);
+            DebugUtility::debug($variable, $title, $group);
         }
     } catch (\Exception $e) {
         // error_log('debug Exception: ' .  $e->getMessage() . PHP_EOL, 3, 'mypath/fileadmin/phpDebugErrorLog.txt');
@@ -66,15 +73,15 @@ function debug($variable = '', $title = null, $group = null)
 
 function debugBegin(...$parameters)
 {
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
-        \JambageCom\Fhdebug\Utility\DebugFunctions::debugBegin($parameters);
+    if (ExtensionManagementUtility::isLoaded('fh_debug')) {
+        DebugFunctions::debugBegin($parameters);
     }
 }
 
 function debugEnd(...$parameters)
 {
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
-        \JambageCom\Fhdebug\Utility\DebugFunctions::debugEnd($parameters);
+    if (ExtensionManagementUtility::isLoaded('fh_debug')) {
+        DebugFunctions::debugEnd($parameters);
     }
 }
 
@@ -86,7 +93,7 @@ function getRequest(&$empty): \Psr\Http\Message\ServerRequestInterface
         $result = $GLOBALS['TYPO3_REQUEST'];
         $empty = false;
     } else {
-        $result = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Http\ServerRequest::class);
+        $result = GeneralUtility::makeInstance(ServerRequest::class);
     }
     return $result;
 }
