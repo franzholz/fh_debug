@@ -26,7 +26,7 @@ function fhdebug($variable = '', $title = null, $group = null)
         ) {
             DebugFunctions::debug($variable, $title, $group);
         } else {
-            DebugUtility::debug($variable, $title, $group);
+            DebugUtility::debug($variable, $title);
         }
     } catch (\Exception $e) {
         // continue if an exception has been thrown
@@ -36,13 +36,13 @@ function fhdebug($variable = '', $title = null, $group = null)
 function fhdebugBegin(...$parameters)
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugBegin($parameters);
+        DebugFunctions::debugBegin();
     }
 }
 
 function fhdebugEnd(...$parameters)
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugEnd($parameters);
+        DebugFunctions::debugEnd();
     }
 }

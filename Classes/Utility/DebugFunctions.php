@@ -918,9 +918,7 @@ class DebugFunctions
                 static::debug(
                     'debugBegin (' . $infoText . ') BEGIN [--->',
                     'debugBegin',
-                    '',
-                    '',
-                    true
+                    ''
                 );
             }
         }
@@ -937,9 +935,7 @@ class DebugFunctions
                 static::debug(
                     'debugEnd (' . $infoText . ') END <---]',
                     'debugEnd',
-                    '',
-                    '',
-                    true
+                    ''
                 );
                 static::setActive(false);
             }

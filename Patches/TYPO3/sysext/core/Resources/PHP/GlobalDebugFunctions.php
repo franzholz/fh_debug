@@ -62,7 +62,7 @@ function debug($variable = '', $title = null, $group = null)
                 $GLOBALS['error']->debug($variable, $title, $group);
             }
         } else {
-            DebugUtility::debug($variable, $title, $group);
+            DebugUtility::debug($variable, $title);
         }
     } catch (\Exception $e) {
         // error_log('debug Exception: ' .  $e->getMessage() . PHP_EOL, 3, 'mypath/fileadmin/phpDebugErrorLog.txt');
@@ -74,14 +74,14 @@ function debug($variable = '', $title = null, $group = null)
 function debugBegin(...$parameters)
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugBegin($parameters);
+        DebugFunctions::debugBegin();
     }
 }
 
 function debugEnd(...$parameters)
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugEnd($parameters);
+        DebugFunctions::debugEnd();
     }
 }
 

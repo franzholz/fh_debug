@@ -32,6 +32,6 @@ class LogWriter extends AbstractWriter
     public function writeLog(LogRecord $record)
     {
         unset($record['data']['trace']);
-        debug($record, 'debug Log', 'F'); // keep this
+        debug($record, 'debug Log'); // keep this
     }
 }
