@@ -1,3 +1,3 @@
 <?php
-defined('TYPO3') || die('Access denied.');
 
+defined('TYPO3') || die('Access denied.');

@@ -1,3 +1,6 @@
+2023-12-31 Franz Holzinger  <franz@ttproducts.de>
+	* use rector to improve the PHP code
+
 2023-10-24 Franz Holzinger  <franz@ttproducts.de>
     * bugfix: use method TypoScriptFrontendController::determineId to determine the current page id of the frontend in all cases
 

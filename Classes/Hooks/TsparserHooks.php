@@ -2,7 +2,6 @@
 
 namespace JambageCom\FhDebug\Hooks;
 
-
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +35,7 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  */
 class TsparserHooks
 {
-    public function buildConfigurationArray (&$params, $pObj)
+    public function buildConfigurationArray(&$params, $pObj)
     {
         if (
             isset($params) &&
@@ -57,5 +56,3 @@ class TsparserHooks
         }
     }
 }
-
-

@@ -15,13 +15,14 @@ namespace JambageCom\FhDebug\Configuration;
  * The TYPO3 project - inspiring people to share!
  */
 
-class Variant 
+class Variant
 {
-    static private $default = [];
+    private static $default = [];
     private $config = [];
     protected $debugFileMode;
 
-    public function __construct(...$params) {
+    public function __construct(...$params)
+    {
         if (
             isset($params['default']) &&
             $params['default'] == 1
@@ -37,18 +38,15 @@ class Variant
             static::setDebugFileMode($conf['DEBUGFILEMODE']);
         }
     }
-    
-    public function setDebugFileMode (
+
+    public function setDebugFileMode(
         $value
-    )
-    {
+    ) {
         $this->debugFileMode = trim($value);
     }
-    
-    static public function getDebugFileMode ()
+
+    public static function getDebugFileMode()
     {
         return $this->debugFileMode;
     }
 }
- 
-

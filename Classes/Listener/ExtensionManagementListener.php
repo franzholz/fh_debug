@@ -36,7 +36,7 @@ namespace JambageCom\FhDebug\Listener;
  */
 class ExtensionManagementListener
 {
-    public function executeOnSignal ($extensionKey = null)
+    public function executeOnSignal($extensionKey = null)
     {
         if ($extensionKey == 'fh_debug') {
 
@@ -44,4 +44,3 @@ class ExtensionManagementListener
         }
     }
 }
-

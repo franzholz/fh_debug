@@ -23,6 +23,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Exception;
 use Throwable;
+
 use function array_map;
 use function bin2hex;
 use function get_class;
@@ -36,17 +37,15 @@ use function preg_replace;
 use function spl_object_hash;
 use function sprintf;
 
- 
 /**
  * Exception handler class for content object rendering
  */
 class DBALException extends \Doctrine\DBAL\DBALException
 {
-    static public function debug (
+    public static function debug(
         $exception,
         $title = null
-    )
-    {
+    ) {
         $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fh_debug']['TRACEDEPTH_EXCEPTION'];
         $trail = $exception->getTrace();
 
@@ -57,10 +56,10 @@ class DBALException extends \Doctrine\DBAL\DBALException
                 0
             );
 
-        debug ($title, 'DBALException::debug $title', 'F'); // keep this
-        debug ($traceArray, 'fh_debug DBAL exception handler exception trace', 'F'); // keep this
-        debug ($exception->getFile(), 'fh_debug exception handler exception File', 'F'); // keep this
-        debug ($exception->getLine(), 'fh_debug exception handler exception Line', 'F'); // keep this
+        debug($title, 'DBALException::debug $title', 'F'); // keep this
+        debug($traceArray, 'fh_debug DBAL exception handler exception trace', 'F'); // keep this
+        debug($exception->getFile(), 'fh_debug exception handler exception File', 'F'); // keep this
+        debug($exception->getLine(), 'fh_debug exception handler exception Line', 'F'); // keep this
     }
 
     /**
@@ -76,7 +75,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         return $result;
     }
 
-    public static function invalidPlatformSpecified() : self
+    public static function invalidPlatformSpecified(): self
     {
         $title = "Invalid 'platform' option specified, need to give an instance of " . AbstractPlatform::class . '.';
         $result = new self($title);
@@ -87,7 +86,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     /**
      * @param mixed $invalidPlatform
      */
-    public static function invalidPlatformType($invalidPlatform) : self
+    public static function invalidPlatformType($invalidPlatform): self
     {
         if (is_object($invalidPlatform)) {
             $title = sprintf(
@@ -216,7 +215,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
     {
         if ($driverEx instanceof DriverException) {
             $result = $driverEx;
-        } else if ($driver instanceof ExceptionConverterDriver && $driverEx instanceof DriverExceptionInterface) {
+        } elseif ($driver instanceof ExceptionConverterDriver && $driverEx instanceof DriverExceptionInterface) {
             $result = $driver->convertException($msg, $driverEx);
         } else {
             $result = new self($msg, 0, $driverEx);
@@ -262,7 +261,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'subtype of \Doctrine\DBAL\Connection.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result;    
+        return $result;
     }
 
     /**
@@ -275,7 +274,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = "The given 'driverClass' " . $driverClass . ' has to implement the ' . Driver::class . ' interface.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result;    
+        return $result;
     }
 
     /**
@@ -288,7 +287,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = 'Invalid table name specified: ' . $tableName;
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
     /**
@@ -301,7 +300,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = 'No columns specified for table ' . $tableName;
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
     /**
@@ -312,7 +311,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = 'Invalid Offset in Limit Query, it has to be larger than or equal to 0.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
     /**
@@ -325,7 +324,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = 'Type ' . $name . ' already exists.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
     /**
@@ -344,7 +343,7 @@ class DBALException extends \Doctrine\DBAL\DBALException
             'have a problem with the cache or forgot some mapping information.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
     /**
@@ -357,18 +356,18 @@ class DBALException extends \Doctrine\DBAL\DBALException
         $title = 'Type to be overwritten ' . $name . ' does not exist.';
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
-    public static function typeNotRegistered(Type $type) : self
+    public static function typeNotRegistered(Type $type): self
     {
         $title = sprintf('Type of the class %s@%s is not registered.', $type::class, spl_object_hash($type));
         $result = new self($title);
         $this->debug($result, $title);
-        return $result; 
+        return $result;
     }
 
-    public static function typeAlreadyRegistered(Type $type) : self
+    public static function typeAlreadyRegistered(Type $type): self
     {
         $title = sprintf('Type of the class %s@%s is already registered.', $type::class, spl_object_hash($type));
         $result = new self($title);

@@ -17,7 +17,6 @@ namespace JambageCom\FhDebug\Log\Writer;
 
 use TYPO3\CMS\Core\Log\LogRecord;
 
- 
 /**
  * Log writer that writes the log records into the debug file.
  */
@@ -30,10 +29,9 @@ class LogWriter extends \TYPO3\CMS\Core\Log\Writer\AbstractWriter
      * @return WriterInterface $this
      * @throws \RuntimeException
      */
-    public function writeLog (LogRecord $record)
+    public function writeLog(LogRecord $record)
     {
         unset($record['data']['trace']);
-        debug ($record, 'debug Log', 'F'); // keep this
+        debug($record, 'debug Log', 'F'); // keep this
     }
 }
-

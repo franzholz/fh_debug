@@ -45,4 +45,3 @@ class ErrorHandler extends \TYPO3\CMS\Core\Error\ErrorHandler
         return true;
     }
 }
-

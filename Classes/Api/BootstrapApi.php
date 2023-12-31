@@ -15,7 +15,6 @@
 
 namespace JambageCom\FhDebug\Api;
 
-
 use Psr\Http\Message\ServerRequestInterface;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -43,7 +42,7 @@ class BootstrapApi
      * @param it $requestEmpty
      * @return ResponseInterface
      */
-    public function init (ServerRequestInterface $request, $requestEmpty = false)
+    public function init(ServerRequestInterface $request, $requestEmpty = false)
     {
         $extensionKey = 'fh_debug';
 
@@ -158,7 +157,7 @@ class BootstrapApi
                         !($GLOBALS['error'] instanceof $class)
                     )
                 ) {
-                // the error object must always be set in order to show the debug output or to disable it
+                    // the error object must always be set in order to show the debug output or to disable it
                     $GLOBALS['error'] = $myDebugObject;
                 }
 
@@ -182,7 +181,6 @@ class BootstrapApi
                         [$logLevel][LogWriter::class] = [];
                 }
             }
-        }    
+        }
     }
 }
-

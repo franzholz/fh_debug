@@ -32,83 +32,82 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
 
-
 /**
 * Debug extension.
 *
 * @author	Franz Holzinger <franz@ttproducts.de>
 *
 */
-class DebugFunctions {
-    const BEGIN = 'B';
-    const END = 'E';
-    const RESET = 'RESET';
-    const CONFIG = 'CONFIG';
+class DebugFunctions
+{
+    public const BEGIN = 'B';
+    public const END = 'E';
+    public const RESET = 'RESET';
+    public const CONFIG = 'CONFIG';
 
-    static public $extensionKey = 'fh_debug';
-    static public $prefixFieldArray =
+    public static $extensionKey = 'fh_debug';
+    public static $prefixFieldArray =
         [
             'file' => '',
             'line' => '#',
             'function' => '->'
         ];
-    static public $csConvObj;
-    static public $errorLogFile = 'fileadmin/phpDebugErrorLog.txt';
-    static public $debugFile = '';
-    static public $internalErrorLog = false;
+    public static $csConvObj;
+    public static $errorLogFile = 'fileadmin/phpDebugErrorLog.txt';
+    public static $debugFile = '';
+    public static $internalErrorLog = false;
 
-    static protected $active = false;	// inactive without initialization
-    static protected $bInitialization = false;
-    static protected $internalError = false;
-    static protected $bErrorWritten = false;
-    static protected $useErrorLog = false;
+    protected static $active = false;	// inactive without initialization
+    protected static $bInitialization = false;
+    protected static $internalError = false;
+    protected static $bErrorWritten = false;
+    protected static $useErrorLog = false;
 
-    static private $username;
-    static private $isUserAllowed = true;
-    static private $extConf = [];
-    static private $hndFile = 0;
-    static private $hasBeenInitialized = false;
-    static private $needsFileInit = true;
-    static private $starttimeArray = [];
-    static private $createFile = false;
-    static private $hndProcessfile = false;
-    static private $processCount = 0;
-    static private $recursiveDepth = 3;
-    static private $exceptionRecursiveDepth = 3;
-    static private $traceDepth = 5;
-    static private $appendDepth = 3;
-    static private $html = true;
-    static private $headerWritten = false;
-    static private $instanceCount = 0;
-    static private $errorLogFilename = '';
-    static private $debugFilename = '';
-    static private $typo3Mode = 'ALL';
-    static private $currentTypo3Mode = 'FE';
-    static private $startFiles = '';
-    static private $partFiles = '';
-    static private $excludeFiles = '';
-    static private $ipAddress = '127.0.0.1';
-    static private $debugBegin = false;
-    static private $traceFields = 'file,line,function';
-    static private $feUserNames = '';
-    static private $debugFileMode = 'wb';
-    static private $devLog = false;
-    static private $devLogDebug = false;
-    static private $sysLog = false;
-    static private $sysLogExclude = '';
-    static private $proxyForward = false;
-    static private $title = 'debug file';
-    static private $maxFileSize = 3.0;
-    static private $maxFileSizeReached = false;
-    static private $dateTime = 'l jS \of F Y h:i:s A';
-    static private $config = [];
-    static private $api;
+    private static $username;
+    private static $isUserAllowed = true;
+    private static $extConf = [];
+    private static $hndFile = 0;
+    private static $hasBeenInitialized = false;
+    private static $needsFileInit = true;
+    private static $starttimeArray = [];
+    private static $createFile = false;
+    private static $hndProcessfile = false;
+    private static $processCount = 0;
+    private static $recursiveDepth = 3;
+    private static $exceptionRecursiveDepth = 3;
+    private static $traceDepth = 5;
+    private static $appendDepth = 3;
+    private static $html = true;
+    private static $headerWritten = false;
+    private static $instanceCount = 0;
+    private static $errorLogFilename = '';
+    private static $debugFilename = '';
+    private static $typo3Mode = 'ALL';
+    private static $currentTypo3Mode = 'FE';
+    private static $startFiles = '';
+    private static $partFiles = '';
+    private static $excludeFiles = '';
+    private static $ipAddress = '127.0.0.1';
+    private static $debugBegin = false;
+    private static $traceFields = 'file,line,function';
+    private static $feUserNames = '';
+    private static $debugFileMode = 'wb';
+    private static $devLog = false;
+    private static $devLogDebug = false;
+    private static $sysLog = false;
+    private static $sysLogExclude = '';
+    private static $proxyForward = false;
+    private static $title = 'debug file';
+    private static $maxFileSize = 3.0;
+    private static $maxFileSizeReached = false;
+    private static $dateTime = 'l jS \of F Y h:i:s A';
+    private static $config = [];
+    private static $api;
 
-    public function __construct (
+    public function __construct(
         array $extConf,
         $currentTypo3Mode = 'FE'
-    )
-    {
+    ) {
         static::$currentTypo3Mode = $currentTypo3Mode;
         static::$extConf = $extConf;
 
@@ -160,7 +159,7 @@ class DebugFunctions {
         static::setTypo3Mode($typo3Mode);
 
         if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
-            static::$api = 
+            static::$api =
                 GeneralUtility::makeInstance(
                     \JambageCom\FhDebug\Api\DebugApi::class,
                     $extConf
@@ -174,292 +173,269 @@ class DebugFunctions {
         }
     }
 
-    static public function setTypo3Mode
-    (
+    public static function setTypo3Mode(
         $value
     ) {
         static::$typo3Mode = strtoupper($value);
     }
 
-    static public function getTypo3Mode ()
+    public static function getTypo3Mode()
     {
         return static::$typo3Mode;
     }
 
-    static public function setRecursiveDepth (
+    public static function setRecursiveDepth(
         $value
-    )
-    {
+    ) {
         static::$recursiveDepth = intval($value);
     }
 
-    static public function getRecursiveDepth ()
+    public static function getRecursiveDepth()
     {
         return static::$recursiveDepth;
     }
 
-    static public function setExceptionRecursiveDepth (
+    public static function setExceptionRecursiveDepth(
         $value
-    )
-    {
+    ) {
         static::$exceptionRecursiveDepth = intval($value);
     }
 
-    static public function getExceptionRecursiveDepth ()
+    public static function getExceptionRecursiveDepth()
     {
         return static::$exceptionRecursiveDepth;
     }
 
-    static public function setTraceDepth (
+    public static function setTraceDepth(
         $value
-    ) 
-    {
+    ) {
         static::$traceDepth = intval($value);
     }
 
-    static public function getTraceDepth ()
+    public static function getTraceDepth()
     {
         return static::$traceDepth;
     }
 
-    static public function setAppendDepth (
+    public static function setAppendDepth(
         $value
-    )
-    {
+    ) {
         static::$appendDepth = intval($value);
     }
 
-    static public function getAppendDepth ()
+    public static function getAppendDepth()
     {
         return static::$appendDepth;
     }
 
-    static public function setStartFiles (
+    public static function setStartFiles(
         $value
-    )
-    {
+    ) {
         static::$startFiles = trim($value);
     }
 
-    static public function getStartFiles ()
+    public static function getStartFiles()
     {
         return static::$startFiles;
     }
 
-    static public function setPartFiles (
+    public static function setPartFiles(
         $value
-    )
-    {
+    ) {
         static::$partFiles = trim($value);
     }
 
-    static public function getPartFiles ()
+    public static function getPartFiles()
     {
         return static::$partFiles;
     }
 
-    static public function setExcludeFiles (
+    public static function setExcludeFiles(
         $value
-    )
-    {
+    ) {
         static::$excludeFiles = trim($value);
     }
 
-    static public function getExcludeFiles ()
+    public static function getExcludeFiles()
     {
         return static::$excludeFiles;
     }
 
-    static public function setIpAddress (
+    public static function setIpAddress(
         $value
-    )
-    {
+    ) {
         static::$ipAddress = trim($value);
     }
 
-    static public function getIpAddress ()
+    public static function getIpAddress()
     {
         return static::$ipAddress;
     }
 
-    static public function setDebugBegin (
+    public static function setDebugBegin(
         $value
-    )
-    {
-        static::$debugBegin = (boolean) ($value);
+    ) {
+        static::$debugBegin = (bool) ($value);
     }
 
-    static public function getDebugBegin ()
+    public static function getDebugBegin()
     {
         return static::$debugBegin;
     }
 
-    static public function setTraceFields (
+    public static function setTraceFields(
         $value
-    )
-    {
+    ) {
         static::$traceFields = trim($value);
     }
 
-    static public function getTraceFields ()
+    public static function getTraceFields()
     {
         return static::$traceFields;
     }
 
-    static public function setFeUserNames (
+    public static function setFeUserNames(
         $value
-    )
-    {
+    ) {
         static::$feUserNames = trim($value);
     }
 
-    static public function getFeUserNames ()
+    public static function getFeUserNames()
     {
         return static::$feUserNames;
     }
 
-    static public function setDebugFileMode (
+    public static function setDebugFileMode(
         $value
-    )
-    {
+    ) {
         static::$debugFileMode = trim($value);
     }
 
-    static public function getDebugFileMode ()
+    public static function getDebugFileMode()
     {
         return static::$debugFileMode;
     }
 
-    static public function setDevLog (
+    public static function setDevLog(
         $value
-    )
-    {
-        static::$devLog = (boolean) $value;
+    ) {
+        static::$devLog = (bool) $value;
     }
 
-    static public function getDevLog ()
+    public static function getDevLog()
     {
         return static::$devLog;
     }
 
-    static public function setDevLogDebug (
+    public static function setDevLogDebug(
         $value
-    )
-    {
-        static::$devLogDebug = (boolean) $value;
+    ) {
+        static::$devLogDebug = (bool) $value;
     }
 
-    static public function getDevLogDebug ()
+    public static function getDevLogDebug()
     {
         return static::$devLogDebug;
     }
 
-    static public function setSysLog (
+    public static function setSysLog(
         $value
-    )
-    {
-        static::$sysLog = (boolean) $value;
+    ) {
+        static::$sysLog = (bool) $value;
     }
 
-    static public function getSysLog ()
+    public static function getSysLog()
     {
         return static::$sysLog;
     }
 
-    static public function setSysLogExclude (
+    public static function setSysLogExclude(
         $value
-    )
-    {
+    ) {
         static::$sysLogExclude = $value;
     }
 
-    static public function getSysLogExclude ()
+    public static function getSysLogExclude()
     {
         return static::$sysLogExclude;
     }
 
-    static public function setHtml (
+    public static function setHtml(
         $value
-    )
-    {
-        static::$html = (boolean) $value;
+    ) {
+        static::$html = (bool) $value;
     }
 
-    static public function getHtml ()
+    public static function getHtml()
     {
         return static::$html;
     }
 
-    static public function setProxyForward (
+    public static function setProxyForward(
         $value
-    )
-    {
-        static::$proxyForward = (boolean) $value;
+    ) {
+        static::$proxyForward = (bool) $value;
     }
 
-    static public function getProxyForward ()
+    public static function getProxyForward()
     {
         return static::$proxyForward;
     }
 
-    static public function setTitle (
+    public static function setTitle(
         $value
-    )
-    {
+    ) {
         static::$title = $value;
     }
 
-    static public function getTitle ()
+    public static function getTitle()
     {
         return static::$title;
     }
 
-    static public function getErrorLogFile ()
+    public static function getErrorLogFile()
     {
         return static::$errorLogFile;
     }
 
-    static public function setErrorLogFile (
+    public static function setErrorLogFile(
         $errorLogFile = ''
-    )
-    {
+    ) {
         if ($errorLogFile == '') {
             $errorLogFile = static::getErrorLogFile();
         } else {
             static::$errorLogFile = $errorLogFile;
         }
-    
+
         $path = Environment::getPublicPath() . '/';
 
         static::$errorLogFilename = $path . $errorLogFile;
     }
 
-    static public function getErrorLogFilename ()
+    public static function getErrorLogFilename()
     {
         return static::$errorLogFilename;
     }
 
-    static public function setUseErrorLog (
+    public static function setUseErrorLog(
         $useErrorLog = true
-    )
-    {
+    ) {
         static::$useErrorLog = $useErrorLog;
     }
 
-    static public function getUseErrorLog ()
+    public static function getUseErrorLog()
     {
         return static::$useErrorLog;
     }
 
-    static public function errorLog ($text, $comment) 
+    public static function errorLog($text, $comment)
     {
         \error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
     }
 
-    static public function setDebugFile (
+    public static function setDebugFile(
         $debugFile = ''
-    )
-    {
+    ) {
         if ($debugFile == '') {
             $debugFile = static::getDebugFile();
         } else {
@@ -471,68 +447,63 @@ class DebugFunctions {
         static::setDebugFilename($path . $debugFile);
     }
 
-    static public function getDebugFile ()
+    public static function getDebugFile()
     {
         return static::$debugFile;
     }
 
-    static public function setDebugFilename ($debugFilename)
+    public static function setDebugFilename($debugFilename)
     {
         static::$debugFilename = $debugFilename;
     }
 
-    static public function getDebugFilename ()
+    public static function getDebugFilename()
     {
         return static::$debugFilename;
     }
 
-    static public function setMaxFileSizeReached
-    (
+    public static function setMaxFileSizeReached(
         $value
-    )
-    {
+    ) {
         static::$maxFileSizeReached = $value;
     }
 
-    static public function getMaxFileSizeReached ()
+    public static function getMaxFileSizeReached()
     {
         return static::$maxFileSizeReached;
     }
 
-    static public function setMaxFileSize (
+    public static function setMaxFileSize(
         $value
-    )
-    {
+    ) {
         static::$maxFileSize = (int) $value;
     }
 
-    static public function getMaxFileSize ()
+    public static function getMaxFileSize()
     {
         return static::$maxFileSize;
     }
 
-    static public function setDateTime (
+    public static function setDateTime(
         $value
-    )
-    {
+    ) {
         static::$dateTime = $value;
     }
 
-    static public function getDateTime ()
+    public static function getDateTime()
     {
         return static::$dateTime;
     }
 
-    static public function hasError ()
+    public static function hasError()
     {
         $result = (static::$bErrorWritten);
         return $result;
     }
 
-    static public function writeHeader (
+    public static function writeHeader(
         $cssFilename // filename with path
-    )
-    {
+    ) {
         $title = static::getTitle();
 
         if (
@@ -570,7 +541,7 @@ class DebugFunctions {
         static::write($out, $errorOut, (static::getDebugFile() == ''));
     }
 
-    static public function writeBodyEnd ()
+    public static function writeBodyEnd()
     {
         $out =
 '</body></html>';
@@ -583,17 +554,17 @@ class DebugFunctions {
         static::write($out, $errorOut, (static::getDebugFile() == ''));
     }
 
-    static public function readIpAddress ()
+    public static function readIpAddress()
     {
         $ipAddress = '';
-    // Nothing to do without any reliable information
-        if (!isset ($_SERVER['REMOTE_ADDR'])) {
+        // Nothing to do without any reliable information
+        if (!isset($_SERVER['REMOTE_ADDR'])) {
             return null;
         }
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-        } else if (
+        } elseif (
             static::getProxyForward() &&
             !empty($_SERVER['HTTP_X_FORWARDED_FOR'])
         ) {
@@ -606,10 +577,9 @@ class DebugFunctions {
         return $ipAddress;
     }
 
-    static public function verifyIpAddress (
+    public static function verifyIpAddress(
         $ipAddress
-    )
-    { 
+    ) {
         $debugIpAddress = static::getIpAddress();
         $result =
             (
@@ -622,10 +592,9 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function verifyFeusername (
+    public static function verifyFeusername(
         $username
-    )
-    {
+    ) {
         $result = true;
         $feUserNames = static::getFeUserNames();
 
@@ -647,10 +616,9 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function verifyTypo3Mode (
+    public static function verifyTypo3Mode(
         $verifyMode
-    )
-    {
+    ) {
         $typo3Mode = static::getTypo3Mode();
         $result =
             (
@@ -661,10 +629,9 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function initIpAddress (
+    public static function initIpAddress(
         &$ipIsAllowed
-    )
-    {
+    ) {
         $ipAdress = static::readIpAddress();
 
         if (!$ipIsAllowed) {
@@ -676,7 +643,7 @@ class DebugFunctions {
 
             if ($ipAdress == '*') {
                 $devIPmask = '*';
-            } else if ($ipAdress != '') {
+            } elseif ($ipAdress != '') {
                 if ($devIPmask != '') {
                     $devIPmask .= ',' . $ipAdress;
                 } else {
@@ -687,15 +654,14 @@ class DebugFunctions {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] = $devIPmask;
         }
 
-// error_log ('initIpAddress $ipAdress ' . $ipAdress . PHP_EOL, 3, static::getErrorLogFilename());
+        // error_log ('initIpAddress $ipAdress ' . $ipAdress . PHP_EOL, 3, static::getErrorLogFilename());
         return $ipAdress;
     }
 
-    static public function init (
+    public static function init(
         $ipAddress = ''
-    )
-    {
-//  error_log('init $ipAddress: ' . print_r($ipAddress, true) . PHP_EOL, 3, static::getErrorLogFilename());
+    ) {
+        //  error_log('init $ipAddress: ' . print_r($ipAddress, true) . PHP_EOL, 3, static::getErrorLogFilename());
         $result = true;
         $startFiles = static::getStartFiles();
         $initialized = static::hasBeenInitialized();
@@ -764,7 +730,7 @@ class DebugFunctions {
                 $result = false;
             }
         }
-        
+
         if ($result) {
             static::setHasBeenInitialized(true);
         } else {
@@ -774,7 +740,7 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function initFile (&$errorText)
+    public static function initFile(&$errorText)
     {
         $result = true;
         $extConf = static::getExtConf();
@@ -836,7 +802,7 @@ class DebugFunctions {
                             date(static::getDateTime()) . '  (' . $ipAddress . ')',
                             'start time, date and IP of debug session (mode "' . $openMode . '")'
                         ];
-                } else if (
+                } elseif (
                     !is_writable($filename)
                 ) {
                     $result = false;
@@ -856,7 +822,7 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function getProcessFilename ()
+    public static function getProcessFilename()
     {
         $path = Environment::getPublicPath() . '/';
         $result = $path . 'typo3temp/fh_debug.txt';
@@ -864,64 +830,63 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function getActive ()
+    public static function getActive()
     {
         return static::$active;
     }
 
-    static public function setActive ($v)
+    public static function setActive($v)
     {
         static::$active = $v;
-//  error_log ('setActive: $v = ' . $v . PHP_EOL, 3, static::getErrorLogFilename());
+        //  error_log ('setActive: $v = ' . $v . PHP_EOL, 3, static::getErrorLogFilename());
     }
 
-    static public function setIsInitialization (
+    public static function setIsInitialization(
         $bInitialization
-    )
-    {
+    ) {
         static::$bInitialization = $bInitialization;
     }
 
-    static public function bIsInitialization ()
+    public static function bIsInitialization()
     {
         return static::$bInitialization;
     }
 
-    static public function setHasBeenInitialized (
+    public static function setHasBeenInitialized(
         $hasBeenInitialized
-    )
-    {
+    ) {
         static::$hasBeenInitialized = $hasBeenInitialized;
     }
 
-    static public function hasBeenInitialized ()
+    public static function hasBeenInitialized()
     {
         return static::$hasBeenInitialized;
     }
 
-    static public function truncateFile ()
+    public static function truncateFile()
     {
-// TODO
-// 		if (static::$hndFile) {
-// 			static::$hndFile = ftruncate(static::$hndFile, 0);
-// 			static::writeTemporaryFile(0);
-// 			static::setHasBeenInitialized(false);
-// 		}
+        // TODO
+        // 		if (static::$hndFile) {
+        // 			static::$hndFile = ftruncate(static::$hndFile, 0);
+        // 			static::writeTemporaryFile(0);
+        // 			static::setHasBeenInitialized(false);
+        // 		}
     }
 
-    static public function setCreateFile ()
+    public static function setCreateFile()
     {
 
         static::$createFile = true;
     }
 
-    static public function getCreateFile ()
+    public static function getCreateFile()
     {
 
         return static::$createFile;
     }
 
-    static public function createInfoText () {
+    public static function createInfoText()
+    {
         $ipAddress = static::readIpAddress();
         $result = date(static::getDateTime()) . ', ' . $ipAddress;
         if (static::$currentTypo3Mode == 'FE') {
@@ -937,7 +902,7 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function debugBegin ()
+    public static function debugBegin()
     {
         static::$internalErrorLog = true;
 
@@ -960,7 +925,7 @@ class DebugFunctions {
         static::$internalErrorLog = false;
     }
 
-    static public function debugEnd ()
+    public static function debugEnd()
     {
         if (static::hasBeenInitialized() && !static::hasError()) {
 
@@ -978,25 +943,24 @@ class DebugFunctions {
         }
     }
 
-    static public function getExtConf ()
+    public static function getExtConf()
     {
         $result = static::$extConf;
 
         return $result;
     }
 
-    static public function getTraceFieldArray ()
+    public static function getTraceFieldArray()
     {
-        $result = GeneralUtility::trimExplode(',',  static::getTraceFields());
+        $result = GeneralUtility::trimExplode(',', static::getTraceFields());
         return $result;
     }
 
-    static public function getTraceArray (
+    public static function getTraceArray(
         $trail,
         $depth = 0,
         $offset = 0
-    )
-    {
+    ) {
         $last = count($trail) - 1;
 
         if (
@@ -1004,7 +968,7 @@ class DebugFunctions {
         ) {
             $depth = $last + 1;
             $offset = 0;
-        } else  if (
+        } elseif (
             $depth - $offset > $last
         ) {
             $depth = $last - $offset + 1;
@@ -1020,7 +984,7 @@ class DebugFunctions {
                 continue;
             }
             $theTrail = $trail[$i];
- 
+
             if (
                 !is_array($theTrail) ||
                 isset($theTrail['file']) &&
@@ -1069,12 +1033,11 @@ class DebugFunctions {
         return $traceArray;
     }
 
-    static public function printTraceLine (
+    public static function printTraceLine(
         array $traceArray,
         $html,
         $inverted = true
-    )
-    {
+    ) {
         $result = '';
         $debugTrail = [];
 
@@ -1112,7 +1075,7 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function processUser ()
+    public static function processUser()
     {
         if (
             static::$currentTypo3Mode == 'FE' &&
@@ -1138,7 +1101,7 @@ class DebugFunctions {
         }
     }
 
-    static public function writeTemporaryFile ($processCount)
+    public static function writeTemporaryFile($processCount)
     {
         $processFilename = static::getProcessFilename();
         if (!static::$hndProcessfile) {
@@ -1151,12 +1114,11 @@ class DebugFunctions {
         fclose(static::$hndProcessfile);
     }
 
-    static public function write (
+    public static function write(
         $out,
         $errorOut,
         $bPrintOnScreen
-    )
-    {
+    ) {
         $result = true;
 
         if ($errorOut != '') {
@@ -1166,7 +1128,7 @@ class DebugFunctions {
 
         if (static::$hndFile) {
             fputs(static::$hndFile, $out);
-        } else if ($bPrintOnScreen) {
+        } elseif ($bPrintOnScreen) {
             echo $out;
         } else {
             $result = false;
@@ -1175,7 +1137,8 @@ class DebugFunctions {
         return $result;
     }
 
-    static function readBackTrace () {
+    public static function readBackTrace()
+    {
         $traceFieldArray = static::getTraceFieldArray();
         $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
         if (in_array('args', $traceFieldArray)) {
@@ -1193,15 +1156,14 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function writeOut (
+    public static function writeOut(
         $variable,
         $title,
         $recursiveDepth,
         $html,
         $traceArray = [],
         $showHeader = false
-    )
-    {
+    ) {
         $type = '';
         $out = '';
         $errorOut = '';
@@ -1211,8 +1173,8 @@ class DebugFunctions {
             $type = static::$api->getTypeView($variable);
         }
 
-//   error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-//   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
+        //   error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+        //   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
 
@@ -1256,7 +1218,7 @@ class DebugFunctions {
                     '<h3>' . $title . $type . '</h3>';
                 $out .= chr(13) . $backTrace . chr(13) .
                     '<hr />' . chr(13);
-// error_log('writeOut $out ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
+                // error_log('writeOut $out ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
             }
         }
 
@@ -1305,13 +1267,14 @@ class DebugFunctions {
                 echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
             }
             static::$bErrorWritten = true;
-//  error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
+            //  error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
         }
 
         return $bWritten;
     }
 
-    static function checkTrace ($traceArray) {
+    public static function checkTrace($traceArray)
+    {
         $result = true;
         $partFiles = static::getPartFiles();
         $excludeFiles = static::getExcludeFiles();
@@ -1321,7 +1284,7 @@ class DebugFunctions {
             (
                 $partFiles != '' ||
                 $excludeFiles != ''
-            ) && 
+            ) &&
             is_array($traceArray) &&
             !empty($traceArray)
         ) {
@@ -1356,7 +1319,7 @@ class DebugFunctions {
                 ) {
                     break;
                 }
-            } 
+            }
 
             if (
                 $partFileCheck && !$partFileFound ||
@@ -1369,7 +1332,8 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function getSubdirectory () {
+    public static function getSubdirectory()
+    {
         $result = '';
         $slashArray = preg_split('$/$', $_SERVER['SCRIPT_NAME'], -1, PREG_SPLIT_NO_EMPTY);
         if (
@@ -1382,24 +1346,24 @@ class DebugFunctions {
         }
         if (static::$currentTypo3Mode == 'BE') {
             $position = strpos($result, 'typo3/');
-                // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
+            // Remove the 'typo3' part of the directory in order not to have a duplicate of it.
             $result = substr($result, 0, $position);
         }
         return $result;
     }
 
-    static public function getHost () {
+    public static function getHost()
+    {
         $result = 'http' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '') . '://' . $_SERVER['HTTP_HOST'];
 
         return $result;
     }
 
-    static public function debug (
+    public static function debug(
         $variable = '',
         $title = null,
         $group = null
-    )
-    {
+    ) {
         $force = false;
 
         if (
@@ -1408,9 +1372,9 @@ class DebugFunctions {
             $force = true;
         }
 
-// error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-// error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
- 
+        // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+        // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
+
         if (
             $title === null &&
             $group === null &&
@@ -1425,13 +1389,13 @@ class DebugFunctions {
                     static::debugBegin();
                     break;
                 case static::CONFIG:
-                    // TODO: $parts[1] enthält den Index auf die 
-//                     $config[$variant]
-// Die gesamte Konfiguration muss in einem Array gespeichert werden..
-// setConfigVariant und getConfigVariant. Damit muss außerdem ein
-// Konfigurations-Array von Basis-Elementen (nicht alles erforderlich)
-// und sein Index ausgefüllt werden. Index 0 ist der Default-Wert aus den 
-// Extension Manager Einstellungen
+                    // TODO: $parts[1] enthält den Index auf die
+                    //                     $config[$variant]
+                    // Die gesamte Konfiguration muss in einem Array gespeichert werden..
+                    // setConfigVariant und getConfigVariant. Damit muss außerdem ein
+                    // Konfigurations-Array von Basis-Elementen (nicht alles erforderlich)
+                    // und sein Index ausgefüllt werden. Index 0 ist der Default-Wert aus den
+                    // Extension Manager Einstellungen
                     break;
                 case static::END:
                     static::debugEnd();
@@ -1485,7 +1449,7 @@ class DebugFunctions {
                 $sysLogTopic = $variable['backTrace']['args']['0'];
                 $expression = '/' . preg_quote(static::getSysLogExclude(), '/') . '/';
                 preg_match($expression, $sysLogTopic, $matches);
- 
+
                 if (
                     !empty($matches) &&
                     !empty($matches['0'])
@@ -1504,7 +1468,7 @@ class DebugFunctions {
             $debugDevLog = true;
         }
 
-// error_log('### debug $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
+        // error_log('### debug $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             (
@@ -1562,8 +1526,8 @@ class DebugFunctions {
                         } else {
                             $subdirectory = static::getSubdirectory();
                         }
-            
-                        $relPath =                  
+
+                        $relPath =
                             \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(
                                 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(static::$extensionKey)
                             );
@@ -1644,10 +1608,10 @@ class DebugFunctions {
                     }
                 }
             }
-// error_log('### debug ENDE $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
+            // error_log('### debug ENDE $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
             if (!
-                $isValidTrace || 
+                $isValidTrace ||
                 !self::getMaxFileSizeReached()
             ) {
                 static::setActive($storeIsActive);
@@ -1660,7 +1624,7 @@ class DebugFunctions {
     *
     * @return string
     */
-    static public function toString ()
+    public static function toString()
     {
         $errorLogFilename = '';
         $debugFilename = static::getDebugFilename();
@@ -1675,7 +1639,7 @@ class DebugFunctions {
         return $result;
     }
 
-    static public function close ()
+    public static function close()
     {
         if (static::$hndFile) {
 
@@ -1707,9 +1671,8 @@ class DebugFunctions {
         }
     }
 
-    public function __destruct ()
+    public function __destruct()
     {
         static::close();
     }
 }
-

@@ -27,7 +27,7 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  */
 class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Exception\ProductionExceptionHandler
 {
-    const TYPO3_DIR         = 'typo3';
+    public const TYPO3_DIR         = 'typo3';
 
     /**
      * Handles exceptions thrown during rendering of content objects
@@ -53,11 +53,11 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
                     true
                 )
             ) {
-                debug ($exception->getCode(), 'fh_debug handle: Ignore exception with this code.', 'F'); // keep this
+                debug($exception->getCode(), 'fh_debug handle: Ignore exception with this code.', 'F'); // keep this
                 throw $exception;
             }
         }
-        debug ($exception, 'fh_debug handle $exception', 'F'); // keep this
+        debug($exception, 'fh_debug handle $exception', 'F'); // keep this
         $errorMessage = isset($this->configuration['errorMessage']) ? $this->configuration['errorMessage'] : 'Oops, an error occurred! Code: %s';
         $code = date('YmdHis', $_SERVER['REQUEST_TIME']);
         $randomHex = '';
@@ -80,7 +80,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
                 $maxCount,
                 0
             );
-        debug ($traceArray, 'fh_debug exception handler exception trace', 'F'); // keep this
+        debug($traceArray, 'fh_debug exception handler exception trace', 'F'); // keep this
 
         foreach ($trail as $trace) {
             $typo3Position = strrpos($trace['file'], $typo3String);
@@ -94,7 +94,7 @@ class ProductionExceptionHandler extends \TYPO3\CMS\Frontend\ContentObject\Excep
         }
 
         $this->logException($exception, $errorMessage, $code);
-        debug ($result, 'fh_debug exception handler', 'F'); // keep this
+        debug($result, 'fh_debug exception handler', 'F'); // keep this
 
         return $result;
     }

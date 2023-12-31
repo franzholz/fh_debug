@@ -15,18 +15,17 @@
 
 namespace JambageCom\FhDebug\Api;
 
-
 /**
  * Components for the Debug
  */
 class DebugApi extends BaseDebugApi
 {
-    public function getClass ($variable)
+    public function getClass($variable)
     {
         return $variable::class;
     }
 
-    public function getTypeView ($variable)
+    public function getTypeView($variable)
     {
         $type = gettype($variable);
 
@@ -37,15 +36,14 @@ class DebugApi extends BaseDebugApi
         };
         return $result;
     }
-    
-    public function printObjectVariable (
+
+    public function printObjectVariable(
         $header,
         $variable,
         $depth,
         $recursiveDepth,
         $html
-    )
-    { // TODO: show private member variables
+    ) { // TODO: show private member variables
         //Instantiate the reflection object
         $variableArray = $this->object2array($variable);
 
@@ -55,8 +53,8 @@ class DebugApi extends BaseDebugApi
 
         return $result;
     }
-    
-    public function printVariable (
+
+    public function printVariable(
         $header,
         $variable,
         $recursiveDepth,
@@ -77,7 +75,7 @@ class DebugApi extends BaseDebugApi
                     $recursiveDepth,
                     $html
                 );
-        } else if (is_object($variable)) {
+        } elseif (is_object($variable)) {
             if ($header == '') {
                 $header = 'Object ';
             }
@@ -95,11 +93,11 @@ class DebugApi extends BaseDebugApi
                     $result = '<td class="el">';
                     $result .= $this->printTypeVariable(
                         'Boolean',
-                        ($variable ? 'true' : 'false') ,
+                        ($variable ? 'true' : 'false'),
                         true
                     );
                     $result .= '</td>';
-                } else if (is_long($variable) || is_double($variable)) {
+                } elseif (is_long($variable) || is_double($variable)) {
                     $result = '<td class="el">';
                     $result .= $this->printTypeVariable(
                         ($header == '' ? ucfirst(gettype($variable)) : ''),
@@ -107,9 +105,9 @@ class DebugApi extends BaseDebugApi
                         true
                     );
                     $result .= '</td>';
-                } else if (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
+                } elseif (gettype($variable) == 'object') { // uninitialized object: is_object($variable) === false
                     $result = '<p>unloaded object of class "' . $variable::class . '"</p>';
-                } else if (is_resource($variable)) {
+                } elseif (is_resource($variable)) {
                     $result = '<p>*RESOURCE*</p>';
                 } else {
                     $result = '<p>' . ($variable != '' ? nl2br(htmlspecialchars((string) $variable)) : '') . '</p>';
@@ -121,4 +119,3 @@ class DebugApi extends BaseDebugApi
         return $result;
     }
 }
-

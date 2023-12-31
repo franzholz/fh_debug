@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use JambageCom\FhDebug\Utility\DebugFunctions;
 
-
 /**
  * Exception handler class for content object rendering
  */
@@ -52,10 +51,10 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
             $this->discloseExceptionInformation($exception) ? $exception->getCode() : 0
         );
 
-        debug ($traceArray, 'fh_debug exception handler exception trace', 'F'); // keep this
-        debug ($exception->getFile(), 'fh_debug exception handler exception File', 'F'); // keep this
-        debug ($exception->getLine(), 'fh_debug exception handler exception Line', 'F'); // keep this
-        debug ($content, 'CoreProductionExceptionHandler::echoExceptionWeb $content', 'F'); // keep this
+        debug($traceArray, 'fh_debug exception handler exception trace', 'F'); // keep this
+        debug($exception->getFile(), 'fh_debug exception handler exception File', 'F'); // keep this
+        debug($exception->getLine(), 'fh_debug exception handler exception Line', 'F'); // keep this
+        debug($content, 'CoreProductionExceptionHandler::echoExceptionWeb $content', 'F'); // keep this
 
         echo $content;
     }
@@ -77,5 +76,3 @@ class CoreProductionExceptionHandler extends \TYPO3\CMS\Core\Error\ProductionExc
         return $result;
     }
 }
-
-

@@ -15,9 +15,7 @@
 
 namespace JambageCom\FhDebug\Api;
 
-
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 
 /**
  * Components for the Debug
@@ -26,26 +24,24 @@ class BaseDebugApi
 {
     protected $ignore = '';
 
-    public function __construct (
+    public function __construct(
         $extConf
-    )
-    {   
-        $this->setIgnore($extConf['IGNORE']);        
+    ) {
+        $this->setIgnore($extConf['IGNORE']);
     }
 
-    public function setIgnore (
+    public function setIgnore(
         $value
-    )
-    {
+    ) {
         $this->ignore = trim($value);
     }
 
-    public function getIgnore ()
+    public function getIgnore()
     {
         return $this->ignore;
     }
 
-    public function object2array ($instance)
+    public function object2array($instance)
     {
         $clone = (array) $instance;
         $result = [];
@@ -60,12 +56,11 @@ class BaseDebugApi
         return $result;
     }
 
-    public function printTypeVariable (
+    public function printTypeVariable(
         $header,
         $variable,
         $html
-    )
-    {
+    ) {
         $result = '';
         if ($html) {
             $result .= '<table>';
@@ -76,14 +71,13 @@ class BaseDebugApi
         return $result;
     }
 
-    public function printArrayVariable (
+    public function printArrayVariable(
         $header,
         $variable,
         $depth,
         $recursiveDepth,
         $html
-    )
-    {
+    ) {
         $result = '';
 
         if ($depth < $recursiveDepth) {
@@ -113,11 +107,11 @@ class BaseDebugApi
                         $value .= '<td class="ela">';
                         $value .= $this->printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, true);
                         $value .= '</td>';
-                    } else if (is_object($v1)) {
+                    } elseif (is_object($v1)) {
                         $value .= '<td class="elo">';
                         $value .= $this->printObjectVariable('', $v1, $depth + 1, $recursiveDepth, true);
                         $value .= '</td>';
-                    } else if (is_bool($v1)) {
+                    } elseif (is_bool($v1)) {
                         $value .= '<td class="el">';
                         $value .= $this->printTypeVariable(
                             'Boolean',
@@ -125,7 +119,7 @@ class BaseDebugApi
                             true
                         );
                         $value .= '</td>';
-                    } else if (is_long($v1) || is_double($v1)) {
+                    } elseif (is_long($v1) || is_double($v1)) {
                         $value .= '<td class="el">';
                         $value .= $this->printTypeVariable(
                             ucfirst(gettype($v1)),
@@ -133,7 +127,7 @@ class BaseDebugApi
                             true
                         );
                         $value .= '</td>';
-                    } else if (is_resource($v1) || ($v1 !== null && !is_scalar($v1))) {
+                    } elseif (is_resource($v1) || ($v1 !== null && !is_scalar($v1))) {
                         $value .= '<td class="el">';
                         $value .= 'Resource of type ' . get_resource_type($v1) . ':' . $v1;
                         $value .= '</td>';
@@ -163,7 +157,7 @@ class BaseDebugApi
                     $value .= '|';
                     if (is_array($v1)) {
                         $value .= $this->printArrayVariable('Array', $v1, $depth + 1, $recursiveDepth, $html);
-                    } else if (is_object($v1)) {
+                    } elseif (is_object($v1)) {
                         $value .= $this->printObjectVariable('', $v1, $depth + 1, $recursiveDepth, $html);
                     } else {
                         $value .=  $v1;
