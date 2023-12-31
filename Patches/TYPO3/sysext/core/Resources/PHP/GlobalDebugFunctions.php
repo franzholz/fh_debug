@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
  * please edit the dev IP mask in TYPO3_CONF_VARS
  */
 
-function debug($variable = '', $title = null, $group = null)
+function debug($variable = '', $title = null, $group = null): void
 {
     if (!GeneralUtility::cmpIP(
         GeneralUtility::getIndpEnv('REMOTE_ADDR'),
@@ -71,14 +71,14 @@ function debug($variable = '', $title = null, $group = null)
     }
 }
 
-function debugBegin(...$parameters)
+function debugBegin(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
         DebugFunctions::debugBegin();
     }
 }
 
-function debugEnd(...$parameters)
+function debugEnd(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
         DebugFunctions::debugEnd();

@@ -36,7 +36,7 @@ use JambageCom\FhDebug\DebugFunctions;
  */
 class ExtensionManagementListener
 {
-    public function executeOnSignal($extensionKey = null)
+    public function executeOnSignal($extensionKey = null): void
     {
         if ($extensionKey == 'fh_debug') {
 

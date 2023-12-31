@@ -32,7 +32,7 @@ class BaseDebugApi
 
     public function setIgnore(
         $value
-    ) {
+    ): void {
         $this->ignore = trim($value);
     }
 

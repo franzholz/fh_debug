@@ -35,7 +35,7 @@ use JambageCom\FhDebug\Utility\DebugFunctions;
  */
 class TsparserHooks
 {
-    public function buildConfigurationArray(&$params, $pObj)
+    public function buildConfigurationArray(&$params, $pObj): void
     {
         if (
             isset($params) &&

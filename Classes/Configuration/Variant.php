@@ -41,7 +41,7 @@ class Variant
 
     public function setDebugFileMode(
         $value
-    ) {
+    ): void {
         $this->debugFileMode = trim($value);
     }
 

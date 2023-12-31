@@ -29,7 +29,7 @@ class LogWriter extends AbstractWriter
      * @return WriterInterface $this
      * @throws \RuntimeException
      */
-    public function writeLog(LogRecord $record)
+    public function writeLog(LogRecord $record): void
     {
         unset($record['data']['trace']);
         debug($record, 'debug Log'); // keep this

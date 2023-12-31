@@ -4,7 +4,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use JambageCom\Fhdebug\Utility\DebugFunctions;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-function fhdebug($variable = '', $title = null, $group = null)
+function fhdebug($variable = '', $title = null, $group = null): void
 {
     if (!GeneralUtility::cmpIP(
         GeneralUtility::getIndpEnv('REMOTE_ADDR'),
@@ -33,14 +33,14 @@ function fhdebug($variable = '', $title = null, $group = null)
     }
 }
 
-function fhdebugBegin(...$parameters)
+function fhdebugBegin(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
         DebugFunctions::debugBegin();
     }
 }
 
-function fhdebugEnd(...$parameters)
+function fhdebugEnd(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
         DebugFunctions::debugEnd();

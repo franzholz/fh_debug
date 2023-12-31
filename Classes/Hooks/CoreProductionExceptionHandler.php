@@ -31,7 +31,7 @@ class CoreProductionExceptionHandler extends ProductionExceptionHandler
      *
      * @param \Throwable $exception The throwable object.
      */
-    public function echoExceptionWeb(\Throwable $exception)
+    public function echoExceptionWeb(\Throwable $exception): void
     {
         $maxCount = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['fh_debug']['TRACEDEPTH_EXCEPTION'];
         $trail = $exception->getTrace();

@@ -42,7 +42,7 @@ class BootstrapApi
      * @param it $requestEmpty
      * @return ResponseInterface
      */
-    public function init(ServerRequestInterface $request, $requestEmpty = false)
+    public function init(ServerRequestInterface $request, $requestEmpty = false): void
     {
         $extensionKey = 'fh_debug';
 

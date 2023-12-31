@@ -178,7 +178,7 @@ class DebugFunctions
 
     public static function setTypo3Mode(
         $value
-    ) {
+    ): void {
         static::$typo3Mode = strtoupper($value);
     }
 
@@ -189,7 +189,7 @@ class DebugFunctions
 
     public static function setRecursiveDepth(
         $value
-    ) {
+    ): void {
         static::$recursiveDepth = intval($value);
     }
 
@@ -200,7 +200,7 @@ class DebugFunctions
 
     public static function setExceptionRecursiveDepth(
         $value
-    ) {
+    ): void {
         static::$exceptionRecursiveDepth = intval($value);
     }
 
@@ -211,7 +211,7 @@ class DebugFunctions
 
     public static function setTraceDepth(
         $value
-    ) {
+    ): void {
         static::$traceDepth = intval($value);
     }
 
@@ -222,7 +222,7 @@ class DebugFunctions
 
     public static function setAppendDepth(
         $value
-    ) {
+    ): void {
         static::$appendDepth = intval($value);
     }
 
@@ -233,7 +233,7 @@ class DebugFunctions
 
     public static function setStartFiles(
         $value
-    ) {
+    ): void {
         static::$startFiles = trim($value);
     }
 
@@ -244,7 +244,7 @@ class DebugFunctions
 
     public static function setPartFiles(
         $value
-    ) {
+    ): void {
         static::$partFiles = trim($value);
     }
 
@@ -255,7 +255,7 @@ class DebugFunctions
 
     public static function setExcludeFiles(
         $value
-    ) {
+    ): void {
         static::$excludeFiles = trim($value);
     }
 
@@ -266,7 +266,7 @@ class DebugFunctions
 
     public static function setIpAddress(
         $value
-    ) {
+    ): void {
         static::$ipAddress = trim($value);
     }
 
@@ -277,7 +277,7 @@ class DebugFunctions
 
     public static function setDebugBegin(
         $value
-    ) {
+    ): void {
         static::$debugBegin = (bool) ($value);
     }
 
@@ -288,7 +288,7 @@ class DebugFunctions
 
     public static function setTraceFields(
         $value
-    ) {
+    ): void {
         static::$traceFields = trim($value);
     }
 
@@ -299,7 +299,7 @@ class DebugFunctions
 
     public static function setFeUserNames(
         $value
-    ) {
+    ): void {
         static::$feUserNames = trim($value);
     }
 
@@ -310,7 +310,7 @@ class DebugFunctions
 
     public static function setDebugFileMode(
         $value
-    ) {
+    ): void {
         static::$debugFileMode = trim($value);
     }
 
@@ -321,7 +321,7 @@ class DebugFunctions
 
     public static function setDevLog(
         $value
-    ) {
+    ): void {
         static::$devLog = (bool) $value;
     }
 
@@ -332,7 +332,7 @@ class DebugFunctions
 
     public static function setDevLogDebug(
         $value
-    ) {
+    ): void {
         static::$devLogDebug = (bool) $value;
     }
 
@@ -343,7 +343,7 @@ class DebugFunctions
 
     public static function setSysLog(
         $value
-    ) {
+    ): void {
         static::$sysLog = (bool) $value;
     }
 
@@ -354,7 +354,7 @@ class DebugFunctions
 
     public static function setSysLogExclude(
         $value
-    ) {
+    ): void {
         static::$sysLogExclude = $value;
     }
 
@@ -365,7 +365,7 @@ class DebugFunctions
 
     public static function setHtml(
         $value
-    ) {
+    ): void {
         static::$html = (bool) $value;
     }
 
@@ -376,7 +376,7 @@ class DebugFunctions
 
     public static function setProxyForward(
         $value
-    ) {
+    ): void {
         static::$proxyForward = (bool) $value;
     }
 
@@ -387,7 +387,7 @@ class DebugFunctions
 
     public static function setTitle(
         $value
-    ) {
+    ): void {
         static::$title = $value;
     }
 
@@ -403,7 +403,7 @@ class DebugFunctions
 
     public static function setErrorLogFile(
         $errorLogFile = ''
-    ) {
+    ): void {
         if ($errorLogFile == '') {
             $errorLogFile = static::getErrorLogFile();
         } else {
@@ -422,7 +422,7 @@ class DebugFunctions
 
     public static function setUseErrorLog(
         $useErrorLog = true
-    ) {
+    ): void {
         static::$useErrorLog = $useErrorLog;
     }
 
@@ -431,14 +431,14 @@ class DebugFunctions
         return static::$useErrorLog;
     }
 
-    public static function errorLog($text, $comment)
+    public static function errorLog($text, $comment): void
     {
         \error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
     }
 
     public static function setDebugFile(
         $debugFile = ''
-    ) {
+    ): void {
         if ($debugFile == '') {
             $debugFile = static::getDebugFile();
         } else {
@@ -455,7 +455,7 @@ class DebugFunctions
         return static::$debugFile;
     }
 
-    public static function setDebugFilename($debugFilename)
+    public static function setDebugFilename($debugFilename): void
     {
         static::$debugFilename = $debugFilename;
     }
@@ -467,7 +467,7 @@ class DebugFunctions
 
     public static function setMaxFileSizeReached(
         $value
-    ) {
+    ): void {
         static::$maxFileSizeReached = $value;
     }
 
@@ -478,7 +478,7 @@ class DebugFunctions
 
     public static function setMaxFileSize(
         $value
-    ) {
+    ): void {
         static::$maxFileSize = (int) $value;
     }
 
@@ -489,7 +489,7 @@ class DebugFunctions
 
     public static function setDateTime(
         $value
-    ) {
+    ): void {
         static::$dateTime = $value;
     }
 
@@ -506,7 +506,7 @@ class DebugFunctions
 
     public static function writeHeader(
         $cssFilename // filename with path
-    ) {
+    ): void {
         $title = static::getTitle();
 
         if (
@@ -544,7 +544,7 @@ class DebugFunctions
         static::write($out, $errorOut, (static::getDebugFile() == ''));
     }
 
-    public static function writeBodyEnd()
+    public static function writeBodyEnd(): void
     {
         $out =
 '</body></html>';
@@ -838,7 +838,7 @@ class DebugFunctions
         return static::$active;
     }
 
-    public static function setActive($v)
+    public static function setActive($v): void
     {
         static::$active = $v;
         //  error_log ('setActive: $v = ' . $v . PHP_EOL, 3, static::getErrorLogFilename());
@@ -846,7 +846,7 @@ class DebugFunctions
 
     public static function setIsInitialization(
         $bInitialization
-    ) {
+    ): void {
         static::$bInitialization = $bInitialization;
     }
 
@@ -857,7 +857,7 @@ class DebugFunctions
 
     public static function setHasBeenInitialized(
         $hasBeenInitialized
-    ) {
+    ): void {
         static::$hasBeenInitialized = $hasBeenInitialized;
     }
 
@@ -866,7 +866,7 @@ class DebugFunctions
         return static::$hasBeenInitialized;
     }
 
-    public static function truncateFile()
+    public static function truncateFile(): void
     {
         // TODO
         // 		if (static::$hndFile) {
@@ -876,7 +876,7 @@ class DebugFunctions
         // 		}
     }
 
-    public static function setCreateFile()
+    public static function setCreateFile(): void
     {
 
         static::$createFile = true;
@@ -905,7 +905,7 @@ class DebugFunctions
         return $result;
     }
 
-    public static function debugBegin()
+    public static function debugBegin(): void
     {
         static::$internalErrorLog = true;
 
@@ -926,7 +926,7 @@ class DebugFunctions
         static::$internalErrorLog = false;
     }
 
-    public static function debugEnd()
+    public static function debugEnd(): void
     {
         if (static::hasBeenInitialized() && !static::hasError()) {
 
@@ -1074,7 +1074,7 @@ class DebugFunctions
         return $result;
     }
 
-    public static function processUser()
+    public static function processUser(): void
     {
         if (
             static::$currentTypo3Mode == 'FE' &&
@@ -1100,7 +1100,7 @@ class DebugFunctions
         }
     }
 
-    public static function writeTemporaryFile($processCount)
+    public static function writeTemporaryFile($processCount): void
     {
         $processFilename = static::getProcessFilename();
         if (!static::$hndProcessfile) {
@@ -1638,7 +1638,7 @@ class DebugFunctions
         return $result;
     }
 
-    public static function close()
+    public static function close(): void
     {
         if (static::$hndFile) {
 
