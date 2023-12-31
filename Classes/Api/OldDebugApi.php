@@ -20,7 +20,7 @@ namespace JambageCom\FhDebug\Api;
  */
 class OldDebugApi extends BaseDebugApi
 {
-    public function getClass($variable)
+    public function getClass($variable): string|false
     {
         return get_class($variable);
     }
