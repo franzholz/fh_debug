@@ -121,7 +121,7 @@ class DebugFunctions
         if ($extConf['ERROR_LOG'] != '') {
             $errorLogFile = $extConf['ERROR_LOG'];
         }
-        $errorLogFile = $errorLogFile ?? static::$errorLogFile;
+        $errorLogFile ??= static::$errorLogFile;
         static::setErrorLogFile($errorLogFile);
 
         if ($extConf['USE_ERROR_LOG'] == '1') {
