@@ -10,7 +10,6 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'misc',
     'version' => '0.17.0',
     'state' => 'stable',
-    'clearcacheonload' => 1,
     'author' => 'Franz Holzinger',
     'author_email' => 'franz@ttproducts.de',
     'author_company' => 'jambage.com',
