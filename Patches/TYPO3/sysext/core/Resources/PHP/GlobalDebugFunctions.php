@@ -4,9 +4,7 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use JambageCom\FhDebug\Api\BootstrapApi;
 use TYPO3\CMS\Core\Utility\DebugUtility;
-use JambageCom\Fhdebug\Utility\DebugFunctions;
 use TYPO3\CMS\Core\Http\ServerRequest;
 /* Replace the file typo3/sysext/core/Resources/PHP/GlobalDebugFunctions.php by this file!
  * Otherwise this debug extension will not work, because it is the only way to define a
@@ -55,7 +53,7 @@ function debug($variable = '', $title = null, $group = null): void
             file_exists(ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Api/BootstrapApi.php') &&
             ExtensionManagementUtility::isLoaded('fh_debug')
         ) {
-            $api = GeneralUtility::makeInstance(BootstrapApi::class);
+            $api = GeneralUtility::makeInstance(\JambageCom\FhDebug\Api\BootstrapApi::class);
             $api->init($request, $requestEmpty);
 
             if (isset($GLOBALS['error'])) {
@@ -74,14 +72,14 @@ function debug($variable = '', $title = null, $group = null): void
 function debugBegin(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugBegin();
+        \JambageCom\Fhdebug\Utility\DebugFunctions::debugBegin();
     }
 }
 
 function debugEnd(...$parameters): void
 {
     if (ExtensionManagementUtility::isLoaded('fh_debug')) {
-        DebugFunctions::debugEnd();
+        \JambageCom\Fhdebug\Utility\DebugFunctions::debugEnd();
     }
 }
 
