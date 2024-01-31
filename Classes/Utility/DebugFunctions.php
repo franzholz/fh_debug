@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2023 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2024 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -433,7 +433,7 @@ class DebugFunctions
 
     public static function errorLog($text, $comment): void
     {
-        \error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
+        error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
     }
 
     public static function setDebugFile(
@@ -1172,7 +1172,7 @@ class DebugFunctions
             $type = static::$api->getTypeView($variable);
         }
 
-        //   error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+          // error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
         //   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
@@ -1266,7 +1266,7 @@ class DebugFunctions
                 echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
             }
             static::$bErrorWritten = true;
-            //  error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
+             // error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
         }
 
         return $bWritten;

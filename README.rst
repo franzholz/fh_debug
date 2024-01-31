@@ -5,7 +5,11 @@ Installation Requirement
 ------------------------
 
 You must overwrite the TYPO3 Core file
-file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php` by the file
+file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php` 
+of a classic installation
+or the file:`vendor/typo3/cms-core/Resources/PHP/GlobalDebugFunctions.php` 
+of a Composer installation
+by the file
 file:`fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php`.
 Alternatively you can use "post-install-cmd" or "post-autoload-dump" and a file copy method in your composer.json.
 See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
