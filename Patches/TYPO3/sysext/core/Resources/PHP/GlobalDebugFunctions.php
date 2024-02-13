@@ -63,7 +63,8 @@ function debug($variable = '', $title = null, $group = null): void
             DebugUtility::debug($variable, $title);
         }
     } catch (\Exception $e) {
-        // error_log('debug Exception: ' .  $e->getMessage() . PHP_EOL, 3, 'mypath/fileadmin/phpDebugErrorLog.txt');
+        // $errorLogFile = '/mypath/phpDebugErrorLog.txt';
+        // error_log('debug Exception: ' .  $e->getMessage() . PHP_EOL, 3, $errorLogFile);
 
         // continue if an exception has been thrown
     }
