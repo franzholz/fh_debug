@@ -24,16 +24,18 @@ namespace JambageCom\FhDebug\Utility;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use JambageCom\FhDebug\Api\DebugApi;
-use JambageCom\FhDebug\Api\OldDebugApi;
-use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 use Psr\Http\Message\ServerRequestInterface;
 
-
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
+
+use JambageCom\FhDebug\Api\DebugApi;
+use JambageCom\FhDebug\Api\OldDebugApi;
+
 
 /**
 * Debug extension.
@@ -106,11 +108,15 @@ class DebugFunctions
     private static $dateTime = 'l jS \of F Y h:i:s A';
     private static $config = [];
     private static $api;
+    private static $id = '';
+    private static $request;
 
     public function __construct(
+        ServerRequestInterface $request,
         array $extConf,
         $currentTypo3Mode = 'FE'
     ) {
+        static::$request = $request;
         static::$currentTypo3Mode = $currentTypo3Mode;
         static::$extConf = $extConf;
 
@@ -160,6 +166,7 @@ class DebugFunctions
 
         $typo3Mode = ($extConf['TYPO3_MODE'] ?: 'OFF');
         static::setTypo3Mode($typo3Mode);
+        static::setDeterminedId();
 
         if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
             static::$api =
@@ -844,6 +851,35 @@ class DebugFunctions
         //  error_log ('setActive: $v = ' . $v . PHP_EOL, 3, static::getErrorLogFilename());
     }
 
+    public static function setDeterminedId(): void
+    {
+        $id = '';
+
+        if (static::$currentTypo3Mode == 'FE') {
+            $id = 'unknown';
+
+            if (
+                isset($GLOBALS['TSFE']) &&
+                is_object($GLOBALS['TSFE'])
+            ) {
+                if (!isset($GLOBALS['TSFE']->id)) {
+                    $GLOBALS['TSFE']->determineId(static::$request);
+                } 
+
+                if (isset($GLOBALS['TSFE']->id)) {
+                    $id = $GLOBALS['TSFE']->id;
+                } 
+            }
+        }
+        static::$id = $id;
+    }
+
+    public static function getId()
+    {
+        return static::$id;
+    }
+    
+
     public static function setIsInitialization(
         $bInitialization
     ): void {
@@ -892,15 +928,9 @@ class DebugFunctions
     {
         $ipAddress = static::readIpAddress();
         $result = date(static::getDateTime()) . ', ' . $ipAddress;
-        if (static::$currentTypo3Mode == 'FE') {
-            if (
-                isset($GLOBALS['TSFE']) &&
-                is_object($GLOBALS['TSFE'])
-            ) {
-                $result .= ' id=' . $GLOBALS['TSFE']->determineId();
-            } else {
-                $result .= ' id: unknown';
-            }
+        $id = static::getId();
+        if (strlen($id)) {
+            $result .= ' id: ' . $id;
         }
         return $result;
     }
@@ -914,6 +944,7 @@ class DebugFunctions
             if (static::getDebugBegin()) {
                 static::setActive(true);
 
+                static::setDeterminedId();
                 $infoText = static::createInfoText();
                 static::debug(
                     'debugBegin (' . $infoText . ') BEGIN [--->',

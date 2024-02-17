@@ -100,6 +100,7 @@ class BootstrapApi
                     $myDebugObject =
                         GeneralUtility::makeInstance(
                             DebugFunctions::class,
+                            $request,
                             $newExtConf,
                             $currentTypo3Mode
                         );
