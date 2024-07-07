@@ -5,12 +5,12 @@ Installation Requirement
 ------------------------
 
 You must overwrite the TYPO3 Core file
-file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php`
+``sysext/core/Resources/PHP/GlobalDebugFunctions.php``
 of a classic installation
-or the file:`vendor/typo3/cms-core/Resources/PHP/GlobalDebugFunctions.php`
+or the ``vendor/typo3/cms-core/Resources/PHP/GlobalDebugFunctions.php``
 of a Composer installation
 by the file
-file:`fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php`.
+``fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php``.
 Alternatively you can use "post-install-cmd" or "post-autoload-dump" and a file copy method in your composer.json.
 See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
 
@@ -32,7 +32,7 @@ function **devLog**.
 
 The debug output is written into a HTML debug output file. All the
 configuration is done in the Extension Manager for fh_debug. You can
-design the output by the CSS file fhdebug.css. If you have a lot of
+design the output by the CSS file ``fhdebug.css``. If you have a lot of
 debug output then you should put `debug (‘B’)` (formerly `debugBegin()`) and
 `debug (‘E’)` (formerly `debugEnd()`) PHP commands around the PHP debug
 commands in order to have fewer debug output lines in the file. These
@@ -238,7 +238,7 @@ Trouble shooting
 If you do not get anything shown in the browser url
 https://example.com/fileadmin/debug.html, then make sure that this file
 debug.html really exists on the file system. If not, then create an
-empty file file:`debug.html` in the folder fileadmin and give Apache write
+empty file ``debug.html`` in the folder ``fileadmin`` and give Apache write
 access to it.
 
 Check the configuration in the extension manager. IP addresses of the
