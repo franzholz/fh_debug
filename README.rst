@@ -5,19 +5,19 @@ Installation Requirement
 ------------------------
 
 You must overwrite the TYPO3 Core file
-file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php` 
+file:`sysext/core/Resources/PHP/GlobalDebugFunctions.php`
 of a classic installation
-or the file:`vendor/typo3/cms-core/Resources/PHP/GlobalDebugFunctions.php` 
+or the file:`vendor/typo3/cms-core/Resources/PHP/GlobalDebugFunctions.php`
 of a Composer installation
 by the file
 file:`fh_debug/Patches/TYPO3/sysext/core/Resources/PHP/GlobalDebugFunctions.php`.
 Alternatively you can use "post-install-cmd" or "post-autoload-dump" and a file copy method in your composer.json.
 See `Defining scripts <https://getcomposer.org/doc/articles/scripts.md#defining-scripts>`__ .
 
-This will bring you back the former methods debugBegin and debugEnd.
-And it contains the necessary PHP code to call fh_debug if it is activated
+This will bring you back the former methods debugBegin and debugEnd into TYPO3 Core.
+This also contains the necessary PHP code to call fh_debug if it is activated
 in the Extension Manager.
-Only by this fh_debug will work at all. 
+Only by this file replacement fh_debug will work at all.
 
 
 What is does
@@ -33,17 +33,17 @@ function **devLog**.
 The debug output is written into a HTML debug output file. All the
 configuration is done in the Extension Manager for fh_debug. You can
 design the output by the CSS file fhdebug.css. If you have a lot of
-debug output then you should put debug(‘B’) (formerly debugBegin()) and
-debug(‘E’) (formerly debugEnd) PHP commands around the PHP debug
+debug output then you should put `debug (‘B’)` (formerly `debugBegin()`) and
+`debug (‘E’)` (formerly `debugEnd()`) PHP commands around the PHP debug
 commands in order to have fewer debug output lines in the file. These
 commands will activate and deactivate the debug output.
 
 force output
 ~~~~~~~~~~~~
 
-Since version 0.8.3: If a debug(‘B’) is required, but maybe not active,
+Since version 0.8.3: If a `debug (‘B’)` is required, but maybe not active,
 then you can use the third parameter (group) ‘F’ to force an output.
-This is a spacial case to produce the output no matter if debugBegin is
+This is a special case to produce the output no matter if `debug (‘B’)` is
 set to be mandatory or not.
 
 example:
@@ -51,10 +51,10 @@ example:
 
 ::
 
-   debug('B');
+   debug ('B');
    $a = 'myString';
    debug ($a, '$a at position 1');
-   debug('E');
+   debug ('E');
 
 No debug output will be shown on the screen. Otherwise you must
 deactivate the debug output in the Install Tool.
@@ -115,7 +115,7 @@ the debug file.
 To get the debug output for “Oops, an error occurred!” you must make
 this configuration in the Install Tool or ``LocalConfiguration.php``:
 
-   [SYS][productionExceptionHandler] = 
+   [SYS][productionExceptionHandler] =
       JambageCom\\FhDebug\\Hooks\\CoreProductionExceptionHandler
 
 Remove this settings before you deinstall fh_debug. Otherwise you will
@@ -143,17 +143,17 @@ example:
        \JambageCom\Fhdebug\Utility\DebugFunctions::setErrorLogFile(''); // this is necessary if you use the error_log file
        // if you use the debug HTML file:
        \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugFile('fileadmin/debug.html');
-       
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);       
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('12'); 
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12'); 
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('0'); 
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL'); 
-       \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE); 
+
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setDebugBegin(FALSE);
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setRecursiveDepth('12');
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setTraceDepth('12');
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setAppendDepth('0');
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setTypo3Mode('ALL');
+       \JambageCom\Fhdebug\Utility\DebugFunctions::setActive(TRUE);
        \JambageCom\Fhdebug\Utility\DebugFunctions::initFile();
    }
 
-   \JambageCom\Fhdebug\Utility\DebugFunctions::debug($_EXTCONF, '$_EXTCONF');
+   \JambageCom\Fhdebug\Utility\DebugFunctions::debug ($_EXTCONF, '$_EXTCONF');
 
 If you use the file **ext_localconf.php** or some of the at first
 executed TYPO3 core files, then the extension fh_debug has not been
@@ -186,11 +186,11 @@ debug begin and end
 -------------------
 
 There are 2 control commands available to begin and to end the
-generation of debug output: debug(‘B’) and debug(‘E’), formerly (before
-TYPO3 9.5) debugBegin and debugEnd .
+generation of debug output: `debug (‘B’)` and `debug (‘E’)`, formerly (before
+TYPO3 9.5) `debugBegin()` and `debugEnd()` .
 
 
-Replacement for the functions debugBegin and debugEnd: 
+Replacement for the functions debugBegin and debugEnd:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Since fh_debug 0.8.0 a
 workaround has been introduced because since TYPO3 9 needed global
@@ -203,9 +203,9 @@ example:
 
 ::
 
-   debug('B'); // begin debugging
-   debug($myVariable, 'my variable');
-   debug('E'); // end debugging
+   debug ('B'); // begin debugging
+   debug ($myVariable, 'my variable');
+   debug ('E'); // end debugging
 
 example before version 0.8.0:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +213,7 @@ example before version 0.8.0:
 ::
 
    debugBegin();
-   debug($myVariable, 'my variabled');
+   debug ($myVariable, 'my variabled');
    debugEnd();
 
 Error
