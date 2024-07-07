@@ -49,7 +49,7 @@ set to be mandatory or not.
 example:
 ~~~~~~~~
 
-::
+.. code-block:: PHP
 
    debug ('B');
    $a = 'myString';
@@ -59,7 +59,7 @@ example:
 No debug output will be shown on the screen. Otherwise you must
 deactivate the debug output in the Install Tool.
 
-::
+.. code-block:: PHP
 
    $a = 'myString2';
    debug ($a, '$a at position 1', 'F');
@@ -100,7 +100,7 @@ Use the fh_debug error handler in order to get debug messages of all
 exceptions. Add these lines into your file ``LocalConfiguration.php``
 under typo3conf.
 
-::
+.. code-block:: PHP
 
    'SYS' => array(
       'displayErrors' => '2',
@@ -135,7 +135,7 @@ The default setting is:
 example:
 ~~~~~~~~
 
-::
+.. code-block:: PHP
 
    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fh_debug')) {
        require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');  // use t3lib_extMgm::extPath in TYPO3 4.5
@@ -173,7 +173,7 @@ initialization by these commands:
 example:
 ~~~~~~~~
 
-::
+.. code-block:: PHP
 
    require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('fh_debug') . 'Classes/Utility/DebugFunctions.php');
    \JambageCom\Fhdebug\Utility\DebugFunctions::init();
@@ -201,7 +201,7 @@ functions have been removed.
 example:
 ~~~~~~~~
 
-::
+.. code-block:: PHP
 
    debug ('B'); // begin debugging
    debug ($myVariable, 'my variable');
@@ -210,7 +210,7 @@ example:
 example before version 0.8.0:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: PHP
 
    debugBegin();
    debug ($myVariable, 'my variabled');
@@ -226,7 +226,7 @@ alternativ.
 example PHP error_log :
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-::
+.. code-block:: PHP
 
    error_log('mymethod Position 2 $variableName: ' .  print_r($variableName, true) . PHP_EOL, 3, '/var/www/html/fileadmin/phpDebugErrorLog.txt');
 
