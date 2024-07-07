@@ -80,9 +80,9 @@ Just enter any invalid IP address:
    [SYS][devIPmask] = 1.1.1.1
 
 The Extension Manager configuration of fh_debug will be added to the IP
-address of the Install Tool. IPADDRESS = 34.22.11.12 Your current IP
+address of the Install Tool. ``IPADDRESS = 34.22.11.12``. Your current IP
 address is shown in the Extension Manager view of fh_debug below the
-field IPADDRESS. If your provides has an ip version 6 activated, then
+field ``IPADDRESS``. If your provides has an ip version 6 activated, then
 you must enter it in the IPv6 format.
 
 .. _example-1:
@@ -108,8 +108,8 @@ under typo3conf.
    ),
 
 You can show more debug info and a backtrace with the TYPO3 error
-message “Oops, an error occurred!”. This is activated by default:
-OOPS_AN_ERROR_OCCURRED = 1 This will also add a detailed debug output to
+message **Oops, an error occurred!**. This is activated by default:
+``OOPS_AN_ERROR_OCCURRED = 1``. This will also add a detailed debug output to
 the debug file.
 
 To get the debug output for “Oops, an error occurred!” you must make
@@ -192,8 +192,8 @@ TYPO3 9.5) ``debugBegin()`` and ``debugEnd()`` .
 
 Replacement for the functions debugBegin and debugEnd:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Since fh_debug 0.8.0 a
-workaround has been introduced because since TYPO3 9 needed global
+Since fh_debug 0.8.0
+a workaround has been introduced because in TYPO3 9 needed global
 functions have been removed.
 
 .. _example-4:
@@ -221,7 +221,7 @@ Error
 
 If fh_debug does not work, then there is probably the case where
 fh_debug has not been activated yet. You can use PHP error logging as an
-alternativ.
+alternative.
 
 example PHP error_log :
 ~~~~~~~~~~~~~~~~~~~~~~~
