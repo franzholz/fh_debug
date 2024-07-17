@@ -1,5 +1,8 @@
+2024-07-17 Franz Holzinger  <franz@ttproducts.de>
+    * new constant ERROR_LOG_MAX to limit all error_log calls to about 64 characters
+
 2023-12-31 Franz Holzinger  <franz@ttproducts.de>
-	* use rector to improve the PHP code
+    * use rector to improve the PHP code
 
 2023-10-24 Franz Holzinger  <franz@ttproducts.de>
     * bugfix: use method TypoScriptFrontendController::determineId to determine the current page id of the frontend in all cases
@@ -143,7 +146,7 @@
 2019-03-12 Franz Holzinger <franz@ttproducts.de>
     * new feature: partfiles give a list of files from which one must be included in the backtrace in order to generate a debug output
     * use new PHP feature: use the short call debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS).
-    * bugfix: setIsInitialization 
+    * bugfix: setIsInitialization
 
 2019-03-06 Franz Holzinger <franz@ttproducts.de>
     * bugfix: Do not add the id parameter to the title if append is used, because the debug output can come from many pages.

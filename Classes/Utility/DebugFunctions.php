@@ -49,6 +49,7 @@ class DebugFunctions
     public const END = 'E';
     public const RESET = 'RESET';
     public const CONFIG = 'CONFIG';
+    public const ERROR_LOG_MAX = 64;
 
     public static $extensionKey = 'fh_debug';
     public static $prefixFieldArray =
@@ -181,6 +182,171 @@ class DebugFunctions
                     $extConf
                 );
         }
+    }
+
+    public static function init(
+        $ipAddress = ''
+    ) {
+        $result = true;
+        $startFiles = static::getStartFiles();
+        $initialized = static::hasBeenInitialized();
+
+        if (
+            $initialized &&
+            $startFiles == ''
+        ) {
+            return false;
+        }
+
+        $traceFieldArray = static::getTraceFieldArray();
+        $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
+        if (in_array('args', $traceFieldArray)) {
+            $trailOptions = '';
+        }
+        $trail = debug_backtrace($trailOptions);
+        $backtrace = static::getTraceArray($trail);
+
+        if (
+            $startFiles != '' &&
+            is_array($backtrace) &&
+            !empty($backtrace)
+        ) {
+            $startFileArray = GeneralUtility::trimExplode(',', $startFiles);
+            $startFileFound = false;
+            $traceRow = current($backtrace);
+
+            foreach ($startFileArray as $startFile) {
+                if ($traceRow['file'] == $startFile) {
+                    $startFileFound = true;
+                    break;
+                }
+            }
+
+            if (!$startFileFound) {
+                $result = false;
+            }
+        }
+
+        static::setIsInitialization(true);
+
+        if (
+            $result &&
+            !static::getDebugBegin()
+        ) {
+            static::setActive(true);
+        }
+
+        if (
+            $result &&
+            GeneralUtility::cmpIP($ipAddress, '::1')
+        ) {
+            if (
+                !GeneralUtility::cmpIP(
+                    $ipAddress,
+                    static::getIpAddress()
+                )
+            ) {
+                static::$starttimeArray =
+                [
+                    'no debugging possible',
+                    'Attention: The server variable REMOTE_ADDR is set to local.'
+                ];
+                static::setActive(false);
+                $result = false;
+            }
+        }
+
+        if ($result) {
+            static::setHasBeenInitialized(true);
+        } else {
+            static::setHasBeenInitialized(false);
+        }
+        static::setIsInitialization(false);
+        return $result;
+    }
+
+    public static function initFile(&$errorText)
+    {
+          // error_log('initFile: ' . PHP_EOL, 3, static::getErrorLogFilename());
+        $result = true;
+        $extConf = static::getExtConf();
+
+        if (static::$isUserAllowed && static::getDebugFilename() != '') {
+
+            $processFilename = static::getProcessFilename();
+            $readBytes = 0;
+            if (!is_writable($processFilename)) {
+                static::$hndProcessfile = fopen($processFilename, 'w+b');
+                $readBytes = 0;
+            } else {
+                static::$hndProcessfile = fopen($processFilename, 'r+b');
+                $readBytes = filesize($processFilename);
+            }
+
+            if (static::$hndProcessfile) {
+                if ($readBytes) {
+                    $processCount = intval(fread(static::$hndProcessfile, $readBytes));
+                    $processCount++;
+                } else {
+                    $processCount = 1;
+                }
+
+                if (
+                    $processCount > intval(static::getAppendDepth())
+                ) {
+                    $processCount = 1;
+                    static::setCreateFile();
+                }
+                static::writeTemporaryFile($processCount);
+            }
+
+            $filename = static::getDebugFilename();
+            $path_parts = pathinfo($filename);
+
+            if (
+                $filename != '' &&
+                is_writable($path_parts['dirname'])
+            ) {
+                static::$headerWritten = static::getHtml();
+                if (static::getAppendDepth() > 1) {
+                    if (static::getCreateFile()) {
+                        $openMode = 'w+b';
+                    } else {
+                        $openMode = 'a+b';
+                    }
+                } else {
+                    $openMode = static::getDebugFileMode();
+                }
+
+                static::$hndFile = fopen($filename, $openMode);
+
+                if (static::$hndFile !== false) {
+
+                    $ipAddress = static::readIpAddress();
+                    static::$starttimeArray =
+                    [
+                        date(static::getDateTime()) . '  (' . $ipAddress . ')',
+                        'start time, date and IP of debug session (mode "' . $openMode . '")'
+                    ];
+                } elseif (
+                    !is_writable($filename)
+                ) {
+                    $result = false;
+                    $errorText = 'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"';
+                }
+            } else {
+                $result = false;
+                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable for file "' . $filename . '" .';
+            }
+
+            if ($result == false) {
+                error_log(static::$extensionKey . ': ' . $errorText . PHP_EOL); // keep this
+                error_log(static::$extensionKey . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
+                static::setActive(false); // no debug is necessary when the file cannot be written anyways
+            }
+        }
+        // error_log('initFile result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
+        return $result;
     }
 
     public static function setTypo3Mode(
@@ -440,7 +606,16 @@ class DebugFunctions
 
     public static function errorLog($text, $comment): void
     {
-        error_log($comment . '=' . (is_string($text) ? $text : print_r($text, true)) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
+        error_log(
+            $comment . ': ' .
+                (
+                    is_string($text) ?
+                        substr($text, 0, static::ERROR_LOG_MAX) :
+                        substr(print_r($text, true), 0, static::ERROR_LOG_MAX)
+                ) . PHP_EOL,
+             3,
+             static::getErrorLogFilename()
+        ); // keep this
     }
 
     public static function setDebugFile(
@@ -668,170 +843,6 @@ class DebugFunctions
         return $ipAdress;
     }
 
-    public static function init(
-        $ipAddress = ''
-    ) {
-        //  error_log('init $ipAddress: ' . print_r($ipAddress, true) . PHP_EOL, 3, static::getErrorLogFilename());
-        $result = true;
-        $startFiles = static::getStartFiles();
-        $initialized = static::hasBeenInitialized();
-
-        if (
-            $initialized &&
-            $startFiles == ''
-        ) {
-            return false;
-        }
-
-        $traceFieldArray = static::getTraceFieldArray();
-        $trailOptions = DEBUG_BACKTRACE_IGNORE_ARGS;
-        if (in_array('args', $traceFieldArray)) {
-            $trailOptions = '';
-        }
-        $trail = debug_backtrace($trailOptions);
-        $backtrace = static::getTraceArray($trail);
-
-        if (
-            $startFiles != '' &&
-            is_array($backtrace) &&
-            !empty($backtrace)
-        ) {
-            $startFileArray = GeneralUtility::trimExplode(',', $startFiles);
-            $startFileFound = false;
-            $traceRow = current($backtrace);
-
-            foreach ($startFileArray as $startFile) {
-                if ($traceRow['file'] == $startFile) {
-                    $startFileFound = true;
-                    break;
-                }
-            }
-
-            if (!$startFileFound) {
-                $result = false;
-            }
-        }
-
-        static::setIsInitialization(true);
-
-        if (
-            $result &&
-            !static::getDebugBegin()
-        ) {
-            static::setActive(true);
-        }
-
-        if (
-            $result &&
-            GeneralUtility::cmpIP($ipAddress, '::1')
-        ) {
-            if (
-                !GeneralUtility::cmpIP(
-                    $ipAddress,
-                    static::getIpAddress()
-                )
-            ) {
-                static::$starttimeArray =
-                    [
-                        'no debugging possible',
-                        'Attention: The server variable REMOTE_ADDR is set to local.'
-                    ];
-                static::setActive(false);
-                $result = false;
-            }
-        }
-
-        if ($result) {
-            static::setHasBeenInitialized(true);
-        } else {
-            static::setHasBeenInitialized(false);
-        }
-        static::setIsInitialization(false);
-        return $result;
-    }
-
-    public static function initFile(&$errorText)
-    {
-        $result = true;
-        $extConf = static::getExtConf();
-
-        if (static::$isUserAllowed && static::getDebugFilename() != '') {
-
-            $processFilename = static::getProcessFilename();
-            $readBytes = 0;
-            if (!is_writable($processFilename)) {
-                static::$hndProcessfile = fopen($processFilename, 'w+b');
-                $readBytes = 0;
-            } else {
-                static::$hndProcessfile = fopen($processFilename, 'r+b');
-                $readBytes = filesize($processFilename);
-            }
-
-            if (static::$hndProcessfile) {
-                if ($readBytes) {
-                    $processCount = intval(fread(static::$hndProcessfile, $readBytes));
-                    $processCount++;
-                } else {
-                    $processCount = 1;
-                }
-
-                if (
-                    $processCount > intval(static::getAppendDepth())
-                ) {
-                    $processCount = 1;
-                    static::setCreateFile();
-                }
-                static::writeTemporaryFile($processCount);
-            }
-
-            $filename = static::getDebugFilename();
-            $path_parts = pathinfo($filename);
-
-            if (
-                $filename != '' &&
-                is_writable($path_parts['dirname'])
-            ) {
-                static::$headerWritten = static::getHtml();
-                if (static::getAppendDepth() > 1) {
-                    if (static::getCreateFile()) {
-                        $openMode = 'w+b';
-                    } else {
-                        $openMode = 'a+b';
-                    }
-                } else {
-                    $openMode = static::getDebugFileMode();
-                }
-
-                static::$hndFile = fopen($filename, $openMode);
-
-                if (static::$hndFile !== false) {
-
-                    $ipAddress = static::readIpAddress();
-                    static::$starttimeArray =
-                        [
-                            date(static::getDateTime()) . '  (' . $ipAddress . ')',
-                            'start time, date and IP of debug session (mode "' . $openMode . '")'
-                        ];
-                } elseif (
-                    !is_writable($filename)
-                ) {
-                    $result = false;
-                    $errorText = 'DEBUGFILE: "' . $filename . '" is not writable in mode="' . $openMode . '"';
-                }
-            } else {
-                $result = false;
-                $errorText = 'DEBUGFILE: directory "' . $path_parts['dirname'] . '" is not writable for file "' . $filename . '" .';
-            }
-
-            if ($result == false) {
-                error_log(static::$extensionKey . ': ' . $errorText . PHP_EOL); // keep this
-                error_log(static::$extensionKey . ': ' . $errorText . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
-                static::setActive(false); // no debug is necessary when the file cannot be written anyways
-            }
-        }
-        return $result;
-    }
-
     public static function getProcessFilename()
     {
         $path = Environment::getPublicPath() . '/';
@@ -864,11 +875,11 @@ class DebugFunctions
             ) {
                 if (!isset($GLOBALS['TSFE']->id)) {
                     $GLOBALS['TSFE']->determineId(static::$request);
-                } 
+                }
 
                 if (isset($GLOBALS['TSFE']->id)) {
                     $id = $GLOBALS['TSFE']->id;
-                } 
+                }
             }
         }
         static::$id = $id;
@@ -878,7 +889,7 @@ class DebugFunctions
     {
         return static::$id;
     }
-    
+
 
     public static function setIsInitialization(
         $bInitialization
@@ -1153,7 +1164,7 @@ class DebugFunctions
 
         if ($errorOut != '') {
             // keep the following line
-            $result = error_log($errorOut . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
+            $result = error_log(substr($errorOut, 0, static::ERROR_LOG_MAX) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
         }
 
         if (static::$hndFile) {
@@ -1203,8 +1214,9 @@ class DebugFunctions
             $type = static::$api->getTypeView($variable);
         }
 
-          // error_log('writeOut Start $variable ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
-        //   error_log('writeOut $title ' . $title . PHP_EOL, 3, static::getErrorLogFilename());
+          $variableOut = print_r($variable, true);
+          // error_log('writeOut Start $variable: ' .  PHP_EOL . '  ' . substr($variableOut, 0, static::ERROR_LOG_MAX) . ' (' . strlen($variableOut) . ')' . PHP_EOL, 3, static::getErrorLogFilename());
+          // error_log('writeOut $title: ' .  PHP_EOL . $title . '  ' . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
 
@@ -1297,8 +1309,8 @@ class DebugFunctions
                 echo '<b>DEBUGFILE: "' . $debugFile . '" is not writable.</b>';
             }
             static::$bErrorWritten = true;
-             // error_log('writeOut static::$bErrorWritten = ' . static::$bErrorWritten . PHP_EOL, 3, static::getErrorLogFilename());
         }
+        // error_log('writeOut static::$bWritten = ' . $bWritten . PHP_EOL, 3, static::getErrorLogFilename());
 
         return $bWritten;
     }
@@ -1402,7 +1414,7 @@ class DebugFunctions
             $force = true;
         }
 
-        // error_log('### debug $variable = ' . print_r($variable, true) . PHP_EOL, 3, static::getErrorLogFilename());
+        // error_log('### debug $variable = ' . substr(print_r($variable, true), 0, static::ERROR_LOG_MAX) . PHP_EOL, 3, static::getErrorLogFilename());
         // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
@@ -1474,15 +1486,15 @@ class DebugFunctions
                 is_array($variable['backTrace']) &&
                 isset($variable['backTrace']['args']) &&
                 is_array($variable['backTrace']['args']) &&
-                isset($variable['backTrace']['args']['0'])
+                isset($variable['backTrace']['args'][0])
             ) {
-                $sysLogTopic = $variable['backTrace']['args']['0'];
+                $sysLogTopic = $variable['backTrace']['args'][0];
                 $expression = '/' . preg_quote(static::getSysLogExclude(), '/') . '/';
                 preg_match($expression, $sysLogTopic, $matches);
 
                 if (
                     !empty($matches) &&
-                    !empty($matches['0'])
+                    !empty($matches[0])
                 ) {
                     $debugSysLog = false;
                     $excludeSysLog = true;
@@ -1535,7 +1547,7 @@ class DebugFunctions
                     } else {
                         static::$internalError = true;
                         echo $errorText;
-                        error_log(static::$extensionKey . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning before TYPO3 might have initialized its objects.
+                        error_log(static::$extensionKey . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning when TYPO3 might not have initialized basic objects.
 
                         return false;
                     }
@@ -1569,8 +1581,8 @@ class DebugFunctions
                     static::$headerWritten = false;
 
                     if (count(static::$starttimeArray)) {
-                        $headerPostFix = static::$starttimeArray['1'];
-                        $headerValue = static::$starttimeArray['0'];
+                        $headerPostFix = static::$starttimeArray[1];
+                        $headerValue = static::$starttimeArray[0];
                         static::$starttimeArray = [];
                     }
 
