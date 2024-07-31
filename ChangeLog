@@ -1,3 +1,11 @@
+2024-07-31 Franz Holzinger  <franz@ttproducts.de>
+    * support for TYPO3 13
+    * use errorLog with Symfony CliDumper dump method instead of the
+      print_r method which resulted sometimes in a PHP memory allocation exception
+
+2024-07-29 Franz Holzinger  <franz@ttproducts.de>
+    * new constant MINFREEMEMORY to keep define the minimum amount of free space which must be considered. If the free memory is below of it, then the debug output will stop in order to avoid a PHP exception about exhausted allowed memory size.
+
 2024-07-17 Franz Holzinger  <franz@ttproducts.de>
     * new constant ERROR_LOG_MAX to limit all error_log calls to about 64 characters
 

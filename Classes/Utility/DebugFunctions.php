@@ -27,6 +27,9 @@ namespace JambageCom\FhDebug\Utility;
 
 use Psr\Http\Message\ServerRequestInterface;
 
+use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Symfony\Component\VarDumper\Dumper\CliDumper;
+
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -106,6 +109,8 @@ class DebugFunctions
     private static $title = 'debug file';
     private static $maxFileSize = 3.0;
     private static $maxFileSizeReached = false;
+    private static $minFreeMemory = 0;
+    private static $minFreeMemoryReached = false;
     private static $dateTime = 'l jS \of F Y h:i:s A';
     private static $config = [];
     private static $api;
@@ -161,6 +166,7 @@ class DebugFunctions
         static::setProxyForward($extConf['PROXY']);
         static::setTitle($extConf['TITLE']);
         static::setMaxFileSize(floatval($extConf['MAXFILESIZE']));
+        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY']));
         if ($extConf['DATETIME'] != '') {
             static::setDateTime($extConf['DATETIME']);
         }
@@ -267,7 +273,6 @@ class DebugFunctions
 
     public static function initFile(&$errorText)
     {
-          // error_log('initFile: ' . PHP_EOL, 3, static::getErrorLogFilename());
         $result = true;
         $extConf = static::getExtConf();
 
@@ -305,7 +310,10 @@ class DebugFunctions
 
             if (
                 $filename != '' &&
-                is_writable($path_parts['dirname'])
+                (
+                    is_writable($filename) ||
+                    is_writable($path_parts['dirname'])
+                )
             ) {
                 static::$headerWritten = static::getHtml();
                 if (static::getAppendDepth() > 1) {
@@ -317,7 +325,6 @@ class DebugFunctions
                 } else {
                     $openMode = static::getDebugFileMode();
                 }
-
                 static::$hndFile = fopen($filename, $openMode);
 
                 if (static::$hndFile !== false) {
@@ -345,7 +352,6 @@ class DebugFunctions
                 static::setActive(false); // no debug is necessary when the file cannot be written anyways
             }
         }
-        // error_log('initFile result ' . $result . PHP_EOL, 3, static::getErrorLogFilename());
         return $result;
     }
 
@@ -604,18 +610,43 @@ class DebugFunctions
         return static::$useErrorLog;
     }
 
-    public static function errorLog($text, $comment): void
+    public static function dump($variable)
     {
-        error_log(
-            $comment . ': ' .
-                (
-                    is_string($text) ?
-                        substr($text, 0, static::ERROR_LOG_MAX) :
-                        substr(print_r($text, true), 0, static::ERROR_LOG_MAX)
-                ) . PHP_EOL,
-             3,
-             static::getErrorLogFilename()
+        $cloner = new VarCloner();
+        $cloner->setMaxString(static::ERROR_LOG_MAX);
+        $dumper = new CliDumper();
+        $output = '';
+        $dumper->dump(
+            $cloner->cloneVar($variable),
+            function (string $line, int $depth) use (&$output): void {
+                // A negative depth means "end of dump"
+                if (
+                    $depth >= 0 &&
+                    strlen($output) < static::ERROR_LOG_MAX
+                ) {
+                    // Adds a two spaces indentation to the line
+                    $output .= str_repeat('  ', $depth) . $line . PHP_EOL;
+                }
+            }
+        );
+
+        return $output;
+    }
+
+    public static function errorLog($variable, string $comment = ''): bool
+    {
+        if (!is_string($variable)) {
+            $variable = static::dump($variable);
+        }
+
+        $result = error_log(
+            ($comment ? $comment . ': ' : '') .
+            substr($variable, 0, static::ERROR_LOG_MAX) . PHP_EOL,
+            3,
+            static::getErrorLogFilename()
         ); // keep this
+
+        return $result;
     }
 
     public static function setDebugFile(
@@ -667,6 +698,28 @@ class DebugFunctions
     public static function getMaxFileSize()
     {
         return static::$maxFileSize;
+    }
+
+    public static function setMinFreeMemoryReached(
+        $value
+    ): void {
+        static::$minFreeMemoryReached = $value;
+    }
+
+    public static function getMinFreeMemoryReached()
+    {
+        return static::$minFreeMemoryReached;
+    }
+
+    public static function setMinFreeMemory(
+        $value
+    ): void {
+        static::$minFreeMemory = (int) $value;
+    }
+
+    public static function getMinFreeMemory()
+    {
+        return static::$minFreeMemory;
     }
 
     public static function setDateTime(
@@ -964,6 +1017,7 @@ class DebugFunctions
                 );
             }
         }
+// static::errorLog('debugBegin ');
 
         static::$internalErrorLog = false;
     }
@@ -982,6 +1036,7 @@ class DebugFunctions
                 static::setActive(false);
             }
         }
+// static::errorLog('debugEnd ');
     }
 
     public static function getExtConf()
@@ -1164,7 +1219,7 @@ class DebugFunctions
 
         if ($errorOut != '') {
             // keep the following line
-            $result = error_log(substr($errorOut, 0, static::ERROR_LOG_MAX) . PHP_EOL, 3, static::getErrorLogFilename()); // keep this
+            $result = static::errorLog($errorOut); // keep this
         }
 
         if (static::$hndFile) {
@@ -1214,11 +1269,12 @@ class DebugFunctions
             $type = static::$api->getTypeView($variable);
         }
 
-          $variableOut = print_r($variable, true);
+        // $variableOut = print_r($variable, true);
           // error_log('writeOut Start $variable: ' .  PHP_EOL . '  ' . substr($variableOut, 0, static::ERROR_LOG_MAX) . ' (' . strlen($variableOut) . ')' . PHP_EOL, 3, static::getErrorLogFilename());
           // error_log('writeOut $title: ' .  PHP_EOL . $title . '  ' . PHP_EOL, 3, static::getErrorLogFilename());
 
         $debugFile = static::getDebugFile();
+        $debugFilename = static::getDebugFilename();
 
         if (
             static::$hndFile ||
@@ -1301,7 +1357,7 @@ class DebugFunctions
             $overwriteModeArray = ['x', 'x+', 'xb', 'x+b'];
 
             if (
-                file_exists($debugFile) &&
+                file_exists($debugFilename) &&
                 in_array(static::getDebugFileMode(), $overwriteModeArray)
             ) {
                 echo '<b>DEBUGFILE: "' . $debugFile . '" is not empty.</b>';
@@ -1310,7 +1366,7 @@ class DebugFunctions
             }
             static::$bErrorWritten = true;
         }
-        // error_log('writeOut static::$bWritten = ' . $bWritten . PHP_EOL, 3, static::getErrorLogFilename());
+        // static::errorLog($bWritten, 'writeOut $bWritten');
 
         return $bWritten;
     }
@@ -1401,21 +1457,102 @@ class DebugFunctions
         return $result;
     }
 
+    public static function getMemorySize($value) {
+        // static::errorLog('getMemorySize', 'ANFANG');
+        // existing variable with integer value so that the next line
+        // does not add memory consumption when initiating $start variable
+        $start = 1;
+        $start = memory_get_usage();
+        // static::errorLog('getMemorySize ' . $start, 'START');
+        // json functions return less bytes consumptions than serialize
+        $encoded = json_encode($value);
+        // static::errorLog('getMemorySize ' . $encoded, 'encoded');
+        if ($encoded !== false) {
+            static::errorLog('getMemorySize', 'Pos 1');
+            $tmp = json_decode($encoded);
+        }
+        // static::errorLog('getMemorySize', 'Pos 2');
+        unset($encoded);
+        // static::errorLog('getMemorySize', 'Pos 3');
+        $result = memory_get_usage() - $start;
+        // static::errorLog('getMemorySize' . $result, '$result');
+        return $result;
+    }
+
+    protected static function processFreeMemory($variable)
+    {
+        // static::errorLog('processFreeMemory: ', 'ANFANG');
+        $result = true;
+        // static::errorLog('processFreeMemory: ', 'Pos 1');
+
+        $total = memory_get_usage(true);
+
+        $memoryAvailable = filter_var(ini_get("memory_limit"), FILTER_SANITIZE_NUMBER_INT);
+        $memoryAvailable = $memoryAvailable * 1024 * 1024;
+        // static::errorLog('memoryAvailable ' . $memoryAvailable, 'processFreeMemory');
+        $memoryUsed = memory_get_peak_usage(false);
+        // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
+
+        // static::errorLog('processFreeMemory: ' . $total, 'total');
+        // $used = memory_get_usage(false);
+        // static::errorLog('processFreeMemory: ' . $used, 'used');
+        $free = $memoryAvailable - $memoryUsed;
+        // static::errorLog('processFreeMemory: ' . $free, 'free');
+
+        $required = static::getMemorySize($variable);
+        // static::errorLog('processFreeMemory $required: ' . $required, 'Pos 1');
+        $minFree = self::getMinFreeMemory() * (1024 * 1024);
+        // static::errorLog('processFreeMemory $minFree: ' . $minFree, 'Pos 2');
+        $errorText = 'Minimum free memory reached for the debug output file.';
+
+        // avoid a memory exception
+        if (
+            $free - $required < $minFree &&
+            $minFree > 0
+        ) {
+            self::setMinFreeMemoryReached(true);
+            $errorText = 'Minimum free memory reached for the debug output file.';
+            // static::errorLog('ERROR Text: ', $errorText);
+            if (static::$hndFile) {
+                static::writeOut(
+                    $minFree . ' MByte',
+                    static::$extensionKey . ': ' . $errorText,
+                    0,
+                    static::getHtml(),
+                    [],
+                    false
+                );
+            } else {
+                // static::errorLog($minFree . ' MByte', $errorText);
+            }
+            $result = false;
+        }
+        // static::errorLog('processFreeMemory: ' . $result, 'ENDE');
+        return $result;
+    }
+
     public static function debug(
         $variable = '',
         $title = null,
         $group = null
-    ) {
+    )
+    {
         $force = false;
+        $storeIsActive = static::getActive();
+        // static::errorLog($title, '### debug $title');
+
+        if (
+            self::getMinFreeMemoryReached()
+        ) {
+            // error_log('### debug getMinFreeMemoryReached ' . PHP_EOL, 3, static::getErrorLogFilename());
+            return false;
+        }
 
         if (
             $group == 'F'
         ) { // force a debug output no matter which other options are active
             $force = true;
         }
-
-        // error_log('### debug $variable = ' . substr(print_r($variable, true), 0, static::ERROR_LOG_MAX) . PHP_EOL, 3, static::getErrorLogFilename());
-        // error_log('### debug $title = ' . print_r($title, true) . PHP_EOL, 3, static::getErrorLogFilename());
 
         if (
             $title === null &&
@@ -1460,10 +1597,10 @@ class DebugFunctions
             GeneralUtility::inList(static::$api->getIgnore(), $title) ||
             static::$internalError
         ) {
+            // static::errorLog('', '### debug internal exit');
             return;
         }
 
-        $storeIsActive = static::getActive();
         $isValidTrace = false;
         $charset = '';
 
@@ -1510,7 +1647,7 @@ class DebugFunctions
             $debugDevLog = true;
         }
 
-        // error_log('### debug $storeIsActive = ' . print_r($storeIsActive, true) . PHP_EOL, 3, static::getErrorLogFilename());
+        // static::errorLog('### debug $storeIsActive = ' . $storeIsActive);
 
         if (
             (
@@ -1538,7 +1675,6 @@ class DebugFunctions
                 if (!isset($recursiveDepth)) {
                     $recursiveDepth = static::getRecursiveDepth();
                 }
-
                 if (static::$needsFileInit) {
                     $errorText = '';
                     $resultInit = static::initFile($errorText);
@@ -1547,11 +1683,18 @@ class DebugFunctions
                     } else {
                         static::$internalError = true;
                         echo $errorText;
-                        error_log(static::$extensionKey . ': ' . $errorText, 0); // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning when TYPO3 might not have initialized basic objects.
-
+                        static::errorLog($errorText, static::$extensionKey);  // keep this. It must be written directly to the PHP error_log file, because this debug extension must work from the beginning when TYPO3 might not have initialized basic objects
                         return false;
                     }
                 }
+
+                $resultFreeMemory = static::processFreeMemory($variable);
+                if (!$resultFreeMemory) {
+                    // static::errorLog($variable, 'no free memory available!');
+                    return false;
+                }
+
+                // static::errorLog($variable, '### debug $variable');
 
                 if (static::$headerWritten) {
                     $headerPostFix = '';
@@ -1630,7 +1773,7 @@ class DebugFunctions
                         $fileInformation = fstat(static::$hndFile);
 
                         if (is_array($fileInformation)) {
-                            $size = round(($fileInformation['size'] / 1048576), 3);
+                            $size = round(($fileInformation['size'] / (1024 * 1024)), 3);
                             $maxSize = self::getMaxFileSize();
                             if (
                                 $size > $maxSize &&
@@ -1659,6 +1802,7 @@ class DebugFunctions
                 static::setActive($storeIsActive);
             }
         }
+        return true;
     }
 
     /**
