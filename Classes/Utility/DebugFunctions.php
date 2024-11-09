@@ -72,7 +72,7 @@ class DebugFunctions
     protected static $bErrorWritten = false;
     protected static $useErrorLog = false;
 
-    private static $username;
+    private static $username = '';
     private static $isUserAllowed = true;
     private static $extConf = [];
     private static $hndFile = 0;
@@ -130,11 +130,7 @@ class DebugFunctions
 
         static::$instanceCount++;
         static::$csConvObj =  GeneralUtility::makeInstance(CharsetConverter::class);
-        if ($extConf['ERROR_LOG'] != '') {
-            $errorLogFile = $extConf['ERROR_LOG'];
-        }
-        $errorLogFile ??= static::$errorLogFile;
-        static::setErrorLogFile($errorLogFile);
+        static::setErrorLogFile($extConf['ERROR_LOG'] ?? static::$errorLogFile);
 
         if ($extConf['USE_ERROR_LOG'] == '1') {
             static::setUseErrorLog(true);
@@ -144,29 +140,29 @@ class DebugFunctions
             $debugFile = $extConf['DEBUGFILE'];
         }
 
-        static::setDebugFile($debugFile);
-        static::setDebugFileMode($extConf['DEBUGFILEMODE']);
-        static::setRecursiveDepth($extConf['LEVEL']);
-        static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
-        static::setTraceDepth($extConf['TRACEDEPTH']);
-        static::setAppendDepth($extConf['APPENDDEPTH']);
-        static::setStartFiles($extConf['STARTFILES']);
-        static::setPartFiles($extConf['PARTFILES']);
-        static::setExcludeFiles($extConf['EXCLUDEFILES']);
+        static::setDebugFile($debugFile ?? static::$debugFile);
+        static::setDebugFileMode($extConf['DEBUGFILEMODE'] ?? static::$debugFileMode);
+        static::setRecursiveDepth($extConf['LEVEL'] ?? static::$recursiveDepth);
+        static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION'], $exceptionRecursiveDepth);
+        static::setTraceDepth($extConf['TRACEDEPTH'] ?? static::$traceDepth);
+        static::setAppendDepth($extConf['APPENDDEPTH'] ?? static::$appendDepth);
+        static::setStartFiles($extConf['STARTFILES'] ?? static::$startFiles);
+        static::setPartFiles($extConf['PARTFILES'] ?? static::$partFIles);
+        static::setExcludeFiles($extConf['EXCLUDEFILES'] ?? static::$excludeFiles);
 
-        static::setIpAddress($extConf['IPADDRESS']);
-        static::setDebugBegin($extConf['DEBUGBEGIN']);
-        static::setTraceFields($extConf['TRACEFIELDS']);
-        static::setFeUserNames($extConf['FEUSERNAMES']);
-        static::setDevLog($extConf['DEVLOG']);
-        static::setDevLogDebug($extConf['DEVLOGDEBUG']);
-        static::setSysLog($extConf['SYSLOG']);
-        static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
-        static::setHtml($extConf['HTML'] ?? 1);
-        static::setProxyForward($extConf['PROXY'] ?? 0);
-        static::setTitle($extConf['TITLE'] ?? '');
-        static::setMaxFileSize(floatval($extConf['MAXFILESIZE'] ?? 3));
-        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY'] ?? 3));
+        static::setIpAddress($extConf['IPADDRESS'] ?? static::$ipAddress);
+        static::setDebugBegin($extConf['DEBUGBEGIN'] ?? static::$debugBegin);
+        static::setTraceFields($extConf['TRACEFIELDS'] ?? static::$traceFields);
+        static::setFeUserNames($extConf['FEUSERNAMES'] ?? static::$feUserNames);
+        static::setDevLog($extConf['DEVLOG'], static::$devLog);
+        static::setDevLogDebug($extConf['DEVLOGDEBUG'] ?? static::$devLogDebug));
+        static::setSysLog($extConf['SYSLOG'] ?? static::$sysLog);
+        static::setSysLogExclude($extConf['SYSLOG_EXCLUDE'] ?? static::$sysLogExclude);
+        static::setHtml($extConf['HTML'] ?? static::$html);
+        static::setProxyForward($extConf['PROXY'] ?? static::$proxy);
+        static::setTitle($extConf['TITLE'] ?? static::$title);
+        static::setMaxFileSize(floatval($extConf['MAXFILESIZE'] ?? static::$maxFileSize));
+        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY'] ?? static::$minFreeMemory));
         if ($extConf['DATETIME'] != '') {
             static::setDateTime($extConf['DATETIME']);
         }
