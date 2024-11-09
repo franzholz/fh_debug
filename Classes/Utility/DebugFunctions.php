@@ -111,6 +111,7 @@ class DebugFunctions
     private static $maxFileSizeReached = false;
     private static $minFreeMemory = 0;
     private static $minFreeMemoryReached = false;
+    private static $memoryAvailable = 1000000;
     private static $dateTime = 'l jS \of F Y h:i:s A';
     private static $config = [];
     private static $api;
@@ -125,8 +126,7 @@ class DebugFunctions
         static::$request = $request;
         static::$currentTypo3Mode = $currentTypo3Mode;
         static::$extConf = $extConf;
-
-        $debugFile = static::getDebugFile();
+        static::$memoryAvailable = static::return_bytes(ini_get('memory_limit'));
 
         static::$instanceCount++;
         static::$csConvObj =  GeneralUtility::makeInstance(CharsetConverter::class);
@@ -136,39 +136,77 @@ class DebugFunctions
             static::setUseErrorLog(true);
         }
 
-        if ($extConf['DEBUGFILE'] != '') {
-            $debugFile = $extConf['DEBUGFILE'];
+        if (isset($extConf['DEBUGFILE'])) {
+            static::setDebugFile($extConf['DEBUGFILE']);
         }
-
-        static::setDebugFile($debugFile ?? static::$debugFile);
-        static::setDebugFileMode($extConf['DEBUGFILEMODE'] ?? static::$debugFileMode);
-        static::setRecursiveDepth($extConf['LEVEL'] ?? static::$recursiveDepth);
-        static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION'], $exceptionRecursiveDepth);
-        static::setTraceDepth($extConf['TRACEDEPTH'] ?? static::$traceDepth);
-        static::setAppendDepth($extConf['APPENDDEPTH'] ?? static::$appendDepth);
-        static::setStartFiles($extConf['STARTFILES'] ?? static::$startFiles);
-        static::setPartFiles($extConf['PARTFILES'] ?? static::$partFIles);
-        static::setExcludeFiles($extConf['EXCLUDEFILES'] ?? static::$excludeFiles);
-
-        static::setIpAddress($extConf['IPADDRESS'] ?? static::$ipAddress);
-        static::setDebugBegin($extConf['DEBUGBEGIN'] ?? static::$debugBegin);
-        static::setTraceFields($extConf['TRACEFIELDS'] ?? static::$traceFields);
-        static::setFeUserNames($extConf['FEUSERNAMES'] ?? static::$feUserNames);
-        static::setDevLog($extConf['DEVLOG'], static::$devLog);
-        static::setDevLogDebug($extConf['DEVLOGDEBUG'] ?? static::$devLogDebug));
-        static::setSysLog($extConf['SYSLOG'] ?? static::$sysLog);
-        static::setSysLogExclude($extConf['SYSLOG_EXCLUDE'] ?? static::$sysLogExclude);
-        static::setHtml($extConf['HTML'] ?? static::$html);
-        static::setProxyForward($extConf['PROXY'] ?? static::$proxy);
-        static::setTitle($extConf['TITLE'] ?? static::$title);
-        static::setMaxFileSize(floatval($extConf['MAXFILESIZE'] ?? static::$maxFileSize));
-        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY'] ?? static::$minFreeMemory));
-        if ($extConf['DATETIME'] != '') {
+        if (isset($extConf['DEBUGFILEMODE'])) {
+            static::setDebugFileMode($extConf['DEBUGFILEMODE']);
+        }
+        if (isset($extConf['LEVEL'])) {
+            static::setRecursiveDepth($extConf['LEVEL']);
+        }
+        if (isset($extConf['LEVEL_EXCEPTION'])) {
+            static::setExceptionRecursiveDepth($extConf['LEVEL_EXCEPTION']);
+        }
+        if (isset($extConf['TRACEDEPTH'])) {
+            static::setTraceDepth($extConf['TRACEDEPTH']);
+        }
+        if (isset($extConf['APPENDDEPTH'])) {
+            static::setAppendDepth($extConf['APPENDDEPTH']);
+        }
+        if (isset($extConf['STARTFILES'])) {
+            static::setStartFiles($extConf['STARTFILES']);
+        }
+        if (isset($extConf['PARTFILES'])) {
+            static::setPartFiles($extConf['PARTFILES']);
+        }
+        if (isset($extConf['EXCLUDEFILES'])) {
+            static::setExcludeFiles($extConf['EXCLUDEFILES']);
+        }
+        if (isset($extConf['IPADDRESS'])) {
+            static::setIpAddress($extConf['IPADDRESS']);
+        }
+        if (isset($extConf['DEBUGBEGIN'])) {
+            static::setDebugBegin($extConf['DEBUGBEGIN']);
+        }
+        if (isset($extConf['TRACEFIELDS'])) {
+            static::setTraceFields($extConf['TRACEFIELDS']);
+        }
+        if (isset($extConf['FEUSERNAMES'])) {
+            static::setFeUserNames($extConf['FEUSERNAMES']);
+        }
+        if (isset($extConf['DEVLOG'])) {
+            static::setDevLog($extConf['DEVLOG']);
+        }
+        if (isset($extConf['DEVLOGDEBUG'])) {
+            static::setDevLogDebug($extConf['DEVLOGDEBUG']);
+        }
+        if (isset($extConf['SYSLOG'])) {
+            static::setSysLog($extConf['SYSLOG']);
+        }
+        if (isset($extConf['SYSLOG_EXCLUDE'])) {
+            static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
+        }
+        if (isset($extConf['HTML'])) {
+            static::setHtml($extConf['HTML']);
+        }
+        if (isset($extConf['PROXY'])) {
+            static::setProxyForward($extConf['PROXY']);
+        }
+        if (isset($extConf['TITLE'])) {
+            static::setTitle($extConf['TITLE']);
+        }
+        if (isset($extConf['MAXFILESIZE'])) {
+            static::setMaxFileSize($extConf['MAXFILESIZE']);
+        }
+        if (isset($extConf['MINFREEMEMORY'])) {
+            static::setMinFreeMemory($extConf['MINFREEMEMORY']);
+        }
+        if (isset($extConf['DATETIME'])) {
             static::setDateTime($extConf['DATETIME']);
         }
 
-        $typo3Mode = ($extConf['TYPO3_MODE'] ?: 'OFF');
-        static::setTypo3Mode($typo3Mode);
+        static::setTypo3Mode($extConf['TYPO3_MODE'] ?: 'OFF');
         static::setDeterminedId();
 
         if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
@@ -1265,10 +1303,6 @@ class DebugFunctions
             $type = static::$api->getTypeView($variable);
         }
 
-        // $variableOut = print_r($variable, true);
-          // error_log('writeOut Start $variable: ' .  PHP_EOL . '  ' . substr($variableOut, 0, static::ERROR_LOG_MAX) . ' (' . strlen($variableOut) . ')' . PHP_EOL, 3, static::getErrorLogFilename());
-          // error_log('writeOut $title: ' .  PHP_EOL . $title . '  ' . PHP_EOL, 3, static::getErrorLogFilename());
-
         $debugFile = static::getDebugFile();
         $debugFilename = static::getDebugFilename();
 
@@ -1312,7 +1346,6 @@ class DebugFunctions
                     '<h3>' . $title . $type . '</h3>';
                 $out .= chr(13) . $backTrace . chr(13) .
                     '<hr />' . chr(13);
-                // error_log('writeOut $out ' . $out . PHP_EOL, 3, static::getErrorLogFilename());
             }
         }
 
@@ -1505,16 +1538,14 @@ class DebugFunctions
 
         $total = memory_get_usage(true);
 
-        $memoryAvailable = static::return_bytes(ini_get('memory_limit'));
-        $memoryAvailable = $memoryAvailable * 1024 * 1024;
-    // static::errorLog('memoryAvailable ' . $memoryAvailable, 'processFreeMemory');
+    // static::errorLog('static::memoryAvailable ' . static:::$memoryAvailable, 'processFreeMemory');
         $memoryUsed = memory_get_peak_usage(false);
     // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
 
         // static::errorLog('processFreeMemory: ' . $total, 'total');
         // $used = memory_get_usage(false);
         // static::errorLog('processFreeMemory: ' . $used, 'used');
-        $free = $memoryAvailable - $memoryUsed;
+        $free = static::$memoryAvailable - $memoryUsed;
     // static::errorLog('processFreeMemory: ' . $free, 'free');
 
         $required = static::getMemorySize($variable);
