@@ -1497,12 +1497,9 @@ class DebugFunctions
         $encoded = json_encode($value);
         // static::errorLog('getMemorySize ' . $encoded, 'encoded');
         if ($encoded !== false) {
-            static::errorLog('getMemorySize', 'Pos 1');
             $tmp = json_decode($encoded);
         }
-        // static::errorLog('getMemorySize', 'Pos 2');
         unset($encoded);
-        // static::errorLog('getMemorySize', 'Pos 3');
         $result = memory_get_usage() - $start;
         // static::errorLog('getMemorySize' . $result, '$result');
         return $result;
