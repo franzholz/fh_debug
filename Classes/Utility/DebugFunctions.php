@@ -162,11 +162,11 @@ class DebugFunctions
         static::setDevLogDebug($extConf['DEVLOGDEBUG']);
         static::setSysLog($extConf['SYSLOG']);
         static::setSysLogExclude($extConf['SYSLOG_EXCLUDE']);
-        static::setHtml($extConf['HTML']);
-        static::setProxyForward($extConf['PROXY']);
-        static::setTitle($extConf['TITLE']);
-        static::setMaxFileSize(floatval($extConf['MAXFILESIZE']));
-        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY']));
+        static::setHtml($extConf['HTML'] ?? 1);
+        static::setProxyForward($extConf['PROXY'] ?? 0);
+        static::setTitle($extConf['TITLE'] ?? '');
+        static::setMaxFileSize(floatval($extConf['MAXFILESIZE'] ?? 3));
+        static::setMinFreeMemory(floatval($extConf['MINFREEMEMORY'] ?? 3));
         if ($extConf['DATETIME'] != '') {
             static::setDateTime($extConf['DATETIME']);
         }
@@ -1479,6 +1479,28 @@ class DebugFunctions
         return $result;
     }
 
+    protected static function return_bytes($val)
+    {
+        $val = trim($val);
+        $num = (int) rtrim($val, 'KMG');
+        $last = strtolower($val[strlen($val) - 1]);
+
+        switch ($last) {
+            // The 'G' modifier is available
+            case 'g':
+                $num = $num * 1024 * 1024 * 1024;
+                break;
+            case 'm':
+                $num = $num * 1024 * 1024;
+                break;
+            case 'k':
+                $num *= 1024;
+                break;
+        }
+
+        return $num;
+    }
+
     protected static function processFreeMemory($variable)
     {
         // static::errorLog('processFreeMemory: ', 'ANFANG');
@@ -1487,17 +1509,17 @@ class DebugFunctions
 
         $total = memory_get_usage(true);
 
-        $memoryAvailable = filter_var(ini_get("memory_limit"), FILTER_SANITIZE_NUMBER_INT);
+        $memoryAvailable = static::return_bytes(ini_get('memory_limit'));
         $memoryAvailable = $memoryAvailable * 1024 * 1024;
-        // static::errorLog('memoryAvailable ' . $memoryAvailable, 'processFreeMemory');
+    // static::errorLog('memoryAvailable ' . $memoryAvailable, 'processFreeMemory');
         $memoryUsed = memory_get_peak_usage(false);
-        // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
+    // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
 
         // static::errorLog('processFreeMemory: ' . $total, 'total');
         // $used = memory_get_usage(false);
         // static::errorLog('processFreeMemory: ' . $used, 'used');
         $free = $memoryAvailable - $memoryUsed;
-        // static::errorLog('processFreeMemory: ' . $free, 'free');
+    // static::errorLog('processFreeMemory: ' . $free, 'free');
 
         $required = static::getMemorySize($variable);
         // static::errorLog('processFreeMemory $required: ' . $required, 'Pos 1');

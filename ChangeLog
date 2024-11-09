@@ -1,3 +1,6 @@
+2024-11-08 Franz Holzinger  <franz@ttproducts.de>
+    * Fix bug with MINFREEMEMORY: Calculate the really free memory.
+
 2024-07-31 Franz Holzinger  <franz@ttproducts.de>
     * support for TYPO3 13
     * use errorLog with Symfony CliDumper dump method instead of the
