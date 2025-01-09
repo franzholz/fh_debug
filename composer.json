@@ -28,10 +28,7 @@
     "typo3-ter/fh-debug": "self.version"
   },
   "require": {
-    "typo3/cms-core": "^10.4 || ^11.5 || ^12.0 || ^13.0"
-  },
-  "suggest": {
-    "jambagecom/tsparser": "^0.9"
+    "typo3/cms-core": "^12.0 || ^13.0"
   },
   "autoload": {
     "psr-4": {
