@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use JambageCom\FhDebug\Configuration\Variant;
 use JambageCom\FhDebug\Hooks\DBALException;
 use JambageCom\FhDebug\Hooks\ProductionExceptionHandler;
-use JambageCom\FhDebug\Hooks\TsparserHooks;
 use JambageCom\FhDebug\Log\Writer\LogWriter;
 use JambageCom\FhDebug\Utility\DebugFunctions;
 
@@ -147,8 +146,6 @@ class BootstrapApi
                             'className' => DBALException::class
                         ];
                     }
-
-                    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tsparser']['configurationParser'][$extensionKey] = TsparserHooks::class;
                 }
 
                 if (

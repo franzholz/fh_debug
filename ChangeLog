@@ -1,3 +1,9 @@
+2025-01-09 Franz Holzinger  <franz@ttproducts.de>
+    * Only TYPO3 12 and 13 are supported
+    * Remove tsparser enhancement because the new TYPO3 class AstConstantCommentVisitor is final.
+      It cannot be modified to add a comment function to show the IP address.
+      Remove the class TsparserHooks which replaced ###IP### in the constants label by the IP address. Maybe a wrapper function is available for enhancements.
+
 2024-11-08 Franz Holzinger  <franz@ttproducts.de>
     * Fix bug with MINFREEMEMORY: Calculate the really free memory.
 
