@@ -1,3 +1,7 @@
+
+2025-09-13 Franz Holzinger  <franz@ttproducts.de>
+    * Remove support for PHP 7: Remove file OldDebugApi.php.
+
 2025-01-09 Franz Holzinger  <franz@ttproducts.de>
     * Only TYPO3 12 and 13 are supported
     * Remove tsparser enhancement because the new TYPO3 class AstConstantCommentVisitor is final.
