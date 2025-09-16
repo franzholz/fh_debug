@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2024 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2025 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 use JambageCom\FhDebug\Api\DebugApi;
-use JambageCom\FhDebug\Api\OldDebugApi;
 
 
 /**
@@ -208,20 +207,11 @@ class DebugFunctions
 
         static::setTypo3Mode($extConf['TYPO3_MODE'] ?: 'OFF');
         static::setDeterminedId();
-
-        if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
-            static::$api =
-                GeneralUtility::makeInstance(
-                    DebugApi::class,
-                    $extConf
-                );
-        } else {
-            static::$api =
-                GeneralUtility::makeInstance(
-                    OldDebugApi::class,
-                    $extConf
-                );
-        }
+        static::$api =
+            GeneralUtility::makeInstance(
+                DebugApi::class,
+                $extConf
+            );
     }
 
     public static function init(
