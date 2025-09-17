@@ -118,4 +118,15 @@ class DebugApi extends BaseDebugApi
         }
         return $result;
     }
+
+    public function getAttributes(Reflector $reflection)
+    {
+        $attributes = $reflection->getAttributes();
+        $result = [];
+        foreach ($attributes as $attribute)
+        {
+            $result[$attribute->getName()] = $attribute->getArguments();
+        }
+        return $result;
+    }
 }

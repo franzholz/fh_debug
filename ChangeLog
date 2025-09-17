@@ -1,4 +1,7 @@
 
+2025-09-17 Franz Holzinger  <franz@ttproducts.de>
+    * new method getAttributes for JambageCom\FhDebug\Api\DebugApi: Read also protected and private object member variables before they can be debugged.
+
 2025-09-13 Franz Holzinger  <franz@ttproducts.de>
     * Remove support for PHP 7: Remove file OldDebugApi.php.
 
