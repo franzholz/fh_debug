@@ -1,4 +1,8 @@
 
+
+2025-09-18 Franz Holzinger  <franz@ttproducts.de>
+    * new method var_dump_ret for JambageCom\FhDebug\Api\DebugApi: Store the var_dump into a string.
+
 2025-09-17 Franz Holzinger  <franz@ttproducts.de>
     * new method getAttributes for JambageCom\FhDebug\Api\DebugApi: Read also protected and private object member variables before they can be debugged.
     * add method DebugFunctions::getApi
