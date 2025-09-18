@@ -214,6 +214,10 @@ class DebugFunctions
             );
     }
 
+    public static function getApi() {
+        return static::$api;
+    }
+
     public static function init(
         $ipAddress = ''
     ) {
