@@ -24,7 +24,7 @@ FEUSERNAMES =
 ERROR_LOG =
   # cat=enhanced/enable; type=boolean; label= enable error_log file: If set, then the debug output is written in plain text format into the error_log file.
 USE_ERROR_LOG = 0
-  # cat=enhanced/enable; type=string; label= disable variable: This comma separated list of strings will be ignored in name comments for variables, in keys of arrays and in member variables of objects
+  # cat=enhanced/enable; type=string; label= disable variable: This comma separated list of strings which will be ignored in name comments for variables, in keys of arrays and in member variables of objects
 IGNORE =
   # cat=enhanced/enable; type=string; label= start files: Required names of the first PHP file in the execution path. If set then debug output will be generated only if a file with one of these names is the first one in the backtrace.
 STARTFILES =
