@@ -35,15 +35,15 @@ function **devLog**.
 The debug output is written into a HTML debug output file. All the
 configuration is done in the Extension Manager for fh_debug. You can
 design the output by the CSS file ``fhdebug.css``. If you have a lot of
-debug output then you should put ``debug (‘B’)`` (formerly ``debugBegin()``) and
-``debug (‘E’)`` (formerly ``debugEnd()``) PHP commands around the PHP debug
+debug output then you should put ``debug (‘B’)`` and
+``debug (‘E’)``  PHP commands around the PHP debug
 commands in order to have fewer debug output lines in the file. These
 commands will activate and deactivate the debug output.
 
 force output
 ~~~~~~~~~~~~
 
-Since version 0.8.3: If a ``debug (‘B’)`` is required, but maybe not active,
+If a ``debug (‘B’)`` is required, but maybe not active,
 then you can use the third parameter ``(group) ‘F’`` to force an output.
 This is a special case to produce the output no matter if ``debug (‘B’)`` is
 set to be mandatory or not.
@@ -188,15 +188,11 @@ debug begin and end
 -------------------
 
 There are 2 control commands available to begin and to end the
-generation of debug output: ``debug (‘B’)`` and ``debug (‘E’)``, formerly (before
-TYPO3 9.5) ``debugBegin()`` and ``debugEnd()`` .
+generation of debug output: ``debug (‘B’)`` and ``debug (‘E’)``.
 
 
-Replacement for the functions debugBegin and debugEnd:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Since fh_debug 0.8.0
-a workaround has been introduced because in TYPO3 9 needed global
-functions have been removed.
+debug-begin and debug-end:
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. _example-4:
 
@@ -209,14 +205,6 @@ example:
    debug ($myVariable, 'my variable');
    debug ('E'); // end debugging
 
-example before version 0.8.0:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: PHP
-
-   debugBegin();
-   debug ($myVariable, 'my variabled');
-   debugEnd();
 
 Error
 -----
