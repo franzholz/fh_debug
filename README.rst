@@ -206,6 +206,21 @@ example:
    debug ('E'); // end debugging
 
 
+debug object with private members
+---------------------------------
+
+Use the class ``\JambageCom\FhDebug\Utility\DebugFunctions::getApi`` method ``object2array``
+to convert an object into an array. Then it will be possible to access the formerly private member variables. This is needed for large objects in order to generate less output.
+
+.. code-block:: PHP
+
+   // only for Debug START:
+   $debugApi = \JambageCom\FhDebug\Utility\DebugFunctions::getApi();
+   $queryArray = $debugApi->object2array($query);
+   debug ($queryArray['container'], '$queryArray[\'container\'] search Pos 1');
+   // only for Debug END:
+
+
 Error
 -----
 
