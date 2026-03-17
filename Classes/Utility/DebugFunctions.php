@@ -1343,34 +1343,6 @@ class DebugFunctions
             }
         }
 
-        if (
-            function_exists('mb_detect_encoding') &&
-            is_callable('mb_detect_encoding')
-        ) {
-            $charset = mb_detect_encoding($out, 'UTF-8,ASCII,ISO-8859-1,ISO-8859-15', true);
-
-            if (
-                $charset != '' &&
-                $charset != 'UTF-8' &&
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['t3lib_cs_convMethod'] != ''
-            ) {
-                $out =
-                    static::$csConvObj->conv(
-                        $out,
-                        $charset,
-                        'UTF-8'
-                    );
-                if (static::getUseErrorLog()) {
-                    $errorOut =
-                        static::$csConvObj->conv(
-                            $errorOut,
-                            $charset,
-                            'UTF-8'
-                        );
-                }
-            }
-        }
-
         $bWritten = static::write($out, $errorOut, ($debugFile == ''));
 
         if (
