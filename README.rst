@@ -234,8 +234,13 @@ example PHP error_log :
 .. code-block:: PHP
 
    error_log('mymethod Position 2 $variableName: ' .  print_r($variableName, true) . PHP_EOL, 3, '/var/www/html/fileadmin/phpDebugErrorLog.txt');
+   error_log ('printVariable $header: ' . $header . PHP_EOL, 3, \JambageCom\FhDebug\Utility\DebugFunctions::getErrorLogFilename());
+   error_log ('printVariable $variable: ' . substr(json_encode($variable), 0, 120) . PHP_EOL, 3, \JambageCom\FhDebug\Utility\DebugFunctions::getErrorLogFilename());
 
-Use you own path as the last parameter of the above method error_log
+Use you own path as the last parameter of the above method error_log or use the method
+`getErrorLogFilename`to use the error filename set in the extension configuration.
+Use `json_encode` to avoi´d **PHP Fatal error: Allowed memory size of 268435456 bytes exhausted.** errors.
+
 
 Trouble shooting
 ----------------
