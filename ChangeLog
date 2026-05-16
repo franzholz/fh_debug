@@ -1,4 +1,5 @@
-
+2026-05-15 Franz Holzinger  <franz@ttproducts.de>
+    * support for TYPO3 14.3
 
 2025-09-18 Franz Holzinger  <franz@ttproducts.de>
     * new method var_dump_ret for JambageCom\FhDebug\Api\DebugApi: Store the var_dump into a string.
