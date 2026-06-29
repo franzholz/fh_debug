@@ -268,3 +268,4 @@ ToDO
 ----
 
 Program a TYPO3 patch extension which overwrites TYPO3 core files.
+Adapt patch file for TYPO3 14.
