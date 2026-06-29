@@ -67,7 +67,7 @@ class BootstrapApi
 
             if (
                 $request instanceof ServerRequestInterface &&
-                $request->getAttribute('applicationType')
+                $request->getAttribute('applicationType') > 0
             ) {
                 $currentTypo3Mode = (ApplicationType::fromRequest($request)->isFrontend() ? 'FE' : 'BE');
             }

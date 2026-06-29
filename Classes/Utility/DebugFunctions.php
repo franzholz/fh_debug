@@ -5,7 +5,7 @@ namespace JambageCom\FhDebug\Utility;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2025 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2026 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,10 +31,14 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+
 
 use JambageCom\FhDebug\Api\DebugApi;
 
@@ -777,10 +781,19 @@ class DebugFunctions
             !static::getAppendDepth()
         ) {
             if (
-                isset($GLOBALS['TSFE']) &&
-                is_object($GLOBALS['TSFE'])
+                (ApplicationType::fromRequest(static::$request)->isFrontend())
             ) {
-                $title .= ' id=' . $GLOBALS['TSFE']->id;
+                $pageArguments = static::$request->getAttribute('routing');
+                $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+                $majorVersion = $typo3Version->getMajorVersion();
+                if ($majorVersion >= 14) {
+                    $pageId = $pageArguments->getPageId();
+                } else if (
+                    !empty($GLOBALS['TSFE']->id)
+                ) {
+                    $pageId = $GLOBALS['TSFE']->id;
+                }
+                $title .= ' id=' . $pageId;
             } else {
                 $title .= ' id: unknown';
             }
@@ -951,15 +964,30 @@ class DebugFunctions
             $id = 'unknown';
 
             if (
-                isset($GLOBALS['TSFE']) &&
-                is_object($GLOBALS['TSFE'])
+                (ApplicationType::fromRequest(static::$request)->isFrontend())
             ) {
-                if (!isset($GLOBALS['TSFE']->id)) {
-                    $GLOBALS['TSFE']->determineId(static::$request);
+                $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+                $majorVersion = $typo3Version->getMajorVersion();
+                if ($majorVersion >= 14) {
+                    $pageArguments = static::$request->getAttribute('routing');
+                    $pageId = $pageArguments->getPageId();
+                } else {
+                    if (
+                        isset($GLOBALS['TSFE']) &&
+                        is_object($GLOBALS['TSFE'])
+                    ) {
+                        if (!isset($GLOBALS['TSFE']->id)) {
+                            $GLOBALS['TSFE']->determineId(static::$request);
+                        }
+
+                        if (isset($GLOBALS['TSFE']->id)) {
+                            $pageId = $GLOBALS['TSFE']->id;
+                        }
+                    }
                 }
 
-                if (isset($GLOBALS['TSFE']->id)) {
-                    $id = $GLOBALS['TSFE']->id;
+                if (isset($pageId)) {
+                    $id = $pageId;
                 }
             }
         }
@@ -1204,12 +1232,10 @@ class DebugFunctions
         if (
             static::$currentTypo3Mode == 'FE' &&
             static::getFeUserNames() != '' &&
-            isset($GLOBALS['TSFE']) &&
-            is_object($GLOBALS['TSFE'])
+            (ApplicationType::fromRequest(static::$request)->isFrontend())
         ) {
-            if (is_array($GLOBALS['TSFE']->fe_user->user)) {
-                $username = $GLOBALS['TSFE']->fe_user->user['username'];
-            }
+            $username = GeneralUtility::makeInstance(Context::class)
+                ->getPropertyFromAspect('frontend.user', 'username', '');
 
             if ($username != static::$username) {
                 $bAllowFeuser = static::verifyFeusername(
