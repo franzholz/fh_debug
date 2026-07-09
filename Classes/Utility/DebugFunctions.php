@@ -774,6 +774,7 @@ class DebugFunctions
     public static function writeHeader(
         $cssFilename // filename with path
     ): void {
+        $pageId = 0;
         $title = static::getTitle();
 
         if (
@@ -783,16 +784,21 @@ class DebugFunctions
             if (
                 (ApplicationType::fromRequest(static::$request)->isFrontend())
             ) {
-                $pageArguments = static::$request->getAttribute('routing');
                 $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
                 $majorVersion = $typo3Version->getMajorVersion();
                 if ($majorVersion >= 14) {
-                    $pageId = $pageArguments->getPageId();
+                    $pageArguments = static::$request->getAttribute('routing');
+                    if ($pageArguments instanceof PageArguments) {
+                        $pageId = $pageArguments->getPageId();
+                    }
                 } else if (
                     !empty($GLOBALS['TSFE']->id)
                 ) {
                     $pageId = $GLOBALS['TSFE']->id;
                 }
+            }
+
+            if ($pageId) {
                 $title .= ' id=' . $pageId;
             } else {
                 $title .= ' id: unknown';
@@ -970,7 +976,9 @@ class DebugFunctions
                 $majorVersion = $typo3Version->getMajorVersion();
                 if ($majorVersion >= 14) {
                     $pageArguments = static::$request->getAttribute('routing');
-                    $pageId = $pageArguments->getPageId();
+                    if ($pageArguments instanceof PageArguments) {
+                        $pageId = $pageArguments->getPageId();
+                    }
                 } else {
                     if (
                         isset($GLOBALS['TSFE']) &&
