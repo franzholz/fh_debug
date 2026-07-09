@@ -1,9 +1,12 @@
 <?php
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use JambageCom\Fhdebug\Utility\DebugFunctions;
 use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use JambageCom\Fhdebug\Utility\DebugFunctions;
+
+
 function fhdebug($variable = '', $title = null, $group = null): void
 {
     if (!GeneralUtility::cmpIP(

@@ -1,7 +1,7 @@
 {
   "name": "jambagecom/fh-debug",
   "type": "typo3-cms-extension",
-  "description": "PHP debugger, sys_log and devLog Logger",
+  "description": "FH Debug - PHP debugger, sys_log and devLog Logger",
   "keywords": [
     "TYPO3 CMS",
     "debug",
@@ -41,7 +41,7 @@
   "extra": {
     "typo3/cms": {
       "extension-key": "fh_debug",
-      "version": "0.18.2",
+      "version": "0.18.3",
       "Package": {
           "providesPackages": {}
       }
