@@ -1529,21 +1529,27 @@ class DebugFunctions
 
     protected static function processFreeMemory($variable)
     {
-        // static::errorLog('processFreeMemory: ', 'ANFANG');
+        // static::errorLog('processFreeMemory: ', 'START');
         $result = true;
         // static::errorLog('processFreeMemory: ', 'Pos 1');
 
         $total = memory_get_usage(true);
 
-    // static::errorLog('static::memoryAvailable ' . static:::$memoryAvailable, 'processFreeMemory');
+        // static::errorLog('static::memoryAvailable ' . static::$memoryAvailable, 'processFreeMemory');
         $memoryUsed = memory_get_peak_usage(false);
-    // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
+        // static::errorLog('memoryUsed ' . $memoryUsed, 'processFreeMemory');
 
-        // static::errorLog('processFreeMemory: ' . $total, 'total');
-        // $used = memory_get_usage(false);
-        // static::errorLog('processFreeMemory: ' . $used, 'used');
-        $free = static::$memoryAvailable - $memoryUsed;
-    // static::errorLog('processFreeMemory: ' . $free, 'free');
+        // --- FIX FOR UNLIMITED MEMORY (-1) START ---
+        // If the PHP memory_limit is set to -1, unlimited memory is allowed.
+        // We handle this case to prevent negative calculations (e.g., -1 - 39776568).
+        if (static::$memoryAvailable <= 0) {
+            $free = 999999999; // Simulate sufficient free memory
+        } else {
+            $free = static::$memoryAvailable - $memoryUsed;
+        }
+        // --- FIX END ---
+
+        // static::errorLog('processFreeMemory: ' . $free, 'free');
 
         $required = static::getMemorySize($variable);
         // static::errorLog('processFreeMemory $required: ' . $required, 'Pos 1');
@@ -1551,8 +1557,10 @@ class DebugFunctions
         // static::errorLog('processFreeMemory $minFree: ' . $minFree, 'Pos 2');
         $errorText = 'Minimum free memory reached for the debug output file.';
 
-        // avoid a memory exception
+        // Avoid a memory exception
+        // This condition is only evaluated if a specific, positive memory limit is set and violated
         if (
+            static::$memoryAvailable > 0 &&
             $free - $required < $minFree &&
             $minFree > 0
         ) {
@@ -1573,7 +1581,7 @@ class DebugFunctions
             }
             $result = false;
         }
-        // static::errorLog('processFreeMemory: ' . $result, 'ENDE');
+        // static::errorLog('processFreeMemory: ' . $result, 'END');
         return $result;
     }
 

@@ -1,3 +1,6 @@
+2026-11-03 Franz Holzinger  <franz@ttproducts.de>
+    * fix bug in free memory size calculation with negative values
+
 2026-05-15 Franz Holzinger  <franz@ttproducts.de>
     * support for TYPO3 14.3
 
